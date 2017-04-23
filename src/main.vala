@@ -6,7 +6,7 @@ namespace Spreadsheet {
 
     public class App : Granite.Application {
 
-        public ArrayList<Function> functions { get; set; }
+        public static ArrayList<Function> functions { get; set; }
 
         public static int main (string[] args) {
             Gtk.init (ref args);
@@ -16,9 +16,9 @@ namespace Spreadsheet {
         construct {
             this.program_name = "Spreadsheet";
             DEBUG = true;
-            this.functions = new ArrayList<Function> ();
-            var sum_func = new Function ("name", sum, "Add numbers");
-            this.functions.add (sum_func);
+            functions = new ArrayList<Function> ();
+            var sum_func = new Function ("sum", sum, "Add numbers");
+            functions.add (sum_func);
         }
 
         public override void activate () {

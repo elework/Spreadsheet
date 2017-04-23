@@ -1,3 +1,6 @@
+using Gee;
+using Spreadsheet.Parser.AST;
+
 namespace Spreadsheet.Parser {
 
     public errordomain ParserError {
@@ -9,13 +12,15 @@ namespace Spreadsheet.Parser {
 
         private ArrayList<Token> tokens { get; set; }
 
-        private Token previous { get {return this.tokens[this.index - 1]; } }
+        private int index = 0;
 
-        private Token current { get { return this.tokens[this.index]; } }
+        private Token previous { owned get {return this.tokens[this.index - 1]; } }
 
-        private Token next { get { return this.tokens[this.index + 1]; } }
+        private Token current { owned get { return this.tokens[this.index]; } }
 
-        public Block root { get; private set; }
+        private Token next { owned get { return this.tokens[this.index + 1]; } }
+
+        public Expression root { get; private set; }
 
         public Parser (ArrayList<Token> tokens) {
             this.tokens = tokens;
@@ -40,50 +45,63 @@ namespace Spreadsheet.Parser {
             throw new ParserError.UNEXPECTED (@"Expected a '$cat', got a '$(this.current.kind)'");
         }
 
-        public Block parse () throws ParserError {
-            this.root = new Block ();
-            this.parse_block (this.root);
-            return this.root;
+        // Like expect, but doesn't eat the token.
+        private bool want (string cat) throws ParserError {
+            if (this.current.kind == cat) {
+                return true;
+            }
+            throw new ParserError.UNEXPECTED (@"Wanted a '$cat', got a '$(this.current.kind)'");
         }
 
-        private void parse_block (Block block) throws ParserError {
-            bool root = !this.accept ("left-square-brace")
+        public CallExpression parse () throws ParserError {
+            return this.parse_block ();
+        }
+
+        private CallExpression parse_block () throws ParserError {
+            bool root = !this.accept ("left-square-brace");
             var delimiter = root ? "eof" : "right-square-brace";
+            CallExpression last;
 
             while (true) {
-                block.instructions.add (this.parse_expression ());
-                if (this.current.kind != "semi-colon") {
+                last = this.parse_call_expression ();
+                if (this.current.kind == delimiter) {
                     break;
+                } else {
+                    this.expect ("semi-colon");
                 }
             }
 
             this.expect (delimiter);
+            return last;
         }
 
-        private Expression parse_expression () {
-            return parse_multiply_expression ();
-        }
-
-        private Expression parse_multiply_expression () {
-            var left = parse_add_expression ();
-            if (this.accept ("star")) {
-                var right = parse_add_expression ();
-                left = new MultiplyExpression (left, right)
+        private CallExpression parse_call_expression () throws ParserError {
+            var func = this.current.lexeme;
+            expect ("identifier");
+            expect ("left-parenthese");
+            var params = new ArrayList<Expression> ();
+            while (!this.accept ("right-parenthese")) {
+                if (this.current.kind == "identifier") {
+                    params.add (this.parse_call_expression ());
+                } else if (this.current.kind == "number") {
+                    params.add (this.parse_number ());
+                } else if (!(this.accept ("comma") || this.accept ("right-parenthese"))) {
+                    throw new ParserError.UNEXPECTED ("Expected a function name or a number, got %s".printf (this.current.kind));
+                }
             }
-            return left;
+            return new CallExpression (func, params);
         }
 
-        private Expression parse_add_expression () {
-            var left = parse_number ();
-            if (this.accept ("plus")) {
-                var right = parse_number ();
-                left = new AddExpression (left, right)
+        private NumberExpression parse_number () throws ParserError {
+            want ("number");
+            NumberExpression res;
+            if ("." in this.current.lexeme) {
+                res = new NumberExpression (double.parse (this.current.lexeme));
+            } else {
+                res = new NumberExpression (double.parse (this.current.lexeme + ".0"));
             }
-            return left;
-        }
-
-        private Expression parse_number () {
-            
+            eat ();
+            return res;
         }
     }
 }

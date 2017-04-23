@@ -6,21 +6,36 @@ namespace Spreadsheet.UI {
 
     public class MainWindow : ApplicationWindow {
 
-        private const int CELL_LIMIT = 40;
-
         public HeaderBar header { get; set; default = new HeaderBar (); }
+
+        public Stack app_stack { get; set; default = new Stack (); }
 
         public MainWindow (Gtk.Application app) {
             Object (application: app);
-            this.header.title = "New Spreadsheet";
-            this.header.subtitle = "Not saved yet";
-            this.header.show_close_button = true;
-            this.set_titlebar (this.header);
             this.set_default_size (1500, 1000);
             this.window_position = WindowPosition.CENTER;
 
-            this.init_header ();
+            this.app_stack.add_named (welcome (), "welcome");
+            this.app_stack.add_named (sheet (), "app");
+            this.set_titlebar (this.header);
 
+            this.add (this.app_stack);
+            this.show_welcome ();
+            this.show_all ();
+        }
+
+        private Welcome welcome () {
+            var welcome = new Welcome ("Spreadsheet", "Start something new, or continue what you have been working on.");
+            welcome.append ("document-new", "New Sheet", "Create an empty sheet");
+            welcome.append ("document-open", "Open a file", "Choose a saved presentation");
+            welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
+            welcome.activated.connect ((index) => {
+                this.open_sheet ();
+            });
+            return welcome;
+        }
+
+        private Box sheet () {
             var tabs = new DynamicNotebook () { allow_restoring = false };
             tabs.insert_tab (new Tab ("New Sheet", null, new Sheet ()), 0);
 
@@ -49,9 +64,13 @@ namespace Spreadsheet.UI {
             expr.hexpand = true;
             expr.activate.connect (() => {
                 print ("Computing %s...\n", expr.text);
-                // foreach (var tok in new Lexer ().tokenize (expr.text)) {
-                //     print ("%s -> %s\n", tok.lexeme, tok.kind);
-                // }
+                var tokens = new Lexer ().tokenize (expr.text);
+                foreach (var tok in tokens) {
+                    print ("%s -> %s\n", tok.lexeme, tok.kind);
+                }
+                var parser = new Parser.Parser (tokens);
+                var expression = parser.parse ();
+                print (@"$(expr.text) = $(((double)expression.eval ()).to_string ())");
             });
             toolbar.attach (expr, 1, 0);
             toolbar.column_spacing = 10;
@@ -92,8 +111,25 @@ namespace Spreadsheet.UI {
             var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
             layout.pack_start (toolbar, false);
             layout.pack_start (tabs);
-    		this.add (layout);
+            return layout;
+        }
+
+        private void open_sheet () {
+            this.init_header ();
+            this.header.title = "New Spreadsheet";
+            this.header.subtitle = "Not saved yet";
+            this.header.show_close_button = true;
             this.show_all ();
+
+            this.app_stack.set_visible_child_name ("app");
+        }
+
+        private void show_welcome () {
+            this.clear_header ();
+            this.header.title = "Spreadsheet";
+            this.header.show_close_button = true;
+
+            this.app_stack.set_visible_child_name ("welcome");
         }
 
         // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
@@ -109,6 +145,7 @@ namespace Spreadsheet.UI {
         }
 
         void init_header () {
+            debug ("init header");
             Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
             ToolButton file_button = new ToolButton (file_ico, null);
             file_button.clicked.connect (() => {
@@ -136,6 +173,12 @@ namespace Spreadsheet.UI {
                 print ("Redo\n");
             });
             this.header.pack_start (redo_button);
+        }
+
+        void clear_header () {
+            foreach (var button in this.header.get_children ()) {
+                button.destroy ();
+            }
         }
     }
 }

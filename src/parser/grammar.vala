@@ -18,11 +18,12 @@ namespace Spreadsheet.Parser {
             return new ArrayList<Evaluator>.wrap ({
                 new Evaluator (/[ \t]/, token ("[[ignore]]")),
                 new Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
-                new Evaluator (/[A-Za-z][\w]*/, token ("identifier"))
+                new Evaluator (/[A-Za-z][\w]*/, token ("identifier")),
                 new Evaluator (/\(/, token ("left-parenthese")),
                 new Evaluator (/\)/, token ("right-parenthese")),
                 new Evaluator (/,/, token ("comma")),
-                new Evaluator (/:/, token ("colon"))
+                new Evaluator (/:/, token ("colon")),
+                new Evaluator (/\d+(\.\d+)?/, token ("number"))
             });
         }
 

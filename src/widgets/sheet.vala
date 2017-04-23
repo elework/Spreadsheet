@@ -1,14 +1,7 @@
 using Gee;
 using Gtk;
 using Cairo;
-
-public class Cell : Object {
-    public int line;
-    public int column;
-    public string display_content;
-    public string formula;
-    public bool selected;
-}
+using Spreadsheet.Models;
 
 namespace Spreadsheet.UI {
     public class Sheet : EventBox, Scrollable {
