@@ -49,9 +49,9 @@ namespace Spreadsheet.UI {
             expr.hexpand = true;
             expr.activate.connect (() => {
                 print ("Computing %s...\n", expr.text);
-                foreach (var tok in new Lexer ().tokenize (expr.text)) {
-                    print ("%s -> %s\n", tok.lexeme, tok.kind);
-                }
+                // foreach (var tok in new Lexer ().tokenize (expr.text)) {
+                //     print ("%s -> %s\n", tok.lexeme, tok.kind);
+                // }
             });
             toolbar.attach (expr, 1, 0);
             toolbar.column_spacing = 10;
