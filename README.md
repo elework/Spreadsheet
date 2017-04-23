@@ -16,3 +16,5 @@ meson .. # Configure project
 ninja # Builds the project (sometimes it's ninja-build, not ninja)
 ./spreadsheet # Run the app
 ```
+
+To build the project again you'll only need the two last commands.
