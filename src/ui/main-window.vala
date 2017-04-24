@@ -1,6 +1,8 @@
 using Spreadsheet.Parser;
+using Spreadsheet.Widgets;
 using Granite.Widgets;
 using Gtk;
+using Gdk;
 
 namespace Spreadsheet.UI {
 
@@ -14,6 +16,7 @@ namespace Spreadsheet.UI {
             Object (application: app);
             this.set_default_size (1500, 1000);
             this.window_position = WindowPosition.CENTER;
+            this.icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 128, 128, true);
 
             this.app_stack.add_named (welcome (), "welcome");
             this.app_stack.add_named (sheet (), "app");
@@ -37,22 +40,33 @@ namespace Spreadsheet.UI {
 
         private Box sheet () {
             var tabs = new DynamicNotebook () { allow_restoring = false };
-            tabs.insert_tab (new Tab ("New Sheet", null, new Sheet ()), 0);
+            var sheet = new Sheet ();
+            tabs.insert_tab (new Tab ("New Sheet", null, sheet), 0);
 
             var toolbar = new Grid ();
             toolbar.border_width = 10;
             var function_list_bt = new Button.with_label ("f (x)");
+            var expr = new Entry ();
 
             var popup = new Popover (function_list_bt);
             popup.modal = true;
             popup.position = PositionType.BOTTOM;
             popup.border_width = 10;
-            var function_list = new Box (Orientation.VERTICAL, 5);
-            function_list.add (new Label ("SUM") { width_request = 100, justify = Justification.LEFT });
-            function_list.add (new Label ("DIV") { width_request = 100, justify = Justification.LEFT });
-            function_list.add (new Label ("SUB") { width_request = 100, justify = Justification.LEFT });
-            function_list.add (new Label ("MUL") { width_request = 100, justify = Justification.LEFT });
-            function_list.add (new Label ("MOD") { width_request = 100, justify = Justification.LEFT });
+            var function_list = new ListBox ();
+            foreach (var func in App.functions) {
+                var row = new ListBoxRow ();
+                row.add (new FunctionPresenter (func));
+                row.selectable = false;
+                row.realize.connect (() => {
+                    row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
+                });
+                row.button_press_event.connect ((evt) => {
+                    expr.text += ")";
+                    expr.buffer.insert_text (expr.get_position (), (func.name + "(").data);
+                    return true;
+                });
+                function_list.add (row);
+            }
             popup.add (function_list);
 
             function_list_bt.clicked.connect (() => {
@@ -60,17 +74,17 @@ namespace Spreadsheet.UI {
             });
 
             toolbar.attach (function_list_bt, 0, 0, 1, 1);
-            var expr = new Entry ();
             expr.hexpand = true;
             expr.activate.connect (() => {
-                print ("Computing %s...\n", expr.text);
-                var tokens = new Lexer ().tokenize (expr.text);
-                foreach (var tok in tokens) {
-                    print ("%s -> %s\n", tok.lexeme, tok.kind);
-                }
-                var parser = new Parser.Parser (tokens);
+                var parser = new Parser.Parser (new Lexer ().tokenize (expr.text));
                 var expression = parser.parse ();
-                print (@"$(expr.text) = $(((double)expression.eval ()).to_string ())");
+                if (sheet.selected_cell != null) {
+                    sheet.selected_cell.formula = expr.text;
+                    sheet.selected_cell.display_content = ((double)expression.eval ()).to_string ();
+                }
+            });
+            sheet.selection_changed.connect ((cell) => {
+                expr.text = cell.formula;
             });
             toolbar.attach (expr, 1, 0);
             toolbar.column_spacing = 10;
@@ -78,7 +92,7 @@ namespace Spreadsheet.UI {
             var style_toggle = new ToggleButton.with_label ("Open Sans 14");
             toolbar.add (style_toggle);
             bool resized = false;
-            style_toggle.draw.connect ((cr) => {
+            style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the button
                 int spacing = 20;
                 int border = 5; // TODO: get real value
                 int square_size = style_toggle.get_allocated_height () - (border * 2);

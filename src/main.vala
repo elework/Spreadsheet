@@ -1,12 +1,11 @@
 using Gee;
 using Spreadsheet.UI;
-using Spreadsheet.Functions;
 
 namespace Spreadsheet {
 
     public class App : Granite.Application {
 
-        public static ArrayList<Function> functions { get; set; }
+        public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
         public static int main (string[] args) {
             Gtk.init (ref args);
@@ -16,9 +15,11 @@ namespace Spreadsheet {
         construct {
             this.program_name = "Spreadsheet";
             DEBUG = true;
-            functions = new ArrayList<Function> ();
-            var sum_func = new Function ("sum", sum, "Add numbers");
-            functions.add (sum_func);
+            functions.add (new Function ("sum", Functions.sum, "Add numbers"));
+            functions.add (new Function ("mul", Functions.mul, "Multiply numbers"));
+            functions.add (new Function ("div", Functions.div, "Divide numbers"));
+            functions.add (new Function ("sub", Functions.sub, "Substract numbers"));
+            functions.add (new Function ("mod", Functions.mod, "Gives the modulo of numbers"));
         }
 
         public override void activate () {
