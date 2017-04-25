@@ -12,6 +12,18 @@ namespace Spreadsheet.UI {
 
         public Stack app_stack { get; set; default = new Stack (); }
 
+        public DynamicNotebook tabs {
+            get;
+            set;
+            default = new DynamicNotebook () { allow_restoring = false };
+        }
+
+        public Sheet active_sheet {
+            get {
+                return (Sheet)this.tabs.current.page;
+            }
+        }
+
         public MainWindow (Gtk.Application app) {
             Object (application: app);
             this.set_default_size (1500, 1000);
@@ -38,25 +50,23 @@ namespace Spreadsheet.UI {
             return welcome;
         }
 
-        private Box sheet () {
-            var tabs = new DynamicNotebook () { allow_restoring = false };
-            var sheet = new Sheet ();
-            tabs.insert_tab (new Tab ("New Sheet", null, sheet), 0);
-
-            var toolbar = new Grid ();
-            toolbar.border_width = 10;
+        private Grid toolbar () {
+            var toolbar = new Grid () {
+                border_width = 10,
+                column_spacing = 10
+            };
             var function_list_bt = new Button.with_label ("f (x)");
-            var expr = new Entry ();
+            var expr = new Entry () { hexpand = true };
 
-            var popup = new Popover (function_list_bt);
-            popup.modal = true;
-            popup.position = PositionType.BOTTOM;
-            popup.border_width = 10;
+            var popup = new Popover (function_list_bt) {
+                modal = true,
+                position = PositionType.BOTTOM,
+                border_width = 10
+            };
             var function_list = new ListBox ();
             foreach (var func in App.functions) {
-                var row = new ListBoxRow ();
+                var row = new ListBoxRow () { selectable = false };
                 row.add (new FunctionPresenter (func));
-                row.selectable = false;
                 row.realize.connect (() => {
                     row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
                 });
@@ -73,24 +83,25 @@ namespace Spreadsheet.UI {
                 popup.show_all ();
             });
 
-            toolbar.attach (function_list_bt, 0, 0, 1, 1);
-            expr.hexpand = true;
             expr.activate.connect (() => {
                 var parser = new Parser.Parser (new Lexer ().tokenize (expr.text));
                 var expression = parser.parse ();
-                if (sheet.selected_cell != null) {
-                    sheet.selected_cell.formula = expr.text;
-                    sheet.selected_cell.display_content = ((double)expression.eval ()).to_string ();
+                if (this.active_sheet.selected_cell != null) {
+                    this.active_sheet.selected_cell.formula = expr.text;
+                    this.active_sheet.selected_cell.display_content = ((double)expression.eval ()).to_string ();
                 }
             });
-            sheet.selection_changed.connect ((cell) => {
-                expr.text = cell.formula;
+            this.active_sheet.selection_changed.connect ((cell) => {
+                if (cell != null) {
+                    expr.text = cell.formula;
+                    expr.sensitive = true;
+                } else {
+                    expr.text = "";
+                    expr.sensitive = false;
+                }
             });
-            toolbar.attach (expr, 1, 0);
-            toolbar.column_spacing = 10;
 
             var style_toggle = new ToggleButton.with_label ("Open Sans 14");
-            toolbar.add (style_toggle);
             bool resized = false;
             style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the button
                 int spacing = 20;
@@ -108,10 +119,11 @@ namespace Spreadsheet.UI {
                 cr.fill ();
                 return false;
             });
-            var style_popup = new Popover (style_toggle);
-            style_popup.modal = true;
-            style_popup.position = PositionType.BOTTOM;
-            style_popup.border_width = 10;
+            var style_popup = new Popover (style_toggle) {
+                modal = true,
+                position = PositionType.BOTTOM,
+                border_width = 10
+            };
             style_toggle.toggled.connect (() => {
                 if (style_toggle.active) {
                     style_popup.show_all ();
@@ -122,9 +134,19 @@ namespace Spreadsheet.UI {
             });
             style_popup.add (new Label ("Nothing to show here... yet!"));
 
+            toolbar.attach (function_list_bt, 0, 0, 1, 1);
+            toolbar.attach (expr, 1, 0);
+            toolbar.add (style_toggle);
+            return toolbar;
+        }
+
+        private Box sheet () {
+            var sheet = new Sheet ();
+            this.tabs.insert_tab (new Tab ("New Sheet", null, sheet), 0);
+
             var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
-            layout.pack_start (toolbar, false);
-            layout.pack_start (tabs);
+            layout.pack_start (this.toolbar (), false);
+            layout.pack_start (this.tabs);
             return layout;
         }
 
@@ -159,7 +181,6 @@ namespace Spreadsheet.UI {
         }
 
         void init_header () {
-            debug ("init header");
             Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
             ToolButton file_button = new ToolButton (file_ico, null);
             file_button.clicked.connect (() => {
