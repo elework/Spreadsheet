@@ -28,7 +28,7 @@ namespace Spreadsheet.UI {
             Object (application: app);
             this.set_default_size (1500, 1000);
             this.window_position = WindowPosition.CENTER;
-            this.icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 128, 128, true);
+            this.icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
 
             this.app_stack.add_named (welcome (), "welcome");
             this.app_stack.add_named (sheet (), "app");

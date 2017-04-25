@@ -55,8 +55,10 @@ namespace Spreadsheet.Widgets {
             foreach (var cell in cells) {
                 if (cell.selected) {
                     cell.selected = false;
-                    this.selected_cell = null;
-                    selection_changed (null);
+                    if (cell == this.selected_cell) { // unselect it if it was selected
+                        this.selected_cell = null;
+                        selection_changed (null);
+                    }
                 } else if (cell.line == line && cell.column == col) {
                     cell.selected = true;
                     this.selected_cell = cell;
@@ -74,17 +76,35 @@ namespace Spreadsheet.Widgets {
             return false;
         }
 
-        private double get_left_margin (Context cr = new Context (new ImageSurface (Format.ARGB32, 0, 0))) {
-            cr.save ();
+        private double get_left_margin () {
+            Context cr = new Context (new ImageSurface (Format.ARGB32, 0, 0));
             cr.set_font_size (HEIGHT - PADDING * 2);
             cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             TextExtents left_ext;
             cr.text_extents (this.lines.to_string (), out left_ext);
-            cr.restore ();
             return left_ext.width + BORDER;
         }
 
+        // I hope Vala will support extension methods one day...
+        private void set_color (Context cr, RGBA color) {
+            if (color.blue > 1.0) {
+                color.blue = color.blue / 256;
+            }
+            if (color.red > 1.0) {
+                color.red = color.red / 256;
+            }
+            if (color.green > 1.0) {
+                color.green = color.green / 256;
+            }
+            cr.set_source_rgba (color.red, color.green, color.blue, color.alpha);
+        }
+
         public override bool draw (Context cr) {
+            RGBA select_bg = { 205.0, 232.0, 245.0, 1 };
+            RGBA select_border = { 0, 136.0, 204.0, 1 };
+            RGBA gray_bg = { 200.0, 200.0, 200.0, 1 };
+            RGBA light_gray = { 51.0, 51.0, 51.0, 1 };
+
             cr.set_font_size (HEIGHT - PADDING * 2);
             cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
@@ -96,7 +116,7 @@ namespace Spreadsheet.Widgets {
             cr.fill ();
 
             // draw the letters and the numbers on the side
-            cr.set_source_rgb (200.0 / 256, 200.0 / 256, 200.0 / 256);
+            set_color (cr, gray_bg);
             cr.set_line_width (BORDER);
 
             // numbers on the left side
@@ -104,14 +124,22 @@ namespace Spreadsheet.Widgets {
                 cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                 cr.stroke ();
 
+                if (this.selected_cell != null && this.selected_cell.line == i) {
+                    cr.save ();
+                    set_color (cr, select_bg);
+                    cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
+                    cr.fill ();
+                    cr.restore ();
+                }
+
                 TextExtents extents;
             	cr.text_extents (i.to_string (), out extents);
                 double x = left_margin - (PADDING + BORDER + extents.width);
                 double y = HEIGHT + HEIGHT * i - (PADDING + BORDER);
-                cr.set_source_rgb (51.0 / 256, 51.0 / 256, 51.0 / 256);
+                set_color (cr, light_gray);
                 cr.move_to (x, y);
             	cr.show_text (i.to_string ());
-                cr.set_source_rgb (200.0 / 256, 200.0 / 256, 200.0 / 256);
+                set_color (cr, gray_bg);
             }
 
             // letters on the top
@@ -120,12 +148,20 @@ namespace Spreadsheet.Widgets {
                 cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                 cr.stroke ();
 
+                if (this.selected_cell != null && this.selected_cell.column == i) {
+                    cr.save ();
+                    set_color (cr, select_bg);
+                    cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
+                    cr.fill ();
+                    cr.restore ();
+                }
+
                 double x = left_margin + (WIDTH * i) + PADDING;
                 double y = HEIGHT - PADDING;
-                cr.set_source_rgb (51.0 / 256, 51.0 / 256, 51.0 / 256);
+                set_color (cr, light_gray);
                 cr.move_to (x, y);
             	cr.show_text (letter);
-                cr.set_source_rgb (200.0 / 256, 200.0 / 256, 200.0 / 256);
+                set_color (cr, gray_bg);
 
                 i++;
             }
@@ -133,13 +169,22 @@ namespace Spreadsheet.Widgets {
             // draw the cells
             foreach (var cell in this.cells) {
                 if (cell.selected) {
-                    cr.set_line_width (2.0);
+                    cr.set_line_width (3.0);
+
+                    // blue background
+                    cr.save ();
+                    set_color (cr, select_bg);
+                    cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                    cr.fill ();
+                    cr.restore ();
+
+                    set_color (cr, select_border);
                 }
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.stroke ();
 
                 // display the text
-                cr.set_source_rgb (51.0 / 256, 51.0 / 256, 51.0 / 256);
+                set_color (cr, light_gray);
                 TextExtents extents;
             	cr.text_extents (cell.display_content, out extents);
                 double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
@@ -147,7 +192,7 @@ namespace Spreadsheet.Widgets {
 
                 cr.move_to (x, y);
             	cr.show_text (cell.display_content);
-                cr.set_source_rgb (200.0 / 256, 200.0 / 256, 200.0 / 256);
+                set_color (cr, gray_bg);
 
                 if (cell.selected) {
                     cr.set_line_width (BORDER);
