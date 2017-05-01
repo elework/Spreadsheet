@@ -13,8 +13,10 @@ pango = dependency('pango')
 executable('spreadsheet',
   res,
   'src/App.vala',
-  'src/Functions.vala',
   'src/AlphabetGenerator.vala',
+
+  'src/functions/Basic.vala',
+  'src/functions/Geometry.vala',
 
   'src/ui/MainWindow.vala',
   'src/widgets/Sheet.vala',

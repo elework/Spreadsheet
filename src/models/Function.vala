@@ -1,4 +1,4 @@
-namespace Spreadsheet {
+namespace Spreadsheet.Models {
 
     public class Function : Object {
 

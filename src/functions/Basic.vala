@@ -50,4 +50,44 @@ namespace Spreadsheet.Functions {
         }
         return res;
     }
+
+    public Value pow (Value[] args) {
+        return Math.pow (number (args[0]), number (args[1]));
+    }
+
+    public Value sqrt (Value[] args) {
+        return Math.sqrt (number (args[0]));
+    }
+
+    public Value round (Value[] args) {
+        return Math.round (number (args[0]));
+    }
+
+    public Value floor (Value[] args) {
+        return Math.floor (number (args[0]));
+    }
+
+    public Value min (Value[] args) {
+        double min = number (args[0]);
+        foreach (var arg in args) {
+            if (number (arg) < min) {
+                min = number (arg);
+            }
+        }
+        return min;
+    }
+
+    public Value max (Value[] args) {
+        double max = number (args[0]);
+        foreach (var arg in args) {
+            if (number (arg) > max) {
+                max = number (arg);
+            }
+        }
+        return max;
+    }
+
+    public Value mean (Value[] args) {
+        return ((double) sum (args)) / args.length;
+    }
 }
