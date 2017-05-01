@@ -30,6 +30,11 @@ namespace Spreadsheet.Parser {
             this.index++;
         }
 
+        /**
+        * Eat the current token if it is from a certain type
+        *
+        * @return true if the token has been eaten.
+        */
         private bool accept (string category) {
             if (this.current.kind == category) {
                 this.eat ();
@@ -38,6 +43,9 @@ namespace Spreadsheet.Parser {
             return false;
         }
 
+        /**
+        * If the current token is not of a specific type, throws an error.
+        */
         private bool expect (string cat) throws ParserError {
             if (this.accept (cat)) {
                 return true;
@@ -53,17 +61,21 @@ namespace Spreadsheet.Parser {
             throw new ParserError.UNEXPECTED (@"Wanted a '$cat', got a '$(this.current.kind)'");
         }
 
-        public CallExpression parse () throws ParserError {
+        private void unexpected () throws ParserError {
+            throw new ParserError.UNEXPECTED (@"Unexpected '$(this.current.kind)'");
+        }
+
+        public Expression parse () throws ParserError {
             return this.parse_block ();
         }
 
-        private CallExpression parse_block () throws ParserError {
+        private Expression parse_block () throws ParserError {
             bool root = !this.accept ("left-square-brace");
             var delimiter = root ? "eof" : "right-square-brace";
-            CallExpression last;
+            Expression last;
 
             while (true) {
-                last = this.parse_call_expression ();
+                last = this.parse_expression ();
                 if (this.current.kind == delimiter) {
                     break;
                 } else {
@@ -75,18 +87,84 @@ namespace Spreadsheet.Parser {
             return last;
         }
 
+        private Expression parse_expression () throws ParserError {
+            return this.parse_substraction ();
+        }
+
+        private Expression parse_primary_expression () throws ParserError {
+            if (this.current.kind == "identifier") {
+                return this.parse_call_expression ();
+            } else if (this.current.kind == "number") {
+                return this.parse_number ();
+            } else if (this.accept("left-parenthese")) {
+                var res = this.parse_expression ();
+                expect ("right-parenthese");
+                return res;
+            } else {
+                unexpected ();
+                return new NumberExpression (0.0);
+            }
+        }
+
+        private Expression parse_multiplication () throws ParserError {
+            var left = this.parse_primary_expression ();
+            if (this.accept ("star")) {
+                var right = this.parse_primary_expression ();
+                left = new CallExpression ("mul", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_division () throws ParserError {
+            var left = this.parse_multiplication ();
+            if (this.accept ("slash")) {
+                var right = this.parse_multiplication ();
+                left = new CallExpression ("div", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_modulo () throws ParserError {
+            Expression left = this.parse_division ();
+            if (this.accept ("percent")) {
+                var right = this.parse_division ();
+                left = new CallExpression ("mod", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_substraction () throws ParserError {
+            var left = this.parse_addition ();
+            if (this.accept ("dash")) {
+                var right = this.parse_addition ();
+                left = new CallExpression ("sub", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_addition () throws ParserError {
+            var left = this.parse_modulo ();
+            if (this.accept ("plus")) {
+                var right = this.parse_modulo ();
+                left = new CallExpression ("sum", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
         private CallExpression parse_call_expression () throws ParserError {
             var func = this.current.lexeme;
             expect ("identifier");
             expect ("left-parenthese");
             var params = new ArrayList<Expression> ();
-            while (!this.accept ("right-parenthese")) {
-                if (this.current.kind == "identifier") {
-                    params.add (this.parse_call_expression ());
-                } else if (this.current.kind == "number") {
-                    params.add (this.parse_number ());
-                } else if (!(this.accept ("comma") || this.accept ("right-parenthese"))) {
-                    throw new ParserError.UNEXPECTED ("Expected a function name or a number, got %s".printf (this.current.kind));
+            while (true) {
+                params.add (this.parse_expression ());
+
+                if (this.accept ("right-parenthese")) {
+                    break;
+                }
+
+                if (!this.accept ("comma")) {
+                    throw new ParserError.UNEXPECTED ("Use a comma to separate parameters");
                 }
             }
             return new CallExpression (func, params);

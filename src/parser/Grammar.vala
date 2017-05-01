@@ -23,7 +23,12 @@ namespace Spreadsheet.Parser {
                 new Evaluator (/\)/, token ("right-parenthese")),
                 new Evaluator (/,/, token ("comma")),
                 new Evaluator (/:/, token ("colon")),
-                new Evaluator (/\d+(\.\d+)?/, token ("number"))
+                new Evaluator (/\d+(\.\d+)?/, token ("number")),
+                new Evaluator (/\+/, token ("plus")),
+                new Evaluator (/\*/, token ("star")),
+                new Evaluator (/-/, token ("dash")),
+                new Evaluator (/\//, token ("slash")),
+                new Evaluator (/%/, token ("percent"))
             });
         }
 
