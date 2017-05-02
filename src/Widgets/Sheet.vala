@@ -115,22 +115,6 @@ namespace Spreadsheet.Widgets {
             var main_window = this.get_toplevel ();
             Gtk.StyleContext style = main_window.get_style_context ();
 
-            /*RGBA bg_color = sctx.get_background_color (Gtk.StateFlags.NORMAL);
-            RGBA selected_bg_color;
-            RGBA selected_border_color = sctx.get_border_color (Gtk.StateFlags.SELECTED);
-            RGBA gray_bg;
-            RGBA light_gray;
-
-            sctx.lookup_color ("selected_bg_color_color", out selected_bg_color);
-            sctx.lookup_color ("border_color", out selected_border_color);
-            sctx.lookup_color ("bg_color", out gray_bg);
-            sctx.lookup_color ("fg_color", out light_gray);*/
-
-            RGBA selected_bg_color = { 205.0, 232.0, 245.0, 1 };
-            RGBA selected_border_color = { 0, 136.0, 204.0, 1 };
-            RGBA gray_bg = { 200.0, 200.0, 200.0, 1 };
-            RGBA light_gray = { 51.0, 51.0, 51.0, 1 };
-
             cr.set_font_size (HEIGHT - PADDING * 2);
             cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
@@ -140,7 +124,7 @@ namespace Spreadsheet.Widgets {
             style.render_background (cr, left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
 
             // draw the letters and the numbers on the side
-            set_color (cr, gray_bg);
+            set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
             cr.set_line_width (BORDER);
 
             // numbers on the left side
@@ -168,7 +152,7 @@ namespace Spreadsheet.Widgets {
 
                 cr.move_to (x, y);
                 cr.show_text (i.to_string ());
-                set_color (cr, gray_bg);
+                //set_color (cr, gray_bg);
             }
 
             // letters on the top
@@ -194,7 +178,7 @@ namespace Spreadsheet.Widgets {
                 double y = HEIGHT - PADDING;
                 cr.move_to (x, y);
                 cr.show_text (letter);
-                set_color (cr, gray_bg);
+                //set_color (cr, gray_bg);
 
                 i++;
             }
@@ -230,7 +214,7 @@ namespace Spreadsheet.Widgets {
 
                 cr.move_to (x, y);
                 cr.show_text (cell.display_content);
-                set_color (cr, gray_bg);
+                //set_color (cr, gray_bg);
 
                 if (cell.selected) {
                     cr.set_line_width (BORDER);
