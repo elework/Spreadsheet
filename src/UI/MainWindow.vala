@@ -96,7 +96,7 @@ namespace Spreadsheet.UI {
 
             expr.activate.connect (() => {
                 this.update_formula (expr);
-            }
+            });
             this.active_sheet.selection_changed.connect ((cell) => {
                 if (cell != null) {
                     expr.text = cell.formula;
@@ -109,8 +109,21 @@ namespace Spreadsheet.UI {
 
             var style_toggle = new ToggleButton.with_label ("Open Sans 14");
             bool resized = false;
-            style_toggle.draw.connect ((cr) => {
+            style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
+                int spacing = 20;
+                int border = this.get_style_context ().get_border (StateFlags.NORMAL).left;
+                int square_size = style_toggle.get_allocated_height () - (border * 2);
+                int width = style_toggle.get_allocated_width ();
 
+                if (!resized) {
+                    style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
+                    resized = true;
+                }
+
+                cr.set_source_rgb (0, 0, 0);
+                draw_rounded_path (cr, width - (border + square_size), border, square_size, square_size, 2);
+                cr.fill ();
+                return false;
             });
             var style_popup = new Popover (style_toggle) {
                 modal = true,
@@ -163,7 +176,7 @@ namespace Spreadsheet.UI {
 
         private string parse_formula (string formula) {
             try {
-                var parser = new Parser.Parser (new Lexer ().tokenize (text));
+                var parser = new Parser.Parser (new Lexer ().tokenize (formula));
                 var expression = parser.parse ();
                 return ((double)expression.eval ()).to_string ();
             } catch (ParserError err) {
@@ -199,24 +212,6 @@ namespace Spreadsheet.UI {
                 ));
             }
             update_header ();
-        }
-
-        // draw the color rectangle on the right of the style button
-        private bool draw_color_indicator (Context cr) {
-            int spacing = 20;
-            int border = this.get_style_context ().border.left;
-            int square_size = style_toggle.get_allocated_height () - (border * 2);
-            int width = style_toggle.get_allocated_width ();
-
-            if (!resized) {
-                style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
-                resized = true;
-            }
-
-            cr.set_source_rgb (0, 0, 0);
-            draw_rounded_path (cr, width - (border + square_size), border, square_size, square_size, 2);
-            cr.fill ();
-            return false;
         }
 
         // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
