@@ -111,8 +111,23 @@ namespace Spreadsheet.Widgets {
         }
 
         public override bool draw (Context cr) {
-            RGBA select_bg = { 205.0, 232.0, 245.0, 1 };
-            RGBA select_border = { 0, 136.0, 204.0, 1 };
+
+            var main_window = this.get_toplevel ();
+            Gtk.StyleContext style = main_window.get_style_context ();
+
+            /*RGBA bg_color = sctx.get_background_color (Gtk.StateFlags.NORMAL);
+            RGBA selected_bg_color;
+            RGBA selected_border_color = sctx.get_border_color (Gtk.StateFlags.SELECTED);
+            RGBA gray_bg;
+            RGBA light_gray;
+
+            sctx.lookup_color ("selected_bg_color_color", out selected_bg_color);
+            sctx.lookup_color ("border_color", out selected_border_color);
+            sctx.lookup_color ("bg_color", out gray_bg);
+            sctx.lookup_color ("fg_color", out light_gray);*/
+
+            RGBA selected_bg_color = { 205.0, 232.0, 245.0, 1 };
+            RGBA selected_border_color = { 0, 136.0, 204.0, 1 };
             RGBA gray_bg = { 200.0, 200.0, 200.0, 1 };
             RGBA light_gray = { 51.0, 51.0, 51.0, 1 };
 
@@ -122,9 +137,7 @@ namespace Spreadsheet.Widgets {
             double left_margin = this.get_left_margin ();
 
             // white background
-            cr.set_source_rgb (1, 1, 1);
-            cr.rectangle (left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
-            cr.fill ();
+            style.render_background (cr, left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
 
             // draw the letters and the numbers on the side
             set_color (cr, gray_bg);
@@ -137,17 +150,22 @@ namespace Spreadsheet.Widgets {
 
                 if (this.selected_cell != null && this.selected_cell.line == i) {
                     cr.save ();
-                    set_color (cr, select_bg);
+                    /*set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
                     cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
-                    cr.fill ();
+                    cr.fill ();*/
+                    style.render_frame (cr, 0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                     cr.restore ();
+
+                    set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                } else {
+                    set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
                 }
 
                 TextExtents extents;
                 cr.text_extents (i.to_string (), out extents);
                 double x = left_margin - (PADDING + BORDER + extents.width);
                 double y = HEIGHT + HEIGHT * i - (PADDING + BORDER);
-                set_color (cr, light_gray);
+
                 cr.move_to (x, y);
                 cr.show_text (i.to_string ());
                 set_color (cr, gray_bg);
@@ -161,15 +179,19 @@ namespace Spreadsheet.Widgets {
 
                 if (this.selected_cell != null && this.selected_cell.column == i) {
                     cr.save ();
-                    set_color (cr, select_bg);
+                    /*set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
                     cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
-                    cr.fill ();
+                    cr.fill ();*/
+                    style.render_frame (cr, left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                     cr.restore ();
+
+                    set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                } else {
+                    set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
                 }
 
                 double x = left_margin + (WIDTH * i) + PADDING;
                 double y = HEIGHT - PADDING;
-                set_color (cr, light_gray);
                 cr.move_to (x, y);
                 cr.show_text (letter);
                 set_color (cr, gray_bg);
@@ -184,18 +206,23 @@ namespace Spreadsheet.Widgets {
 
                     // blue background
                     cr.save ();
-                    set_color (cr, select_bg);
+                    /*set_color (cr, selected_bg_color);
                     cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
-                    cr.fill ();
+                    cr.fill ();*/
+                    //style.render_focus (cr, left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                     cr.restore ();
 
-                    set_color (cr, select_border);
+                    set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                } else {
+                    set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
                 }
+                //style.render_frame (cr, left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.stroke ();
 
                 // display the text
-                set_color (cr, light_gray);
+                set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
                 TextExtents extents;
                 cr.text_extents (cell.display_content, out extents);
                 double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
