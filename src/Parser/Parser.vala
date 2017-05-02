@@ -106,10 +106,19 @@ namespace Spreadsheet.Parser {
             }
         }
 
-        private Expression parse_multiplication () throws ParserError {
+        private Expression parse_exponent () throws ParserError {
             var left = this.parse_primary_expression ();
-            if (this.accept ("star")) {
+            if (this.accept ("carat")) {
                 var right = this.parse_primary_expression ();
+                left = new CallExpression ("pow", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_multiplication () throws ParserError {
+            var left = this.parse_exponent ();
+            if (this.accept ("star")) {
+                var right = this.parse_exponent ();
                 left = new CallExpression ("mul", new ArrayList<Expression>.wrap ({ left, right }));
             }
             return left;
