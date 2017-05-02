@@ -100,6 +100,8 @@ namespace Spreadsheet.Parser {
                 var res = this.parse_expression ();
                 expect ("right-parenthese");
                 return res;
+            } else if (this.current.kind == "cell-name") {
+                return this.parse_cell_name ();
             } else {
                 unexpected ();
                 return new NumberExpression (0.0);
@@ -189,6 +191,12 @@ namespace Spreadsheet.Parser {
             }
             eat ();
             return res;
+        }
+
+        private CellReference parse_cell_name () throws ParserError {
+            var cell = new CellReference () { cell_name = this.current.lexeme };
+            expect ("cell-name");
+            return cell;
         }
     }
 }

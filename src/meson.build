@@ -23,6 +23,7 @@ sources = files('App.vala',
   'Parser/Token.vala',
 
   'Parser/AST/CallExpression.vala',
+  'Parser/AST/CellReference.vala',
   'Parser/AST/Expression.vala',
   'Parser/AST/NumberExpression.vala'
 )
