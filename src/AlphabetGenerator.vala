@@ -1,3 +1,5 @@
+using Gee;
+
 namespace Spreadsheet {
 
     /**
@@ -29,6 +31,18 @@ namespace Spreadsheet {
 
         public AlphabetGenerator iterator () {
             return this;
+        }
+
+        public int index_of (string letters) {
+            int res = 0;
+            int i = 0;
+            foreach (char letter in letters.to_utf8 ()) {
+                int power = letters.length - i;
+                int index_in_alphabet = new ArrayList<string>.wrap (alphabet).index_of (letter.to_string ());
+                res += (int)Math.pow (index_in_alphabet, power);
+                i++;
+            }
+            return res;
         }
 
         public string get_at (uint index) {

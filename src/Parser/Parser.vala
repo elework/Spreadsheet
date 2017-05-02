@@ -100,16 +100,27 @@ namespace Spreadsheet.Parser {
                 var res = this.parse_expression ();
                 expect ("right-parenthese");
                 return res;
+            } else if (this.current.kind == "cell-name") {
+                return this.parse_cell_name ();
             } else {
                 unexpected ();
                 return new NumberExpression (0.0);
             }
         }
 
-        private Expression parse_multiplication () throws ParserError {
+        private Expression parse_exponent () throws ParserError {
             var left = this.parse_primary_expression ();
-            if (this.accept ("star")) {
+            if (this.accept ("carat")) {
                 var right = this.parse_primary_expression ();
+                left = new CallExpression ("pow", new ArrayList<Expression>.wrap ({ left, right }));
+            }
+            return left;
+        }
+
+        private Expression parse_multiplication () throws ParserError {
+            var left = this.parse_exponent ();
+            if (this.accept ("star")) {
+                var right = this.parse_exponent ();
                 left = new CallExpression ("mul", new ArrayList<Expression>.wrap ({ left, right }));
             }
             return left;
@@ -180,6 +191,12 @@ namespace Spreadsheet.Parser {
             }
             eat ();
             return res;
+        }
+
+        private CellReference parse_cell_name () throws ParserError {
+            var cell = new CellReference () { cell_name = this.current.lexeme };
+            expect ("cell-name");
+            return cell;
         }
     }
 }

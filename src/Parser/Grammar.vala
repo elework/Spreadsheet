@@ -28,7 +28,8 @@ namespace Spreadsheet.Parser {
                 new Evaluator (/\*/, token ("star")),
                 new Evaluator (/-/, token ("dash")),
                 new Evaluator (/\//, token ("slash")),
-                new Evaluator (/%/, token ("percent"))
+                new Evaluator (/%/, token ("percent")),
+                new Evaluator (/\^/, token ("carat"))
             });
         }
 

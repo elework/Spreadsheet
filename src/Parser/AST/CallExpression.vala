@@ -1,4 +1,5 @@
 using Spreadsheet;
+using Spreadsheet.Widgets;
 using Gee;
 
 namespace Spreadsheet.Parser.AST {
@@ -13,10 +14,10 @@ namespace Spreadsheet.Parser.AST {
             this.parameters = params;
         }
 
-        public override Value eval () {
+        public override Value eval (Sheet sheet) {
             var params = new Value[] {};
             foreach (var param in this.parameters) {
-                params += param.eval ();
+                params += param.eval (sheet);
             }
 
             foreach (var func in App.functions) {

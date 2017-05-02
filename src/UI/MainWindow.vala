@@ -23,7 +23,9 @@ namespace Spreadsheet.UI {
 
         public Sheet active_sheet {
             get {
-                return (Sheet)this.tabs.current.page;
+                ScrolledWindow scroll = (ScrolledWindow)this.tabs.current.page;
+                Viewport vp = (Viewport)scroll.get_child ();
+                return (Sheet)vp.get_child ();
             }
         }
 
@@ -185,7 +187,7 @@ namespace Spreadsheet.UI {
             try {
                 var parser = new Parser.Parser (new Lexer ().tokenize (formula));
                 var expression = parser.parse ();
-                return ((double)expression.eval ()).to_string ();
+                return ((double)expression.eval (this.active_sheet)).to_string ();
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
                 return "Error";
