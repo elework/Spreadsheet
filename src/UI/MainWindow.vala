@@ -1,8 +1,11 @@
 using Spreadsheet.Parser;
 using Spreadsheet.Widgets;
+using Spreadsheet.Models;
+using Spreadsheet.Services;
 using Granite.Widgets;
 using Gtk;
 using Gdk;
+using Gee;
 
 namespace Spreadsheet.UI {
 
@@ -22,6 +25,16 @@ namespace Spreadsheet.UI {
             get {
                 return (Sheet)this.tabs.current.page;
             }
+        }
+
+        ToolButton file_button { get; set; }
+        ToolButton open_button { get; set; }
+        ToolButton undo_button { get; set; }
+        ToolButton redo_button { get; set; }
+
+        private void update_header () {
+            this.undo_button.sensitive = HistoryManager.instance.can_undo ();
+            this.redo_button.sensitive = HistoryManager.instance.can_redo ();
         }
 
         public MainWindow (Gtk.Application app) {
@@ -84,12 +97,54 @@ namespace Spreadsheet.UI {
             });
 
             expr.activate.connect (() => {
-                var parser = new Parser.Parser (new Lexer ().tokenize (expr.text));
-                var expression = parser.parse ();
                 if (this.active_sheet.selected_cell != null) {
-                    this.active_sheet.selected_cell.formula = expr.text;
-                    this.active_sheet.selected_cell.display_content = ((double)expression.eval ()).to_string ();
+                    HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
+                        @"Change the formula to $(expr.text)",
+                        this.active_sheet.selected_cell,
+                        (_text, _target) => {
+                            string text = expr.text;
+                            Cell target = (Cell)_target;
+                            if (_text != null) {
+                                text = (string)_text;
+                            }
+
+                            string last_text = target.formula;
+                            target.formula = text;
+                            try {
+                                var parser = new Parser.Parser (new Lexer ().tokenize (text));
+                                var expression = parser.parse ();
+                                target.display_content = ((double)expression.eval ()).to_string ();
+                            } catch (ParserError err) {
+                                debug ("Error: " + err.message);
+                                target.display_content = "Error";
+                            }
+                            var undo_data = last_text;
+                            return new StateChange<string> (undo_data, text);
+                        },
+                        (_text, _target) => {
+                            string text = (string)_text;
+                            Cell target = (Cell)_target;
+
+                            target.formula = text;
+                            expr.text = text;
+
+                            if (text == "") {
+                                target.display_content = "";
+                                return; // avoid 'Unexpected end of file'
+                            }
+
+                            try {
+                                var parser = new Parser.Parser (new Lexer ().tokenize (text));
+                                var expression = parser.parse ();
+                                target.display_content = ((double)expression.eval ()).to_string ();
+                            } catch (ParserError err) {
+                                debug ("Error: " + err.message);
+                                target.display_content = "Error";
+                            }
+                        }
+                    ));
                 }
+                update_header ();
             });
             this.active_sheet.selection_changed.connect ((cell) => {
                 if (cell != null) {
@@ -182,7 +237,7 @@ namespace Spreadsheet.UI {
 
         void init_header () {
             Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
-            ToolButton file_button = new ToolButton (file_ico, null);
+            file_button = new ToolButton (file_ico, null);
             file_button.clicked.connect (() => {
                 print ("New file\n");
             });
@@ -196,18 +251,22 @@ namespace Spreadsheet.UI {
             this.header.pack_end (open_button);
 
             Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
-            ToolButton undo_button = new ToolButton (undo_ico, null);
+            undo_button = new ToolButton (undo_ico, null);
             undo_button.clicked.connect (() => {
-                print ("Undo\n");
+                HistoryManager.instance.undo ();
+                update_header ();
             });
             this.header.pack_start (undo_button);
 
             Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
-            ToolButton redo_button = new ToolButton (redo_ico, null);
+            redo_button = new ToolButton (redo_ico, null);
             redo_button.clicked.connect (() => {
-                print ("Redo\n");
+                HistoryManager.instance.redo ();
+                update_header ();
             });
             this.header.pack_start (redo_button);
+
+            this.update_header ();
         }
 
         void clear_header () {

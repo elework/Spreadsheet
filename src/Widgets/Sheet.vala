@@ -31,6 +31,11 @@ namespace Spreadsheet.Widgets {
                     var cell = new Cell () { line = i, column = j };
                     cell.notify["display-content"].connect (this.queue_draw);
                     cells.add (cell);
+
+                    if (this.selected_cell == null) {
+                        this.selected_cell = cell;
+                        cell.selected = true;
+                    }
                 }
             }
             this.button_press_event.connect(this.on_click);
@@ -38,6 +43,11 @@ namespace Spreadsheet.Widgets {
 
         public Sheet.for_page (Page page) {
             foreach (var cell in page.cells) {
+                if (this.selected_cell == null) {
+                    this.selected_cell = cell;
+                    cell.selected = true;
+                }
+
                 if (cell.column > this.columns) {
                     this.columns = cell.column;
                 }

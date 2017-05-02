@@ -40,6 +40,7 @@ namespace Spreadsheet.Parser {
                     }
 
                     if (!matched) {
+                        debug (expr);
                         error ("Unexpected character at %d", _expr.strip ().length - expr.length);
                     }
                 } else {
