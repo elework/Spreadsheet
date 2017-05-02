@@ -144,12 +144,12 @@ namespace Spreadsheet.Widgets {
                 }
 
                 TextExtents extents;
-            	cr.text_extents (i.to_string (), out extents);
+                cr.text_extents (i.to_string (), out extents);
                 double x = left_margin - (PADDING + BORDER + extents.width);
                 double y = HEIGHT + HEIGHT * i - (PADDING + BORDER);
                 set_color (cr, light_gray);
                 cr.move_to (x, y);
-            	cr.show_text (i.to_string ());
+                cr.show_text (i.to_string ());
                 set_color (cr, gray_bg);
             }
 
@@ -171,7 +171,7 @@ namespace Spreadsheet.Widgets {
                 double y = HEIGHT - PADDING;
                 set_color (cr, light_gray);
                 cr.move_to (x, y);
-            	cr.show_text (letter);
+                cr.show_text (letter);
                 set_color (cr, gray_bg);
 
                 i++;
@@ -197,12 +197,12 @@ namespace Spreadsheet.Widgets {
                 // display the text
                 set_color (cr, light_gray);
                 TextExtents extents;
-            	cr.text_extents (cell.display_content, out extents);
+                cr.text_extents (cell.display_content, out extents);
                 double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
                 double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
 
                 cr.move_to (x, y);
-            	cr.show_text (cell.display_content);
+                cr.show_text (cell.display_content);
                 set_color (cr, gray_bg);
 
                 if (cell.selected) {

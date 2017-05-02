@@ -147,8 +147,15 @@ namespace Spreadsheet.UI {
         }
 
         private Box sheet () {
+            Gtk.ScrolledWindow scrolled = new Gtk.ScrolledWindow (null, null);
+            Gtk.Viewport viewport = new Gtk.Viewport (null, null);
+            viewport.set_size_request (this.tabs.get_allocated_width (), this.tabs.get_allocated_height ());
+            scrolled.add (viewport);
+
             var sheet = new Sheet ();
-            this.tabs.insert_tab (new Tab ("New Sheet", null, sheet), 0);
+            viewport.add (sheet);
+
+            this.tabs.insert_tab (new Tab ("New Sheet", null, scrolled), 0);
 
             var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
             layout.pack_start (this.toolbar (), false);
