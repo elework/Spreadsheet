@@ -19,8 +19,8 @@ namespace Spreadsheet.Models {
         public delegate StateChange DoFunc<G> (G data, Object target);
         public delegate void UndoFunc<G> (G data, Object target);
 
-        public DoFunc<G, H> run { get; set; }
-        public UndoFunc<G, H> undo { get; set; }
+        public DoFunc<G> run { get; set; }
+        public UndoFunc<G> undo { get; set; }
         public string description { get; set; }
 
         /**
