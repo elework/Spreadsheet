@@ -2,7 +2,9 @@ using Spreadsheet;
 using Gee;
 
 namespace Spreadsheet.Parser.AST {
+
     public class CallExpression : Expression {
+
         public string function { get; set; }
         public ArrayList<Expression> parameters { get; set; }
 

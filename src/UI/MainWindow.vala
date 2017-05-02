@@ -92,60 +92,11 @@ namespace Spreadsheet.UI {
             }
             popup.add (function_list);
 
-            function_list_bt.clicked.connect (() => {
-                popup.show_all ();
-            });
+            function_list_bt.clicked.connect (popup.show_all);
 
             expr.activate.connect (() => {
-                if (this.active_sheet.selected_cell != null) {
-                    HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
-                        @"Change the formula to $(expr.text)",
-                        this.active_sheet.selected_cell,
-                        (_text, _target) => {
-                            string text = expr.text;
-                            Cell target = (Cell)_target;
-                            if (_text != null) {
-                                text = (string)_text;
-                            }
-
-                            string last_text = target.formula;
-                            target.formula = text;
-                            try {
-                                var parser = new Parser.Parser (new Lexer ().tokenize (text));
-                                var expression = parser.parse ();
-                                target.display_content = ((double)expression.eval ()).to_string ();
-                            } catch (ParserError err) {
-                                debug ("Error: " + err.message);
-                                target.display_content = "Error";
-                            }
-                            var undo_data = last_text;
-                            return new StateChange<string> (undo_data, text);
-                        },
-                        (_text, _target) => {
-                            string text = (string)_text;
-                            Cell target = (Cell)_target;
-
-                            target.formula = text;
-                            expr.text = text;
-
-                            if (text == "") {
-                                target.display_content = "";
-                                return; // avoid 'Unexpected end of file'
-                            }
-
-                            try {
-                                var parser = new Parser.Parser (new Lexer ().tokenize (text));
-                                var expression = parser.parse ();
-                                target.display_content = ((double)expression.eval ()).to_string ();
-                            } catch (ParserError err) {
-                                debug ("Error: " + err.message);
-                                target.display_content = "Error";
-                            }
-                        }
-                    ));
-                }
-                update_header ();
-            });
+                this.update_formula (expr);
+            }
             this.active_sheet.selection_changed.connect ((cell) => {
                 if (cell != null) {
                     expr.text = cell.formula;
@@ -158,21 +109,8 @@ namespace Spreadsheet.UI {
 
             var style_toggle = new ToggleButton.with_label ("Open Sans 14");
             bool resized = false;
-            style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the button
-                int spacing = 20;
-                int border = 5; // TODO: get real value
-                int square_size = style_toggle.get_allocated_height () - (border * 2);
-                int width = style_toggle.get_allocated_width ();
+            style_toggle.draw.connect ((cr) => {
 
-                if (!resized) {
-                    style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
-                    resized = true;
-                }
-
-                cr.set_source_rgb (0, 0, 0);
-                draw_rounded_path (cr, width - (border + square_size), border, square_size, square_size, 2);
-                cr.fill ();
-                return false;
             });
             var style_popup = new Popover (style_toggle) {
                 modal = true,
@@ -221,6 +159,64 @@ namespace Spreadsheet.UI {
             this.header.show_close_button = true;
 
             this.app_stack.set_visible_child_name ("welcome");
+        }
+
+        private string parse_formula (string formula) {
+            try {
+                var parser = new Parser.Parser (new Lexer ().tokenize (text));
+                var expression = parser.parse ();
+                return ((double)expression.eval ()).to_string ();
+            } catch (ParserError err) {
+                debug ("Error: " + err.message);
+                return "Error";
+            }
+        }
+
+        private void update_formula (Entry expr) {
+            if (this.active_sheet.selected_cell != null) {
+                HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
+                    @"Change the formula to $(expr.text)",
+                    this.active_sheet.selected_cell,
+                    (_text, _target) => {
+                        string text = _text == null ? expr.text : (string)_text;
+                        Cell target = (Cell)_target;
+
+                        string last_text = target.formula;
+                        target.formula = text;
+                        target.display_content = this.parse_formula (text);
+
+                        var undo_data = last_text;
+                        return new StateChange<string> (undo_data, text);
+                    },
+                    (_text, _target) => {
+                        string text = (string)_text;
+                        Cell target = (Cell)_target;
+
+                        target.formula = text;
+                        expr.text = text;
+                        target.display_content = text == "" ? "" : this.parse_formula (text); // avoid 'Unexpected end of file'
+                    }
+                ));
+            }
+            update_header ();
+        }
+
+        // draw the color rectangle on the right of the style button
+        private bool draw_color_indicator (Context cr) {
+            int spacing = 20;
+            int border = this.get_style_context ().border.left;
+            int square_size = style_toggle.get_allocated_height () - (border * 2);
+            int width = style_toggle.get_allocated_width ();
+
+            if (!resized) {
+                style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
+                resized = true;
+            }
+
+            cr.set_source_rgb (0, 0, 0);
+            draw_rounded_path (cr, width - (border + square_size), border, square_size, square_size, 2);
+            cr.fill ();
+            return false;
         }
 
         // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk

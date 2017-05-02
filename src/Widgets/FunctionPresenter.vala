@@ -2,7 +2,9 @@ using Gtk;
 using Spreadsheet.Models;
 
 namespace Spreadsheet.Widgets {
+
     public class FunctionPresenter : EventBox {
+
         public Function function { get; set; }
 
         public FunctionPresenter (Function func) {

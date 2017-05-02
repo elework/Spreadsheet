@@ -5,6 +5,7 @@ using Cairo;
 using Spreadsheet.Models;
 
 namespace Spreadsheet.Widgets {
+
     public class Sheet : EventBox {
 
         // Cell dimensions

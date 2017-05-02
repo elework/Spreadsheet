@@ -2,16 +2,20 @@ using Gee;
 using Gtk;
 
 namespace Spreadsheet.Models {
+
     public class StateChange<G> {
+
         public StateChange (G before, G after) {
             this.before = before;
             this.after = after;
         }
+
         public G before;
         public G after;
     }
 
     public class HistoryAction<G, H> : Object {
+
         public delegate StateChange DoFunc<G> (G data, Object target);
         public delegate void UndoFunc<G> (G data, Object target);
 

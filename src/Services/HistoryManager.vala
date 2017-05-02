@@ -1,8 +1,10 @@
 using Spreadsheet.Models;
 
 namespace Spreadsheet.Services {
+
     public class HistoryManager : Object {
-        private const int HISTORY_LIMIT = 20;
+
+        private const int HISTORY_LIMIT = 20; // TODO: make it configurable?
 
         public static HistoryManager instance {
             owned get {
