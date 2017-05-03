@@ -110,7 +110,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_exponent () throws ParserError {
             var left = this.parse_primary_expression ();
-            if (this.accept ("carat")) {
+            while (this.accept ("carat")) {
                 var right = this.parse_primary_expression ();
                 left = new CallExpression ("pow", new ArrayList<Expression>.wrap ({ left, right }));
             }
@@ -119,7 +119,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_multiplication () throws ParserError {
             var left = this.parse_exponent ();
-            if (this.accept ("star")) {
+            while (this.accept ("star")) {
                 var right = this.parse_exponent ();
                 left = new CallExpression ("mul", new ArrayList<Expression>.wrap ({ left, right }));
             }
@@ -128,7 +128,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_division () throws ParserError {
             var left = this.parse_multiplication ();
-            if (this.accept ("slash")) {
+            while (this.accept ("slash")) {
                 var right = this.parse_multiplication ();
                 left = new CallExpression ("div", new ArrayList<Expression>.wrap ({ left, right }));
             }
@@ -137,7 +137,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_modulo () throws ParserError {
             Expression left = this.parse_division ();
-            if (this.accept ("percent")) {
+            while (this.accept ("percent")) {
                 var right = this.parse_division ();
                 left = new CallExpression ("mod", new ArrayList<Expression>.wrap ({ left, right }));
             }
@@ -146,7 +146,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_substraction () throws ParserError {
             var left = this.parse_addition ();
-            if (this.accept ("dash")) {
+            while (this.accept ("dash")) {
                 var right = this.parse_addition ();
                 left = new CallExpression ("sub", new ArrayList<Expression>.wrap ({ left, right }));
             }
@@ -155,7 +155,7 @@ namespace Spreadsheet.Parser {
 
         private Expression parse_addition () throws ParserError {
             var left = this.parse_modulo ();
-            if (this.accept ("plus")) {
+            while (this.accept ("plus")) {
                 var right = this.parse_modulo ();
                 left = new CallExpression ("sum", new ArrayList<Expression>.wrap ({ left, right }));
             }
