@@ -155,6 +155,7 @@ namespace Spreadsheet.UI {
             scrolled.add (viewport);
 
             var sheet = new Sheet ();
+            sheet.set_size_request (2000, 2000);
             viewport.add (sheet);
 
             this.tabs.insert_tab (new Tab ("New Sheet", null, scrolled), 0);

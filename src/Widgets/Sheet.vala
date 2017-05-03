@@ -134,9 +134,6 @@ namespace Spreadsheet.Widgets {
 
                 if (this.selected_cell != null && this.selected_cell.line == i) {
                     cr.save ();
-                    /*set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
-                    cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
-                    cr.fill ();*/
                     style.render_frame (cr, 0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                     cr.restore ();
 
@@ -152,7 +149,6 @@ namespace Spreadsheet.Widgets {
 
                 cr.move_to (x, y);
                 cr.show_text (i.to_string ());
-                //set_color (cr, gray_bg);
             }
 
             // letters on the top
@@ -163,9 +159,6 @@ namespace Spreadsheet.Widgets {
 
                 if (this.selected_cell != null && this.selected_cell.column == i) {
                     cr.save ();
-                    /*set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
-                    cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
-                    cr.fill ();*/
                     style.render_frame (cr, left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                     cr.restore ();
 
@@ -178,7 +171,6 @@ namespace Spreadsheet.Widgets {
                 double y = HEIGHT - PADDING;
                 cr.move_to (x, y);
                 cr.show_text (letter);
-                //set_color (cr, gray_bg);
 
                 i++;
             }
