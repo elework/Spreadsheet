@@ -1,1 +1,4 @@
-sources += files('CSVGrammar.vala', 'CSVParser.vala')
+sources += files('CSVGrammar.vala',
+  'CSVParser.vala',
+  'CSVWriter.vala'
+)

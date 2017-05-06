@@ -70,6 +70,7 @@ namespace Spreadsheet.UI {
 
         ToolButton file_button { get; set; }
         ToolButton open_button { get; set; }
+        ToolButton save_button { get; set; }
         ToolButton undo_button { get; set; }
         ToolButton redo_button { get; set; }
 
@@ -252,6 +253,38 @@ namespace Spreadsheet.UI {
                 print ("New file\n");
             });
             this.header.pack_end (file_button);
+
+            Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
+            save_button = new ToolButton (save_ico, null);
+            save_button.clicked.connect (() => {
+                string path = "";
+                if (this.file.file_path.has_suffix (".csv")) {
+                    path = this.file.file_path;
+                } else {
+                    var chooser = new FileChooserDialog (
+                        "Save your work", this, FileChooserAction.SAVE,
+                        "_Cancel",
+                        ResponseType.CANCEL,
+                        "_Open",
+                        ResponseType.ACCEPT);
+
+                    Gtk.FileFilter filter = new Gtk.FileFilter ();
+                    filter.add_pattern ("*.csv");
+                    filter.set_filter_name ("CSV files");
+                    chooser.set_filter (filter);
+
+                    if (chooser.run () == ResponseType.ACCEPT) {
+                        path = chooser.get_filename ();
+                    } else {
+                        chooser.close ();
+                        return;
+                    }
+
+                    chooser.close ();
+                }
+                new CSVWriter (this.active_sheet.page).write_to_file (path);
+            });
+            this.header.pack_end (save_button);
 
             Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
             ToolButton open_button = new ToolButton (open_ico, null);
