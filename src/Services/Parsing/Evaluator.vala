@@ -1,4 +1,4 @@
-namespace Spreadsheet.Parser {
+namespace Spreadsheet.Services.Parsing {
 
     public delegate Token Evaluation (string match);
 

@@ -1,10 +1,10 @@
-using Spreadsheet.Widgets;
+using Spreadsheet.Models;
 
-namespace Spreadsheet.Parser.AST {
+namespace Spreadsheet.Services.Formula.AST {
     public class CellReference : Expression {
         public string cell_name { get; set; }
 
-        public override Value eval (Sheet sheet) {
+        public override Value eval (Page sheet) {
             string letters = cell_name;
             letters.canon ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", '?');
             string _num = cell_name;

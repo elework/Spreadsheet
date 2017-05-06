@@ -1,8 +1,8 @@
 using Spreadsheet;
-using Spreadsheet.Widgets;
+using Spreadsheet.Models;
 using Gee;
 
-namespace Spreadsheet.Parser.AST {
+namespace Spreadsheet.Services.Formula.AST {
 
     public class CallExpression : Expression {
 
@@ -14,7 +14,7 @@ namespace Spreadsheet.Parser.AST {
             this.parameters = params;
         }
 
-        public override Value eval (Sheet sheet) {
+        public override Value eval (Page sheet) {
             var params = new Value[] {};
             foreach (var param in this.parameters) {
                 params += param.eval (sheet);
