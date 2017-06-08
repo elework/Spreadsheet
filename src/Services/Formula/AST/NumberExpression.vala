@@ -1,6 +1,6 @@
-using Spreadsheet.Widgets;
+using Spreadsheet.Models;
 
-namespace Spreadsheet.Parser.AST {
+namespace Spreadsheet.Services.Formula.AST {
 
     public class NumberExpression : Expression {
 
@@ -10,7 +10,7 @@ namespace Spreadsheet.Parser.AST {
             this.number = value;
         }
 
-        public override Value eval (Sheet sheet) {
+        public override Value eval (Page sheet) {
             return this.number;
         }
     }

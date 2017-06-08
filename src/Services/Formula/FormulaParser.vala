@@ -1,68 +1,15 @@
 using Gee;
-using Spreadsheet.Parser.AST;
+using Spreadsheet.Services.Formula.AST;
+using Spreadsheet.Services.Parsing;
 
-namespace Spreadsheet.Parser {
+namespace Spreadsheet.Services.Formula {
 
-    public errordomain ParserError {
-        UNEXPECTED,
-        INCOMPLETE
-    }
-
-    public class Parser : Object {
-
-        private ArrayList<Token> tokens { get; set; }
-
-        private int index = 0;
-
-        private Token previous { owned get {return this.tokens[this.index - 1]; } }
-
-        private Token current { owned get { return this.tokens[this.index]; } }
-
-        private Token next { owned get { return this.tokens[this.index + 1]; } }
+    public class FormulaParser : Parsing.Parser {
 
         public Expression root { get; private set; }
 
-        public Parser (ArrayList<Token> tokens) {
-            this.tokens = tokens;
-        }
-
-        private void eat () {
-            this.index++;
-        }
-
-        /**
-        * Eat the current token if it is from a certain type
-        *
-        * @return true if the token has been eaten.
-        */
-        private bool accept (string category) {
-            if (this.current.kind == category) {
-                this.eat ();
-                return true;
-            }
-            return false;
-        }
-
-        /**
-        * If the current token is not of a specific type, throws an error.
-        */
-        private bool expect (string cat) throws ParserError {
-            if (this.accept (cat)) {
-                return true;
-            }
-            throw new ParserError.UNEXPECTED (@"Expected a '$cat', got a '$(this.current.kind)'");
-        }
-
-        // Like expect, but doesn't eat the token.
-        private bool want (string cat) throws ParserError {
-            if (this.current.kind == cat) {
-                return true;
-            }
-            throw new ParserError.UNEXPECTED (@"Wanted a '$cat', got a '$(this.current.kind)'");
-        }
-
-        private void unexpected () throws ParserError {
-            throw new ParserError.UNEXPECTED (@"Unexpected '$(this.current.kind)'");
+        public FormulaParser (ArrayList<Token> tokens) {
+            base (tokens);
         }
 
         public Expression parse () throws ParserError {

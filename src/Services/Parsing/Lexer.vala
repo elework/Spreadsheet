@@ -1,10 +1,14 @@
 using Gee;
 
-namespace Spreadsheet.Parser {
+namespace Spreadsheet.Services.Parsing {
 
     public class Lexer : Object {
 
-        public Grammar grammar { get; set; default = new Grammar (); }
+        public Grammar grammar { get; set; }
+
+        public Lexer (Grammar g) {
+            this.grammar = g;
+        }
 
         public ArrayList<Token?> tokenize (string _expr) {
             string expr = _expr.strip ();

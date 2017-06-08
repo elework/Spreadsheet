@@ -14,47 +14,18 @@ namespace Spreadsheet.Widgets {
         const int PADDING = 5;
         const double BORDER = 0.5;
 
-        public ArrayList<Cell> cells { get; set; default = new ArrayList<Cell> (); }
+        public Page page { get; set; }
 
         public Cell? selected_cell { get; set; }
 
-        public uint lines { get; set; }
-
-        public uint columns { get; set; }
-
         public signal void selection_changed (Cell? new_selection);
 
-        public Sheet (uint lines = 100, int cols = 100) {
-            this.lines = lines;
-            this.columns = cols;
-            for (int i = 0; i < lines; i++) {
-                for (int j = 0; j < cols; j++) {
-                    var cell = new Cell () { line = i, column = j };
-                    cell.notify["display-content"].connect (this.queue_draw);
-                    cells.add (cell);
-
-                    if (this.selected_cell == null) {
-                        this.selected_cell = cell;
-                        cell.selected = true;
-                    }
-                }
-            }
-            this.button_press_event.connect(this.on_click);
-        }
-
-        public Sheet.for_page (Page page) {
+        public Sheet (Page page) {
+            this.page = page;
             foreach (var cell in page.cells) {
                 if (this.selected_cell == null) {
                     this.selected_cell = cell;
                     cell.selected = true;
-                }
-
-                if (cell.column > this.columns) {
-                    this.columns = cell.column;
-                }
-
-                if (cell.line > this.lines) {
-                    this.lines = cell.line;
                 }
 
                 cell.notify["display-content"].connect (this.queue_draw);
@@ -63,7 +34,7 @@ namespace Spreadsheet.Widgets {
         }
 
         private void select (int line, int col) {
-            foreach (var cell in cells) {
+            foreach (var cell in this.page.cells) {
                 if (cell.selected) {
                     cell.selected = false;
                     if (cell == this.selected_cell) { // unselect it if it was selected
@@ -92,7 +63,7 @@ namespace Spreadsheet.Widgets {
             cr.set_font_size (HEIGHT - PADDING * 2);
             cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
             TextExtents left_ext;
-            cr.text_extents (this.lines.to_string (), out left_ext);
+            cr.text_extents (this.page.lines.to_string (), out left_ext);
             return left_ext.width + BORDER;
         }
 
@@ -131,7 +102,7 @@ namespace Spreadsheet.Widgets {
             cr.set_line_width (BORDER);
 
             // numbers on the left side
-            for (int i = 0; i < this.lines; i++) {
+            for (int i = 0; i < this.page.lines; i++) {
                 cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                 cr.stroke ();
 
@@ -155,7 +126,7 @@ namespace Spreadsheet.Widgets {
 
             // letters on the top
             int i = 0;
-            foreach (string letter in new AlphabetGenerator (this.columns)) {
+            foreach (string letter in new AlphabetGenerator (this.page.columns)) {
                 cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                 cr.stroke ();
 
@@ -178,7 +149,7 @@ namespace Spreadsheet.Widgets {
             }
 
             // draw the cells
-            foreach (var cell in this.cells) {
+            foreach (var cell in this.page.cells) {
                 if (cell.selected) {
                     cr.set_line_width (3.0);
 

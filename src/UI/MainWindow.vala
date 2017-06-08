@@ -1,7 +1,9 @@
-using Spreadsheet.Parser;
 using Spreadsheet.Widgets;
 using Spreadsheet.Models;
 using Spreadsheet.Services;
+using Spreadsheet.Services.Formula;
+using Spreadsheet.Services.CSV;
+using Spreadsheet.Services.Parsing;
 using Granite.Widgets;
 using Gtk;
 using Gdk;
@@ -29,10 +31,50 @@ namespace Spreadsheet.UI {
             }
         }
 
+        public SpreadSheet file {
+            get {
+                return this._file;
+            }
+            set {
+                this._file = value;
+                this.header.title = value.title;
+                this.header.subtitle = value.file_path == null ? "Not saved yet" : value.file_path;
+
+                while (this.tabs.n_tabs > 0) {
+                    this.tabs.remove_tab (this.tabs.get_tab_by_index (0));
+                }
+
+                foreach (var page in value.pages) {
+                    var scrolled = new Gtk.ScrolledWindow (null, null);
+                    var viewport = new Gtk.Viewport (null, null);
+                    viewport.set_size_request (this.tabs.get_allocated_width (), this.tabs.get_allocated_height ());
+                    scrolled.add (viewport);
+
+                    var sheet = new Sheet (page);
+                    sheet.selection_changed.connect ((cell) => {
+                        if (cell != null) {
+                            this.expression.text = cell.formula;
+                            this.expression.sensitive = true;
+                        } else {
+                            this.expression.text = "";
+                            this.expression.sensitive = false;
+                        }
+                    });
+                    viewport.add (sheet);
+
+                    this.tabs.insert_tab (new Tab (page.title, null, scrolled), 0);
+                }
+            }
+        }
+        private SpreadSheet _file;
+
         ToolButton file_button { get; set; }
         ToolButton open_button { get; set; }
+        ToolButton save_button { get; set; }
         ToolButton undo_button { get; set; }
         ToolButton redo_button { get; set; }
+
+        Entry expression;
 
         private void update_header () {
             this.undo_button.sensitive = HistoryManager.instance.can_undo ();
@@ -71,7 +113,7 @@ namespace Spreadsheet.UI {
                 column_spacing = 10
             };
             var function_list_bt = new Button.with_label ("f (x)");
-            var expr = new Entry () { hexpand = true };
+            this.expression = new Entry () { hexpand = true };
 
             var popup = new Popover (function_list_bt) {
                 modal = true,
@@ -86,8 +128,8 @@ namespace Spreadsheet.UI {
                     row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
                 });
                 row.button_press_event.connect ((evt) => {
-                    expr.text += ")";
-                    expr.buffer.insert_text (expr.get_position (), (func.name + "(").data);
+                    this.expression.text += ")";
+                    this.expression.buffer.insert_text (this.expression.get_position (), (func.name + "(").data);
                     return true;
                 });
                 function_list.add (row);
@@ -96,18 +138,7 @@ namespace Spreadsheet.UI {
 
             function_list_bt.clicked.connect (popup.show_all);
 
-            expr.activate.connect (() => {
-                this.update_formula (expr);
-            });
-            this.active_sheet.selection_changed.connect ((cell) => {
-                if (cell != null) {
-                    expr.text = cell.formula;
-                    expr.sensitive = true;
-                } else {
-                    expr.text = "";
-                    expr.sensitive = false;
-                }
-            });
+            this.expression.activate.connect (this.update_formula);
 
             var style_toggle = new ToggleButton.with_label ("Open Sans 14");
             bool resized = false;
@@ -143,22 +174,12 @@ namespace Spreadsheet.UI {
             style_popup.add (new Label ("Nothing to show here... yet!"));
 
             toolbar.attach (function_list_bt, 0, 0, 1, 1);
-            toolbar.attach (expr, 1, 0);
+            toolbar.attach (this.expression, 1, 0);
             toolbar.add (style_toggle);
             return toolbar;
         }
 
         private Box sheet () {
-            Gtk.ScrolledWindow scrolled = new Gtk.ScrolledWindow (null, null);
-            Gtk.Viewport viewport = new Gtk.Viewport (null, null);
-            viewport.set_size_request (this.tabs.get_allocated_width (), this.tabs.get_allocated_height ());
-            scrolled.add (viewport);
-
-            var sheet = new Sheet ();
-            viewport.add (sheet);
-
-            this.tabs.insert_tab (new Tab ("New Sheet", null, scrolled), 0);
-
             var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
             layout.pack_start (this.toolbar (), false);
             layout.pack_start (this.tabs);
@@ -167,8 +188,11 @@ namespace Spreadsheet.UI {
 
         private void open_sheet () {
             this.init_header ();
-            this.header.title = "New Spreadsheet";
-            this.header.subtitle = "Not saved yet";
+            var file = new SpreadSheet () {
+                title = "New Spreadsheet"
+            };
+            file.add_page (new Page.empty () { title = "Page 1" });
+            this.file = file;
             this.header.show_close_button = true;
             this.show_all ();
 
@@ -183,29 +207,17 @@ namespace Spreadsheet.UI {
             this.app_stack.set_visible_child_name ("welcome");
         }
 
-        private string parse_formula (string formula) {
-            try {
-                var parser = new Parser.Parser (new Lexer ().tokenize (formula));
-                var expression = parser.parse ();
-                return ((double)expression.eval (this.active_sheet)).to_string ();
-            } catch (ParserError err) {
-                debug ("Error: " + err.message);
-                return "Error";
-            }
-        }
-
-        private void update_formula (Entry expr) {
+        private void update_formula () {
             if (this.active_sheet.selected_cell != null) {
                 HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
-                    @"Change the formula to $(expr.text)",
+                    @"Change the formula to $(this.expression.text)",
                     this.active_sheet.selected_cell,
                     (_text, _target) => {
-                        string text = _text == null ? expr.text : (string)_text;
+                        string text = _text == null ? this.expression.text : (string)_text;
                         Cell target = (Cell)_target;
 
                         string last_text = target.formula;
                         target.formula = text;
-                        target.display_content = this.parse_formula (text);
 
                         var undo_data = last_text;
                         return new StateChange<string> (undo_data, text);
@@ -215,8 +227,7 @@ namespace Spreadsheet.UI {
                         Cell target = (Cell)_target;
 
                         target.formula = text;
-                        expr.text = text;
-                        target.display_content = text == "" ? "" : this.parse_formula (text); // avoid 'Unexpected end of file'
+                        this.expression.text = text;
                     }
                 ));
             }
@@ -243,10 +254,58 @@ namespace Spreadsheet.UI {
             });
             this.header.pack_end (file_button);
 
+            Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
+            save_button = new ToolButton (save_ico, null);
+            save_button.clicked.connect (() => {
+                string path = "";
+                if (this.file.file_path.has_suffix (".csv")) {
+                    path = this.file.file_path;
+                } else {
+                    var chooser = new FileChooserDialog (
+                        "Save your work", this, FileChooserAction.SAVE,
+                        "_Cancel",
+                        ResponseType.CANCEL,
+                        "_Open",
+                        ResponseType.ACCEPT);
+
+                    Gtk.FileFilter filter = new Gtk.FileFilter ();
+                    filter.add_pattern ("*.csv");
+                    filter.set_filter_name ("CSV files");
+                    chooser.set_filter (filter);
+
+                    if (chooser.run () == ResponseType.ACCEPT) {
+                        path = chooser.get_filename ();
+                    } else {
+                        chooser.close ();
+                        return;
+                    }
+
+                    chooser.close ();
+                }
+                new CSVWriter (this.active_sheet.page).write_to_file (path);
+            });
+            this.header.pack_end (save_button);
+
             Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
             ToolButton open_button = new ToolButton (open_ico, null);
             open_button.clicked.connect (() => {
-                print ("Open\n");
+                var chooser = new FileChooserDialog (
+    				"Open a file", this, FileChooserAction.OPEN,
+    				"_Cancel",
+    				ResponseType.CANCEL,
+    				"_Open",
+    				ResponseType.ACCEPT);
+
+        		Gtk.FileFilter filter = new Gtk.FileFilter ();
+                filter.add_pattern ("*.csv");
+                filter.set_filter_name ("CSV files");
+        		chooser.set_filter (filter);
+
+        		if (chooser.run () == ResponseType.ACCEPT) {
+        			this.file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+        		}
+
+        		chooser.close ();
             });
             this.header.pack_end (open_button);
 

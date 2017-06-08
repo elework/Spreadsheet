@@ -1,16 +1,11 @@
+using Spreadsheet.Services.Parsing;
 using Gee;
 
-namespace Spreadsheet.Parser {
+namespace Spreadsheet.Services.Formula {
 
-    public class Grammar : Object {
+    public class FormulaGrammar : Grammar {
 
-        public HashMap<string, ArrayList<Evaluator>> rules {
-            get;
-            set;
-            default = new HashMap<string, ArrayList<Evaluator>> ();
-        }
-
-        public Grammar () {
+        public FormulaGrammar () {
             this.rules["root"] = this.root_rules ();
         }
 
@@ -31,13 +26,6 @@ namespace Spreadsheet.Parser {
                 new Evaluator (/%/, token ("percent")),
                 new Evaluator (/\^/, token ("carat"))
             });
-        }
-
-        private Evaluation token (string t) {
-            string type = t;
-            return (m) => {
-                return new Token (type, m);
-            };
         }
     }
 }

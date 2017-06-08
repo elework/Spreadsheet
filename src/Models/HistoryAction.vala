@@ -14,6 +14,9 @@ namespace Spreadsheet.Models {
         public G after;
     }
 
+    /**
+    * A recorded action that can be done, undone, and done again.
+    */
     public class HistoryAction<G, H> : Object {
 
         public delegate StateChange DoFunc<G> (G data, Object target);
