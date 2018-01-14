@@ -1,4 +1,5 @@
-sources = files('App.vala',
+sources = files(
+  'App.vala',
   'AlphabetGenerator.vala'
 )
 
