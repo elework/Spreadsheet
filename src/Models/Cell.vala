@@ -28,5 +28,6 @@ namespace Spreadsheet.Models {
         }
         private string _formula = "";
         public bool selected { get; set; default = false; }
+        public CellStyle style { get; set; default = new CellStyle (); }
     }
 }

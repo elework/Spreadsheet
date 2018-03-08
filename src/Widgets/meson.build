@@ -1,1 +1,1 @@
-sources += files('FunctionPresenter.vala', 'Sheet.vala')
+sources += files('FunctionPresenter.vala', 'Sheet.vala', 'StyleModal.vala')

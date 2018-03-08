@@ -14,7 +14,6 @@ res = gnome.compile_resources(
   source_dir: [ join_paths(meson.source_root(), 'data') ]
 )
 
-
 subdir('src')
 
 executable(meson.project_name(),

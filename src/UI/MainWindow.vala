@@ -52,9 +52,13 @@ namespace Spreadsheet.UI {
 
                     var sheet = new Sheet (page);
                     sheet.selection_changed.connect ((cell) => {
+                        style_popup.foreach((ch) => {
+                            style_popup.remove (ch);
+                        });
                         if (cell != null) {
                             this.expression.text = cell.formula;
                             this.expression.sensitive = true;
+                            style_popup.add (new StyleModal (cell.style));
                         } else {
                             this.expression.text = "";
                             this.expression.sensitive = false;
@@ -75,6 +79,7 @@ namespace Spreadsheet.UI {
         ToolButton redo_button { get; set; }
 
         Entry expression;
+        Popover style_popup;
 
         private void update_header () {
             this.undo_button.sensitive = HistoryManager.instance.can_undo ();
@@ -158,7 +163,7 @@ namespace Spreadsheet.UI {
                 cr.fill ();
                 return false;
             });
-            var style_popup = new Popover (style_toggle) {
+            style_popup = new Popover (style_toggle) {
                 modal = true,
                 position = PositionType.BOTTOM,
                 border_width = 10
@@ -171,7 +176,6 @@ namespace Spreadsheet.UI {
             style_popup.closed.connect (() => {
                 style_toggle.active = false;
             });
-            style_popup.add (new Label ("Nothing to show here... yet!"));
 
             toolbar.attach (function_list_bt, 0, 0, 1, 1);
             toolbar.attach (this.expression, 1, 0);

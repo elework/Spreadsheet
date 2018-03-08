@@ -29,6 +29,7 @@ namespace Spreadsheet.Widgets {
                 }
 
                 cell.notify["display-content"].connect (this.queue_draw);
+                cell.style.notify.connect (this.queue_draw);
             }
             this.button_press_event.connect(this.on_click);
         }
@@ -161,6 +162,12 @@ namespace Spreadsheet.Widgets {
                     cr.restore ();
 
                     set_color (cr, select_border);
+                } else {
+                    cr.save ();
+                    set_color (cr, cell.style.background);
+                    cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                    cr.fill ();
+                    cr.restore ();
                 }
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.stroke ();
