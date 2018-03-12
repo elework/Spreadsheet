@@ -44,6 +44,7 @@ namespace Spreadsheet.UI {
                     this.tabs.remove_tab (this.tabs.get_tab_by_index (0));
                 }
 
+                Sheet? last_sheet = null;
                 foreach (var page in value.pages) {
                     var scrolled = new Gtk.ScrolledWindow (null, null);
                     var viewport = new Gtk.Viewport (null, null);
@@ -65,9 +66,11 @@ namespace Spreadsheet.UI {
                         }
                     });
                     viewport.add (sheet);
+                    last_sheet = sheet;
 
                     this.tabs.insert_tab (new Tab (page.title, null, scrolled), 0);
                 }
+                last_sheet.grab_focus ();
             }
         }
         private SpreadSheet _file;
