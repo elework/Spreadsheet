@@ -1,9 +1,5 @@
 using Spreadsheet.Models;
 
-namespace Spreadsheet.Services.Formula.AST {
-
-    public abstract class Expression : Object {
-
-        public abstract Value eval (Page sheet);
-    }
+public abstract class Spreadsheet.Services.Formula.AST.Expression : Object {
+    public abstract Value eval (Page sheet);
 }
