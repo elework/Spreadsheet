@@ -65,6 +65,9 @@ namespace Spreadsheet.UI {
                             this.expression.sensitive = false;
                         }
                     });
+                    sheet.focus_expression_entry.connect (() => {
+                        expression.grab_focus ();
+                    });
                     viewport.add (sheet);
                     last_sheet = sheet;
 
@@ -239,6 +242,7 @@ namespace Spreadsheet.UI {
                 ));
             }
             update_header ();
+            this.active_sheet.grab_focus ();
         }
 
         // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk

@@ -20,6 +20,8 @@ namespace Spreadsheet.Widgets {
 
         public signal void selection_changed (Cell? new_selection);
 
+        public signal void focus_expression_entry ();
+
         public Sheet (Page page) {
             this.page = page;
             foreach (var cell in page.cells) {
@@ -53,7 +55,6 @@ namespace Spreadsheet.Widgets {
                         move_left ();
                         return false;
                 }
-                // TODO: focus formula entry
                 return true;
             });
         }
