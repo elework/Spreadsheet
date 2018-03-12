@@ -31,7 +31,31 @@ namespace Spreadsheet.Widgets {
                 cell.notify["display-content"].connect (this.queue_draw);
                 cell.style.notify.connect (this.queue_draw);
             }
+            can_focus = true;
             this.button_press_event.connect(this.on_click);
+            key_press_event.connect ((key) => {
+                return true; // without this Tab is not handled correctly ¯\_(ツ)_/¯
+            });
+            key_release_event.connect ((key) => {
+                switch (key.keyval) {
+                    case Gdk.Key.Right:
+                    case Gdk.Key.Tab:
+                        move_right ();
+                        return false;
+                    case Gdk.Key.Down:
+                    case Gdk.Key.Return:
+                        move_bottom ();
+                        return false;
+                    case Gdk.Key.Up:
+                        move_top ();
+                        return false;
+                    case Gdk.Key.Left:
+                        move_left ();
+                        return false;
+                }
+                // TODO: focus formula entry
+                return true;
+            });
         }
 
         private void select (int line, int col) {
@@ -51,11 +75,36 @@ namespace Spreadsheet.Widgets {
             this.queue_draw ();
         }
 
+        private void move (int line_add, int col_add) {
+            if (selected_cell != null) {
+                select (selected_cell.line + line_add, selected_cell.column + col_add);
+            } else {
+                select (0, 0);
+            }
+        }
+
+        public void move_top () {
+            move (-1, 0);
+        }
+
+        public void move_bottom () {
+            move (1, 0);
+        }
+
+        public void move_right () {
+            move (0, 1);
+        }
+
+        public void move_left () {
+            move (0, -1);
+        }
+
         public bool on_click (EventButton evt) {
             var left_margin = this.get_left_margin ();
             var col = (int)((evt.x - left_margin) / (double)WIDTH);
             var line = (int)((evt.y - HEIGHT) / (double)HEIGHT);
             this.select (line, col);
+            grab_focus ();
             return false;
         }
 
