@@ -25,17 +25,17 @@ public class Spreadsheet.Services.Parsing.Evaluator : Object {
             error ("_re should be a Regex or a string.");
         }
 
-        this.pattern = re;
-        this.evaluation = (owned) eval;
-        this.pop = pop;
-        this.push = push;
+        pattern = re;
+        evaluation = (owned) eval;
+        pop = pop;
+        push = push;
     }
 
     public Token eval (string expr, out int size) {
         MatchInfo info;
-        if (this.pattern.match (expr, RegexMatchFlags.ANCHORED, out info)) {
+        if (pattern.match (expr, RegexMatchFlags.ANCHORED, out info)) {
             size = info.fetch (0).length;
-            return this.evaluation (info.fetch (0));
+            return evaluation (info.fetch (0));
         }
         size = 0;
         return new Token ("[[error]]", "oops");

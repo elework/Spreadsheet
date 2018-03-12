@@ -23,7 +23,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public Sheet active_sheet {
         get {
-            ScrolledWindow scroll = (ScrolledWindow)this.tabs.current.page;
+            ScrolledWindow scroll = (ScrolledWindow)tabs.current.page;
             Viewport vp = (Viewport)scroll.get_child ();
             return (Sheet)vp.get_child ();
         }
@@ -31,22 +31,22 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public SpreadSheet file {
         get {
-            return this._file;
+            return _file;
         }
         set {
-            this._file = value;
-            this.header.title = value.title;
-            this.header.subtitle = value.file_path == null ? "Not saved yet" : value.file_path;
+            _file = value;
+            header.title = value.title;
+            header.subtitle = value.file_path == null ? "Not saved yet" : value.file_path;
 
-            while (this.tabs.n_tabs > 0) {
-                this.tabs.remove_tab (this.tabs.get_tab_by_index (0));
+            while (tabs.n_tabs > 0) {
+                tabs.remove_tab (tabs.get_tab_by_index (0));
             }
 
             Sheet? last_sheet = null;
             foreach (var page in value.pages) {
                 var scrolled = new Gtk.ScrolledWindow (null, null);
                 var viewport = new Gtk.Viewport (null, null);
-                viewport.set_size_request (this.tabs.get_allocated_width (), this.tabs.get_allocated_height ());
+                viewport.set_size_request (tabs.get_allocated_width (), tabs.get_allocated_height ());
                 scrolled.add (viewport);
 
                 var sheet = new Sheet (page);
@@ -55,12 +55,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_popup.remove (ch);
                     });
                     if (cell != null) {
-                        this.expression.text = cell.formula;
-                        this.expression.sensitive = true;
+                        expression.text = cell.formula;
+                        expression.sensitive = true;
                         style_popup.add (new StyleModal (cell.style));
                     } else {
-                        this.expression.text = "";
-                        this.expression.sensitive = false;
+                        expression.text = "";
+                        expression.sensitive = false;
                     }
                 });
                 sheet.focus_expression_entry.connect (() => {
@@ -69,7 +69,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 viewport.add (sheet);
                 last_sheet = sheet;
 
-                this.tabs.insert_tab (new Tab (page.title, null, scrolled), 0);
+                tabs.insert_tab (new Tab (page.title, null, scrolled), 0);
             }
             last_sheet.grab_focus ();
         }
@@ -86,23 +86,23 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     Popover style_popup;
 
     private void update_header () {
-        this.undo_button.sensitive = HistoryManager.instance.can_undo ();
-        this.redo_button.sensitive = HistoryManager.instance.can_redo ();
+        undo_button.sensitive = HistoryManager.instance.can_undo ();
+        redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
     public MainWindow (Gtk.Application app) {
         Object (application: app);
-        this.set_default_size (1500, 1000);
-        this.window_position = WindowPosition.CENTER;
-        this.icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        set_default_size (1500, 1000);
+        window_position = WindowPosition.CENTER;
+        icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
 
-        this.app_stack.add_named (welcome (), "welcome");
-        this.app_stack.add_named (sheet (), "app");
-        this.set_titlebar (this.header);
+        app_stack.add_named (welcome (), "welcome");
+        app_stack.add_named (sheet (), "app");
+        set_titlebar (header);
 
-        this.add (this.app_stack);
-        this.show_welcome ();
-        this.show_all ();
+        add (app_stack);
+        show_welcome ();
+        show_all ();
     }
 
     private Welcome welcome () {
@@ -111,7 +111,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         welcome.append ("document-open", "Open a file", "Choose a saved presentation");
         welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
         welcome.activated.connect ((index) => {
-            this.open_sheet ();
+            open_sheet ();
         });
         return welcome;
     }
@@ -122,7 +122,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             column_spacing = 10
         };
         var function_list_bt = new Button.with_label ("f (x)");
-        this.expression = new Entry () { hexpand = true };
+        expression = new Entry () { hexpand = true };
 
         var popup = new Popover (function_list_bt) {
             modal = true,
@@ -137,8 +137,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
             });
             row.button_press_event.connect ((evt) => {
-                this.expression.text += ")";
-                this.expression.buffer.insert_text (this.expression.get_position (), (func.name + "(").data);
+                expression.text += ")";
+                expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
                 return true;
             });
             function_list.add (row);
@@ -147,13 +147,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         function_list_bt.clicked.connect (popup.show_all);
 
-        this.expression.activate.connect (this.update_formula);
+        expression.activate.connect (update_formula);
 
         var style_toggle = new ToggleButton.with_label ("Open Sans 14");
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 20;
-            int border = this.get_style_context ().get_border (StateFlags.NORMAL).left;
+            int border = get_style_context ().get_border (StateFlags.NORMAL).left;
             int square_size = style_toggle.get_allocated_height () - (border * 2);
             int width = style_toggle.get_allocated_width ();
 
@@ -182,46 +182,46 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
-        toolbar.attach (this.expression, 1, 0);
+        toolbar.attach (expression, 1, 0);
         toolbar.add (style_toggle);
         return toolbar;
     }
 
     private Box sheet () {
         var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
-        layout.pack_start (this.toolbar (), false);
-        layout.pack_start (this.tabs);
+        layout.pack_start (toolbar (), false);
+        layout.pack_start (tabs);
         return layout;
     }
 
     private void open_sheet () {
-        this.init_header ();
+        init_header ();
         var file = new SpreadSheet () {
             title = "New Spreadsheet"
         };
         file.add_page (new Page.empty () { title = "Page 1" });
-        this.file = file;
-        this.header.show_close_button = true;
-        this.show_all ();
+        file = file;
+        header.show_close_button = true;
+        show_all ();
 
-        this.app_stack.set_visible_child_name ("app");
+        app_stack.set_visible_child_name ("app");
     }
 
     private void show_welcome () {
-        this.clear_header ();
-        this.header.title = "Spreadsheet";
-        this.header.show_close_button = true;
+        clear_header ();
+        header.title = "Spreadsheet";
+        header.show_close_button = true;
 
-        this.app_stack.set_visible_child_name ("welcome");
+        app_stack.set_visible_child_name ("welcome");
     }
 
     private void update_formula () {
-        if (this.active_sheet.selected_cell != null) {
+        if (active_sheet.selected_cell != null) {
             HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
-                @"Change the formula to $(this.expression.text)",
-                this.active_sheet.selected_cell,
+                @"Change the formula to $(expression.text)",
+                active_sheet.selected_cell,
                 (_text, _target) => {
-                    string text = _text == null ? this.expression.text : (string)_text;
+                    string text = _text == null ? expression.text : (string)_text;
                     Cell target = (Cell)_target;
 
                     string last_text = target.formula;
@@ -235,12 +235,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     Cell target = (Cell)_target;
 
                     target.formula = text;
-                    this.expression.text = text;
+                    expression.text = text;
                 }
             ));
         }
         update_header ();
-        this.active_sheet.grab_focus ();
+        active_sheet.grab_focus ();
     }
 
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
@@ -261,14 +261,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         file_button.clicked.connect (() => {
             print ("New file\n");
         });
-        this.header.pack_end (file_button);
+        header.pack_end (file_button);
 
         Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
         save_button = new ToolButton (save_ico, null);
         save_button.clicked.connect (() => {
             string path = "";
-            if (this.file.file_path.has_suffix (".csv")) {
-                path = this.file.file_path;
+            if (file.file_path.has_suffix (".csv")) {
+                path = file.file_path;
             } else {
                 var chooser = new FileChooserDialog (
                     "Save your work", this, FileChooserAction.SAVE,
@@ -291,9 +291,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                 chooser.close ();
             }
-            new CSVWriter (this.active_sheet.page).write_to_file (path);
+            new CSVWriter (active_sheet.page).write_to_file (path);
         });
-        this.header.pack_end (save_button);
+        header.pack_end (save_button);
 
         Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
         ToolButton open_button = new ToolButton (open_ico, null);
@@ -311,12 +311,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             chooser.set_filter (filter);
 
             if (chooser.run () == ResponseType.ACCEPT) {
-                this.file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                file = new CSVParser.from_file (chooser.get_filename ()).parse ();
             }
 
             chooser.close ();
         });
-        this.header.pack_end (open_button);
+        header.pack_end (open_button);
 
         Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
         undo_button = new ToolButton (undo_ico, null);
@@ -324,7 +324,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             HistoryManager.instance.undo ();
             update_header ();
         });
-        this.header.pack_start (undo_button);
+        header.pack_start (undo_button);
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
@@ -332,13 +332,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             HistoryManager.instance.redo ();
             update_header ();
         });
-        this.header.pack_start (redo_button);
+        header.pack_start (redo_button);
 
-        this.update_header ();
+        update_header ();
     }
 
     void clear_header () {
-        foreach (var button in this.header.get_children ()) {
+        foreach (var button in header.get_children ()) {
             button.destroy ();
         }
     }

@@ -11,18 +11,18 @@ public abstract class Spreadsheet.Services.Parsing.Parser : Object {
 
     protected int index = 0;
 
-    protected Token previous { owned get {return this.tokens[this.index - 1]; } }
+    protected Token previous { owned get {return tokens[index - 1]; } }
 
-    protected Token current { owned get { return this.tokens[this.index]; } }
+    protected Token current { owned get { return tokens[index]; } }
 
-    protected Token next { owned get { return this.tokens[this.index + 1]; } }
+    protected Token next { owned get { return tokens[index + 1]; } }
 
     public Parser (ArrayList<Token> tokens) {
-        this.tokens = tokens;
+       Object (tokens: tokens);
     }
 
     protected void eat () {
-        this.index++;
+        index++;
     }
 
     /**
@@ -31,8 +31,8 @@ public abstract class Spreadsheet.Services.Parsing.Parser : Object {
     * @return true if the token has been eaten.
     */
     protected bool accept (string category) {
-        if (this.current.kind == category) {
-            this.eat ();
+        if (current.kind == category) {
+            eat ();
             return true;
         }
         return false;
@@ -42,21 +42,21 @@ public abstract class Spreadsheet.Services.Parsing.Parser : Object {
     * If the current token is not of a specific type, throws an error.
     */
     protected bool expect (string cat) throws ParserError {
-        if (this.accept (cat)) {
+        if (accept (cat)) {
             return true;
         }
-        throw new ParserError.UNEXPECTED (@"Expected a '$cat', got a '$(this.current.kind)'");
+        throw new ParserError.UNEXPECTED (@"Expected a '$cat', got a '$(current.kind)'");
     }
 
     // Like expect, but doesn't eat the token.
     protected bool want (string cat) throws ParserError {
-        if (this.current.kind == cat) {
+        if (current.kind == cat) {
             return true;
         }
-        throw new ParserError.UNEXPECTED (@"Wanted a '$cat', got a '$(this.current.kind)'");
+        throw new ParserError.UNEXPECTED (@"Wanted a '$cat', got a '$(current.kind)'");
     }
 
     protected void unexpected () throws ParserError {
-        throw new ParserError.UNEXPECTED (@"Unexpected '$(this.current.kind)'");
+        throw new ParserError.UNEXPECTED (@"Unexpected '$(current.kind)'");
     }
 }

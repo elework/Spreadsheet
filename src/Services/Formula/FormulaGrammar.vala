@@ -2,7 +2,7 @@ using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
     public FormulaGrammar () {
-        this.rules["root"] = this.root_rules ();
+        rules["root"] = root_rules ();
     }
 
     private Gee.ArrayList<Evaluator> root_rules () {

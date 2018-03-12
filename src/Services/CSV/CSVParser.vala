@@ -22,15 +22,15 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
     }
 
     public Models.SpreadSheet parse (string page_name = "Sheet 1") throws ParserError {
-        string basepath = Path.get_basename (this.path);
+        string basepath = Path.get_basename (path);
         var sheet = new Models.SpreadSheet () {
             title = basepath,
-            file_path = this.path
+            file_path = path
         };
         var page = new Page () {
             title = page_name
         };
-        this.parse_sheet (page);
+        parse_sheet (page);
         sheet.add_page (page);
         return sheet;
     }
@@ -45,18 +45,18 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
             cell.line = line;
             cell.column = col;
             page.add_cell (cell);
-            cell.formula = this.parse_text ();
+            cell.formula = parse_text ();
 
-            if (this.accept ("new-line")) {
+            if (accept ("new-line")) {
                 if (col != fields_count) {
                     throw new ParserError.UNEXPECTED (@"Unexpected number of fields on line $line");
                 }
                 line++;
                 col = 0;
-            } else if (this.accept ("eof")) {
+            } else if (accept ("eof")) {
                 break;
             } else {
-                this.expect ("comma");
+                expect ("comma");
                 col++;
                 if (line == 0) {
                     fields_count++;
@@ -67,14 +67,14 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
     }
 
     private string parse_text () throws ParserError {
-        bool quoted = this.accept ("quote");
+        bool quoted = accept ("quote");
         string res = "";
-        while (this.current.kind == "char") {
-            res += this.current.lexeme;
-            this.eat ();
+        while (current.kind == "char") {
+            res += current.lexeme;
+            eat ();
         }
         if (quoted) {
-            this.expect ("quote");
+            expect ("quote");
         }
         return res;
     }

@@ -19,12 +19,11 @@ public class Spreadsheet.AlphabetGenerator : Object {
     private const string[] alphabet = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
                                         "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
-    private uint limit { get; set; }
-    private uint index { get; set; }
+    public uint limit { get; private construct set; }
+    public uint index { get; private construct set; }
 
     public AlphabetGenerator (uint limit = 26, uint start_at = 0) requires (limit > start_at) {
-        this.limit = limit;
-        this.index = start_at;
+        Object (limit: limit, index: start_at);
     }
 
     public AlphabetGenerator iterator () {
@@ -52,7 +51,7 @@ public class Spreadsheet.AlphabetGenerator : Object {
     }
 
     public new string get () {
-        var res = this.get_at (index);
+        var res = get_at (index);
         index++;
         return res;
     }

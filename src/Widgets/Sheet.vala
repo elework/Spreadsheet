@@ -24,16 +24,16 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     public Sheet (Page page) {
         this.page = page;
         foreach (var cell in page.cells) {
-            if (this.selected_cell == null) {
-                this.selected_cell = cell;
+            if (selected_cell == null) {
+                selected_cell = cell;
                 cell.selected = true;
             }
 
-            cell.notify["display-content"].connect (this.queue_draw);
-            cell.style.notify.connect (this.queue_draw);
+            cell.notify["display-content"].connect (queue_draw);
+            cell.style.notify.connect (queue_draw);
         }
         can_focus = true;
-        this.button_press_event.connect(this.on_click);
+        button_press_event.connect(on_click);
         key_press_event.connect ((key) => {
             return true; // without this Tab is not handled correctly ¯\_(ツ)_/¯
         });
@@ -59,20 +59,20 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     private void select (int line, int col) {
-        foreach (var cell in this.page.cells) {
+        foreach (var cell in page.cells) {
             if (cell.selected) {
                 cell.selected = false;
-                if (cell == this.selected_cell) { // unselect it if it was selected
-                    this.selected_cell = null;
+                if (cell == selected_cell) { // unselect it if it was selected
+                    selected_cell = null;
                     selection_changed (null);
                 }
             } else if (cell.line == line && cell.column == col) {
                 cell.selected = true;
-                this.selected_cell = cell;
+                selected_cell = cell;
                 selection_changed (cell);
             }
         }
-        this.queue_draw ();
+        queue_draw ();
     }
 
     private void move (int line_add, int col_add) {
@@ -100,10 +100,10 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     public bool on_click (EventButton evt) {
-        var left_margin = this.get_left_margin ();
+        var left_margin = get_left_margin ();
         var col = (int)((evt.x - left_margin) / (double)WIDTH);
         var line = (int)((evt.y - HEIGHT) / (double)HEIGHT);
-        this.select (line, col);
+        select (line, col);
         grab_focus ();
         return false;
     }
@@ -113,7 +113,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.set_font_size (HEIGHT - PADDING * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
         TextExtents left_ext;
-        cr.text_extents (this.page.lines.to_string (), out left_ext);
+        cr.text_extents (page.lines.to_string (), out left_ext);
         return left_ext.width + BORDER;
     }
 
@@ -140,11 +140,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.set_font_size (HEIGHT - PADDING * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
-        double left_margin = this.get_left_margin ();
+        double left_margin = get_left_margin ();
 
         // white background
         cr.set_source_rgb (1, 1, 1);
-        cr.rectangle (left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
+        cr.rectangle (left_margin, HEIGHT, get_allocated_width () - left_margin, get_allocated_height () - HEIGHT);
         cr.fill ();
 
         // draw the letters and the numbers on the side
@@ -152,11 +152,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.set_line_width (BORDER);
 
         // numbers on the left side
-        for (int i = 0; i < this.page.lines; i++) {
+        for (int i = 0; i < page.lines; i++) {
             cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
             cr.stroke ();
 
-            if (this.selected_cell != null && this.selected_cell.line == i) {
+            if (selected_cell != null && selected_cell.line == i) {
                 cr.save ();
                 set_color (cr, select_bg);
                 cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
@@ -176,11 +176,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
         // letters on the top
         int i = 0;
-        foreach (string letter in new AlphabetGenerator (this.page.columns)) {
+        foreach (string letter in new AlphabetGenerator (page.columns)) {
             cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
             cr.stroke ();
 
-            if (this.selected_cell != null && this.selected_cell.column == i) {
+            if (selected_cell != null && selected_cell.column == i) {
                 cr.save ();
                 set_color (cr, select_bg);
                 cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
@@ -199,7 +199,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         }
 
         // draw the cells
-        foreach (var cell in this.page.cells) {
+        foreach (var cell in page.cells) {
             if (cell.selected) {
                 cr.set_line_width (3.0);
 

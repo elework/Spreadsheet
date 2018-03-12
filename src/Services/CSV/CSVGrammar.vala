@@ -2,8 +2,8 @@ using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.CSV.CSVGrammar : Grammar {
     public CSVGrammar () {
-        this.rules["root"] = this.root_rules ();
-        this.rules["text"] = this.text_rules ();
+        rules["root"] = root_rules ();
+        rules["text"] = text_rules ();
     }
 
     private Gee.ArrayList<Evaluator> root_rules () {

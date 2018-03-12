@@ -10,17 +10,17 @@ public class Spreadsheet.Models.Cell : Object {
     public string display_content { get; set; default = ""; }
     public string formula {
         get {
-            return this._formula;
+            return _formula;
         }
         set {
-            this._formula = value;
+            _formula = value;
             try {
                 var parser = new FormulaParser (new Lexer (new FormulaGrammar ()).tokenize (value));
                 var expression = parser.parse ();
-                this.display_content = ((double)expression.eval (this.page)).to_string ();
+                display_content = ((double)expression.eval (page)).to_string ();
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
-                this.display_content = "Error";
+                display_content = "Error";
             }
         }
     }

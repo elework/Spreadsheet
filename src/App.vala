@@ -12,7 +12,7 @@ public class Spreadsheet.App : Granite.Application {
     }
 
     construct {
-        this.program_name = "Spreadsheet";
+        program_name = "Spreadsheet";
         DEBUG = true;
         functions.add (new Function ("sum", Functions.sum, "Add numbers"));
         functions.add (new Function ("mul", Functions.mul, "Multiply numbers"));

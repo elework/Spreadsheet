@@ -2,16 +2,16 @@ using Gee;
 using Spreadsheet.Models;
 
 public class Spreadsheet.Services.CSV.CSVWriter : Object {
-    private Page page { get; set; }
+    public Page page { get; construct set; }
 
     public CSVWriter (Page page) {
-        this.page = page;
+        Object (page: page);
     }
 
     public string to_string () {
         ArrayList<ArrayList<string>> table = new ArrayList<ArrayList<string>> ();
         int max_records = 0;
-        foreach (var cell in this.page.cells) {
+        foreach (var cell in page.cells) {
             while (table.size - 1 < cell.line) {
                 table.add (new ArrayList<string> ());
             }
@@ -47,7 +47,7 @@ public class Spreadsheet.Services.CSV.CSVWriter : Object {
 
     public void write_to_file (string path) {
         try {
-            FileUtils.set_contents (path, this.to_string ());
+            FileUtils.set_contents (path, to_string ());
         } catch (Error e) {
 
         }

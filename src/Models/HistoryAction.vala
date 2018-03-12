@@ -1,14 +1,13 @@
 using Gee;
 using Gtk;
 
-public class Spreadsheet.Models.StateChange<G> {
-    public StateChange (G before, G after) {
-        this.before = before;
-        this.after = after;
-    }
+public class Spreadsheet.Models.StateChange<G> : Object {
+    public G before { get; construct; }
+    public G after { get; construct; }
 
-    public G before;
-    public G after;
+    public StateChange (G before, G after) {
+        Object (before: before, after: after);
+    }
 }
 
 /**
@@ -30,10 +29,12 @@ public class Spreadsheet.Models.HistoryAction<G, H> : Object {
     public StateChange<G> changes;
 
     public HistoryAction (string desc, Object target, owned DoFunc<G> run, owned UndoFunc<G> undo) {
-        this.description = desc;
-        this.target = target;
-        this.run = (owned) run;
-        this.undo = (owned) undo;
+        Object (
+            description: desc,
+            target: target
+        );
+        run = (owned) run;
+        undo = (owned) undo;
     }
 }
 

@@ -5,7 +5,7 @@ public class Spreadsheet.Models.SpreadSheet : Object {
 
     public void add_page (Page p) {
         p.document = this;
-        this.pages.add (p);
+        pages.add (p);
     }
 
     public string title { get; set; }

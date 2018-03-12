@@ -12,19 +12,19 @@ public class Spreadsheet.Models.Page : Object {
                 if (i == 0 &&  j == 0) {
                     cell.selected = true;
                 }
-                this.add_cell (cell);
+                add_cell (cell);
             }
         }
     }
 
     public void add_cell (Cell c) {
         c.page = this;
-        this.cells.add (c);
-        if (c.line + 1 > this.lines) {
-            this.lines = c.line + 1;
+        cells.add (c);
+        if (c.line + 1 > lines) {
+            lines = c.line + 1;
         }
-        if (c.column + 1 > this.columns) {
-            this.columns = c.column + 1;
+        if (c.column + 1 > columns) {
+            columns = c.column + 1;
         }
     }
 

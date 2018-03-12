@@ -1,9 +1,7 @@
 public class Spreadsheet.Models.Function : Object {
 
     public Function (string name, owned ApplyFunc func, string doc = "No documentation") {
-        this.name = name;
-        this.apply = (owned) func;
-        this.doc = doc;
+        Object (name: name, apply: (owned) func, doc: doc);
     }
 
     public string name { get; set; }

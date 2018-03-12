@@ -2,10 +2,10 @@ using Gee;
 
 public class Spreadsheet.Services.Parsing.Lexer : Object {
 
-    public Grammar grammar { get; set; }
+    public Grammar grammar { get; construct set; }
 
     public Lexer (Grammar g) {
-        this.grammar = g;
+        Object (grammar: g);
     }
 
     public ArrayList<Token?> tokenize (string _expr) {
@@ -16,9 +16,9 @@ public class Spreadsheet.Services.Parsing.Lexer : Object {
 
         while (expr.length > 0) { // we consume all the expression
             var top = stack.last ();
-            if (this.grammar.rules.has_key (top)) { // we check if the context exists, but it should normally always be true.
+            if (grammar.rules.has_key (top)) { // we check if the context exists, but it should normally always be true.
                 bool matched = false;
-                foreach (var eval in this.grammar.rules[top]) { // we try to find a matching pattern in the context
+                foreach (var eval in grammar.rules[top]) { // we try to find a matching pattern in the context
                     int size;
                     var tok = eval.eval (expr, out size);
                     if (size > 0) { // it's a match!
