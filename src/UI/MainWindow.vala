@@ -200,7 +200,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             title = "New Spreadsheet"
         };
         file.add_page (new Page.empty () { title = "Page 1" });
-        file = file;
+        this.file = file;
         header.show_close_button = true;
         show_all ();
 
