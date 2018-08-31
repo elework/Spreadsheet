@@ -27,8 +27,8 @@ public class Spreadsheet.Services.Parsing.Evaluator : Object {
 
         pattern = re;
         evaluation = (owned) eval;
-        pop = pop;
-        push = push;
+        this.pop = pop;
+        this.push = push;
     }
 
     public Token eval (string expr, out int size) {
