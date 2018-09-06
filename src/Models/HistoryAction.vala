@@ -33,8 +33,8 @@ public class Spreadsheet.Models.HistoryAction<G, H> : Object {
             description: desc,
             target: target
         );
-        run = (owned) run;
-        undo = (owned) undo;
+        this.run = (owned) run;
+        this.undo = (owned) undo;
     }
 }
 
