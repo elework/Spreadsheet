@@ -2,11 +2,12 @@ using Gee;
 using Gtk;
 
 public class Spreadsheet.Models.StateChange<G> : Object {
-    public G before { get; construct; }
-    public G after { get; construct; }
+    public G before;
+    public G after;
 
     public StateChange (G before, G after) {
-        Object (before: before, after: after);
+        this.before = before;
+        this.after = after;
     }
 }
 
@@ -33,8 +34,8 @@ public class Spreadsheet.Models.HistoryAction<G, H> : Object {
             description: desc,
             target: target
         );
-        run = (owned) run;
-        undo = (owned) undo;
+        this.run = (owned) run;
+        this.undo = (owned) undo;
     }
 }
 
