@@ -48,7 +48,7 @@ We are using Vala, as many other elementary OS apps, so it would be better if yo
 Before writing some code, let the others know on what you'll be working. The best way to do that is to go to the related issue (or create it if it doesn't exist yet),
 and to say that you are working on it. Then start a new branch on your fork, based on `master` (and be sure master is up-to-date). You can start coding.
 
-We use the [same conventions as elementary OS](https://elementary.io/fr/docs/code/reference#code-style) in our code, please try to respect them.
+We use the [same conventions as elementary OS](https://elementary.io/docs/code/reference#code-style) in our code, please try to respect them.
 But there is two differences:
 
 - we also name our namespaces after the folder they are in (`Spreadsheet.Parser.AST` is in `src/parser/ast`)
