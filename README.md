@@ -24,7 +24,7 @@ Then clone the project with and go to its root directory. You can build with the
 mkdir build && cd build # Create build directory
 meson .. # Configure project
 ninja # Builds the project (sometimes it's ninja-build, not ninja)
-./spreadsheet # Run the app
+./xyz.gelez.spreadsheet # Run the app
 ```
 
 To build the project again you'll only need the two last commands.
