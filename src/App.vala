@@ -2,7 +2,7 @@ using Gee;
 using Spreadsheet.UI;
 using Spreadsheet.Models;
 
-public class Spreadsheet.App : Granite.Application {
+public class Spreadsheet.App : Gtk.Application {
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -12,8 +12,8 @@ public class Spreadsheet.App : Granite.Application {
     }
 
     construct {
-        program_name = "Spreadsheet";
-        DEBUG = true;
+        application_id = "xyz.gelez.spreadsheet";
+        flags = ApplicationFlags.FLAGS_NONE;
         functions.add (new Function ("sum", Functions.sum, "Add numbers"));
         functions.add (new Function ("mul", Functions.mul, "Multiply numbers"));
         functions.add (new Function ("div", Functions.div, "Divide numbers"));
