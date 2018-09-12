@@ -7,7 +7,7 @@ One day I was lost on the Internet, I found this great [mockup](http://bassultra
 ![Screenshot](screen.png)
 
 The goal of this project is to build a Spreadsheet app that perfectly fits in elementary OS
-(so, sorry if you are using an other distribution, or if you are not using GNU/Linux, but I propably won't provide builds for you, at least in a near future).
+(so, sorry if you are using another distribution, or if you are not using GNU/Linux, but I propably won't provide builds for you, at least in a near future).
 
 ## Building
 
