@@ -136,6 +136,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     } catch (ParserError err) {
                         debug ("Error: " + err.message);
                     }
+                } else {
+                    chooser.close ();
+                    return;
                 }
 
                 chooser.close ();
@@ -347,6 +350,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 } catch (ParserError err) {
                     debug ("Error: " + err.message);
                 }
+            } else {
+                chooser.close ();
+                return;
             }
 
             chooser.close ();
