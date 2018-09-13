@@ -94,7 +94,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         Object (application: app);
         set_default_size (1500, 1000);
         window_position = WindowPosition.CENTER;
-        icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        try {
+            icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        } catch (Error err) {
+            debug ("Error: " + err.message);
+        }
 
         app_stack.add_named (welcome (), "welcome");
         app_stack.add_named (sheet (), "app");
@@ -127,7 +131,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 chooser.set_filter (filter);
 
                 if (chooser.run () == ResponseType.ACCEPT) {
-                    file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                    try {
+                        file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                    } catch (ParserError err) {
+                        debug ("Error: " + err.message);
+                    }
                 }
 
                 chooser.close ();
@@ -332,7 +340,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             chooser.set_filter (filter);
 
             if (chooser.run () == ResponseType.ACCEPT) {
-                file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                try {
+                    file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                } catch (ParserError err) {
+                    debug ("Error: " + err.message);
+                }
             }
 
             chooser.close ();
