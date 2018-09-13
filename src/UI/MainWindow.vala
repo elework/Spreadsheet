@@ -139,6 +139,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
 
                 chooser.close ();
+                init_header ();
+                show_all ();
                 app_stack.set_visible_child_name ("app");
             }
         });
