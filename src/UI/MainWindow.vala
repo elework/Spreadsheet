@@ -318,6 +318,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                 if (chooser.run () == ResponseType.ACCEPT) {
                     path = chooser.get_filename ();
+                } else {
+                    chooser.close ();
+                    return;
                 }
 
                 chooser.close ();
