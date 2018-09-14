@@ -94,7 +94,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         Object (application: app);
         set_default_size (1500, 1000);
         window_position = WindowPosition.CENTER;
-        icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        try {
+            icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        } catch (Error err) {
+            debug ("Error: " + err.message);
+        }
 
         app_stack.add_named (welcome (), "welcome");
         app_stack.add_named (sheet (), "app");
@@ -111,7 +115,37 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         welcome.append ("document-open", "Open a file", "Choose a saved presentation");
         welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
         welcome.activated.connect ((index) => {
-            open_sheet ();
+            if (index == 0) {
+                open_sheet ();
+            } else if (index == 1) {
+                var chooser = new FileChooserDialog (
+                    "Open a file", this, FileChooserAction.OPEN,
+                    "_Cancel",
+                    ResponseType.CANCEL,
+                    "_Open",
+                    ResponseType.ACCEPT);
+
+                Gtk.FileFilter filter = new Gtk.FileFilter ();
+                filter.add_pattern ("*.csv");
+                filter.set_filter_name ("CSV files");
+                chooser.set_filter (filter);
+
+                if (chooser.run () == ResponseType.ACCEPT) {
+                    try {
+                        file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                    } catch (ParserError err) {
+                        debug ("Error: " + err.message);
+                    }
+                } else {
+                    chooser.close ();
+                    return;
+                }
+
+                chooser.close ();
+                init_header ();
+                show_all ();
+                app_stack.set_visible_child_name ("app");
+            }
         });
         return welcome;
     }
@@ -311,7 +345,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             chooser.set_filter (filter);
 
             if (chooser.run () == ResponseType.ACCEPT) {
-                file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                try {
+                    file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                } catch (ParserError err) {
+                    debug ("Error: " + err.message);
+                }
+            } else {
+                chooser.close ();
+                return;
             }
 
             chooser.close ();
