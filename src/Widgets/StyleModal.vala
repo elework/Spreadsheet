@@ -1,15 +1,11 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
-    public CellStyle style { get; construct; }
+    public CellStyle cell_style { get; construct; }
 
-    public StyleModal (CellStyle style) {
-        Object (style: style);
-    }
-
-    construct {
+    public StyleModal (CellStyle cell_style) {
         margin = 12;
 
         var bg_button = new Gtk.ColorButton ();
-        style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         attach (bg_button, 0, 0, 1, 1);
     }
 }
