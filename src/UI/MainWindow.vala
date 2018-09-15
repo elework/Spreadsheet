@@ -308,7 +308,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     "Save your work", this, FileChooserAction.SAVE,
                     "_Cancel",
                     ResponseType.CANCEL,
-                    "_Open",
+                    "_Save",
                     ResponseType.ACCEPT);
 
                 Gtk.FileFilter filter = new Gtk.FileFilter ();
