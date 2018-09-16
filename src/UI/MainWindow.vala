@@ -295,7 +295,37 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         file_button.clicked.connect (() => {
             print ("New file\n");
         });
-        header.pack_end (file_button);
+        header.pack_start (file_button);
+
+        Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
+        ToolButton open_button = new ToolButton (open_ico, null);
+        open_button.clicked.connect (() => {
+            var chooser = new FileChooserDialog (
+                "Open a file", this, FileChooserAction.OPEN,
+                "_Cancel",
+                ResponseType.CANCEL,
+                "_Open",
+                ResponseType.ACCEPT);
+
+            Gtk.FileFilter filter = new Gtk.FileFilter ();
+            filter.add_pattern ("*.csv");
+            filter.set_filter_name ("CSV files");
+            chooser.set_filter (filter);
+
+            if (chooser.run () == ResponseType.ACCEPT) {
+                try {
+                    file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                } catch (ParserError err) {
+                    debug ("Error: " + err.message);
+                }
+            } else {
+                chooser.close ();
+                return;
+            }
+
+            chooser.close ();
+        });
+        header.pack_start (open_button);
 
         Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
         save_button = new ToolButton (save_ico, null);
@@ -327,45 +357,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
             new CSVWriter (active_sheet.page).write_to_file (path);
         });
-        header.pack_end (save_button);
-
-        Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
-        ToolButton open_button = new ToolButton (open_ico, null);
-        open_button.clicked.connect (() => {
-            var chooser = new FileChooserDialog (
-                "Open a file", this, FileChooserAction.OPEN,
-                "_Cancel",
-                ResponseType.CANCEL,
-                "_Open",
-                ResponseType.ACCEPT);
-
-            Gtk.FileFilter filter = new Gtk.FileFilter ();
-            filter.add_pattern ("*.csv");
-            filter.set_filter_name ("CSV files");
-            chooser.set_filter (filter);
-
-            if (chooser.run () == ResponseType.ACCEPT) {
-                try {
-                    file = new CSVParser.from_file (chooser.get_filename ()).parse ();
-                } catch (ParserError err) {
-                    debug ("Error: " + err.message);
-                }
-            } else {
-                chooser.close ();
-                return;
-            }
-
-            chooser.close ();
-        });
-        header.pack_end (open_button);
-
-        Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
-        undo_button = new ToolButton (undo_ico, null);
-        undo_button.clicked.connect (() => {
-            HistoryManager.instance.undo ();
-            update_header ();
-        });
-        header.pack_start (undo_button);
+        header.pack_start (save_button);
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
@@ -373,7 +365,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             HistoryManager.instance.redo ();
             update_header ();
         });
-        header.pack_start (redo_button);
+        header.pack_end (redo_button);
+
+        Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
+        undo_button = new ToolButton (undo_ico, null);
+        undo_button.clicked.connect (() => {
+            HistoryManager.instance.undo ();
+            update_header ();
+        });
+        header.pack_end (undo_button);
 
         update_header ();
     }
