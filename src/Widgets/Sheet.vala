@@ -170,7 +170,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             double y = HEIGHT + HEIGHT * i - (PADDING + BORDER);
             set_color (cr, light_gray);
             cr.move_to (x, y);
-            cr.show_text (i.to_string ());
+            if (i != 0) {
+                cr.show_text (i.to_string ());
+            }
             set_color (cr, gray_bg);
         }
 
