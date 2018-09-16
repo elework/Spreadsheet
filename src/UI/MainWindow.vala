@@ -51,7 +51,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                 var sheet = new Sheet (page);
                 sheet.selection_changed.connect ((cell) => {
-                    style_popup.foreach((ch) => {
+                    style_popup.foreach ((ch) => {
                         style_popup.remove (ch);
                     });
                     if (cell != null) {

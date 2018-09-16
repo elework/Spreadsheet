@@ -41,7 +41,7 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             return parse_call_expression ();
         } else if (current.kind == "number") {
             return parse_number ();
-        } else if (accept("left-parenthese")) {
+        } else if (accept ("left-parenthese")) {
             var res = parse_expression ();
             expect ("right-parenthese");
             return res;

@@ -33,7 +33,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             cell.style.notify.connect (queue_draw);
         }
         can_focus = true;
-        button_press_event.connect(on_click);
+        button_press_event.connect (on_click);
         key_press_event.connect ((key) => {
             return true; // without this Tab is not handled correctly ¯\_(ツ)_/¯
         });

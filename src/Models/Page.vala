@@ -9,7 +9,7 @@ public class Spreadsheet.Models.Page : Object {
                     line = j,
                     column = i
                 };
-                if (i == 0 &&  j == 0) {
+                if (i == 0 && j == 0) {
                     cell.selected = true;
                 }
                 add_cell (cell);
