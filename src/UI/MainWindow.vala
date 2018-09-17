@@ -357,6 +357,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     void init_header () {
+        clear_header ();
+
         Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
         file_button.clicked.connect (() => {
