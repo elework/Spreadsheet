@@ -1,8 +1,11 @@
 using Gee;
+using Spreadsheet.Services;
 using Spreadsheet.UI;
 using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
+
+    MainWindow window;
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -37,6 +40,43 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     public override void activate () {
-        new MainWindow (this).present ();
+        window = new MainWindow (this);
+        window.present ();
+
+        var open_action = new SimpleAction ("open", null);
+        add_action (open_action);
+        set_accels_for_action ("app.open", {"<Control>o"});
+        open_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.open_sheet ();
+            }
+        });
+
+        var save_action = new SimpleAction ("save", null);
+        add_action (save_action);
+        set_accels_for_action ("app.save", {"<Control>s"});
+        save_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.save_sheet ();
+            }
+        });
+
+        var undo_action = new SimpleAction ("undo", null);
+        add_action (undo_action);
+        set_accels_for_action ("app.undo", {"<Control>z"});
+        undo_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_undo ()) {
+                window.undo_sheet ();
+            }
+        });
+
+        var redo_action = new SimpleAction ("redo", null);
+        add_action (redo_action);
+        set_accels_for_action ("app.redo", {"<Control><Shift>z"});
+        redo_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_redo ()) {
+                window.redo_sheet ();
+            }
+        });
     }
 }
