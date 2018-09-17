@@ -85,5 +85,12 @@ public class Spreadsheet.App : Gtk.Application {
         focus_expression_action.activate.connect (() => {
             window.expression.grab_focus ();
         });
+
+        var back_focus_action = new SimpleAction ("back_focus", null);
+        add_action (back_focus_action);
+        set_accels_for_action ("app.back_focus", {"Escape"});
+        back_focus_action.activate.connect (() => {
+            window.active_sheet.grab_focus ();
+        });
     }
 }
