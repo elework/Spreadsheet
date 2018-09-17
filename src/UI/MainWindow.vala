@@ -82,7 +82,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     ToolButton undo_button { get; set; }
     ToolButton redo_button { get; set; }
 
-    Entry expression;
+    public Entry expression;
     Popover style_popup;
 
     private void update_header () {

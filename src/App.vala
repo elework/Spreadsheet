@@ -78,5 +78,12 @@ public class Spreadsheet.App : Gtk.Application {
                 window.redo_sheet ();
             }
         });
+
+        var focus_expression_action = new SimpleAction ("focus_expression", null);
+        add_action (focus_expression_action);
+        set_accels_for_action ("app.focus_expression", {"F2"});
+        focus_expression_action.activate.connect (() => {
+            window.expression.grab_focus ();
+        });
     }
 }
