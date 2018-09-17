@@ -118,7 +118,30 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             if (index == 0) {
                 new_sheet ();
             } else if (index == 1) {
-                open_sheet ();
+                var chooser = new FileChooserDialog (
+                    "Open a file", this, FileChooserAction.OPEN,
+                    "_Cancel",
+                    ResponseType.CANCEL,
+                    "_Open",
+                    ResponseType.ACCEPT);
+
+                Gtk.FileFilter filter = new Gtk.FileFilter ();
+                filter.add_pattern ("*.csv");
+                filter.set_filter_name ("CSV files");
+                chooser.set_filter (filter);
+
+                if (chooser.run () == ResponseType.ACCEPT) {
+                    try {
+                        file = new CSVParser.from_file (chooser.get_filename ()).parse ();
+                    } catch (ParserError err) {
+                        debug ("Error: " + err.message);
+                    }
+                } else {
+                    chooser.close ();
+                    return;
+                }
+
+                chooser.close ();
                 init_header ();
                 show_all ();
                 app_stack.set_visible_child_name ("app");
