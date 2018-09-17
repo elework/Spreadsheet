@@ -116,7 +116,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
         welcome.activated.connect ((index) => {
             if (index == 0) {
-                open_sheet ();
+                new_sheet ();
             } else if (index == 1) {
                 var chooser = new FileChooserDialog (
                     "Open a file", this, FileChooserAction.OPEN,
@@ -228,7 +228,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return layout;
     }
 
-    private void open_sheet () {
+    private void new_sheet () {
         init_header ();
         var file = new SpreadSheet () {
             title = "New Spreadsheet"
