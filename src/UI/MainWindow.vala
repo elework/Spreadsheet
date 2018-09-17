@@ -310,6 +310,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public void show_welcome () {
         clear_header ();
         header.title = "Spreadsheet";
+        header.subtitle = null;
         header.show_close_button = true;
 
         app_stack.set_visible_child_name ("welcome");
