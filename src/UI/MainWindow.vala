@@ -228,7 +228,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return layout;
     }
 
-    private void new_sheet () {
+    public void new_sheet () {
         init_header ();
         var file = new SpreadSheet () {
             title = "New Spreadsheet"
@@ -356,10 +356,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     void init_header () {
+        clear_header ();
+
         Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
         file_button.clicked.connect (() => {
-            print ("New file\n");
+            new_sheet ();
         });
         header.pack_start (file_button);
 
