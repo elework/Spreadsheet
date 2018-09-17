@@ -43,6 +43,13 @@ public class Spreadsheet.App : Gtk.Application {
         window = new MainWindow (this);
         window.present ();
 
+        var back_action = new SimpleAction ("back", null);
+        add_action (back_action);
+        set_accels_for_action ("app.back", {"<Alt>Home"});
+        back_action.activate.connect (() => {
+            window.show_welcome ();
+        });
+
         var open_action = new SimpleAction ("open", null);
         add_action (open_action);
         set_accels_for_action ("app.open", {"<Control>o"});

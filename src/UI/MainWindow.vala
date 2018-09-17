@@ -307,7 +307,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         update_header ();
     }
 
-    private void show_welcome () {
+    public void show_welcome () {
         clear_header ();
         header.title = "Spreadsheet";
         header.show_close_button = true;
