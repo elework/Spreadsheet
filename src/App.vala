@@ -43,13 +43,6 @@ public class Spreadsheet.App : Gtk.Application {
         window = new MainWindow (this);
         window.present ();
 
-        var new_action = new SimpleAction ("new", null);
-        add_action (new_action);
-        set_accels_for_action ("app.new", {"<Control>n"});
-        new_action.activate.connect (() => {
-            window.new_sheet ();
-        });
-
         var open_action = new SimpleAction ("open", null);
         add_action (open_action);
         set_accels_for_action ("app.open", {"<Control>o"});
