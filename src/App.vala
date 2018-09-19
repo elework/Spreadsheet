@@ -4,6 +4,8 @@ using Spreadsheet.UI;
 using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
+    public static GLib.Settings settings;
+    public MainWindow window;
 
     MainWindow window;
 
@@ -12,6 +14,10 @@ public class Spreadsheet.App : Gtk.Application {
     public static int main (string[] args) {
         Gtk.init (ref args);
         return new App ().run (args);
+    }
+
+    static construct {
+        settings = new Settings ("xyz.gelez.spreadsheet");
     }
 
     construct {
@@ -40,8 +46,18 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     public override void activate () {
-        window = new MainWindow (this);
-        window.present ();
+        // Fetch window state from GLib.Settings
+        var window_x = settings.get_int ("window-x");
+        var window_y = settings.get_int ("window-y");
+        var window_width = settings.get_int ("window-width");
+        var window_height = settings.get_int ("window-height");
+        var window_maximized = settings.get_boolean ("window-maximized");
+
+        if (window_x != -1 || window_y != -1) { // Not a first time running
+            window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height, window_maximized);
+        } else {
+            window = new MainWindow (this, window_width, window_height); // First time running
+        }
 
         var back_action = new SimpleAction ("back", null);
         add_action (back_action);
