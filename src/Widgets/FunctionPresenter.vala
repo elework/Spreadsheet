@@ -5,7 +5,7 @@ public class Spreadsheet.Widgets.FunctionPresenter : EventBox {
     public Function function { get; set; }
 
     public FunctionPresenter (Function func) {
-        var box = new Box (Orientation.VERTICAL, 5);
+        var box = new Box (Orientation.VERTICAL, 0);
         function = func;
 
         var name_label = new Label (function.name);
