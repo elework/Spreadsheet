@@ -90,9 +90,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
-    public MainWindow (Gtk.Application app) {
+    public MainWindow (Gtk.Application app, int w, int h) {
         Object (application: app);
-        set_default_size (1500, 1000);
+        default_width = w;
+        default_height = h;
         window_position = WindowPosition.CENTER;
         try {
             icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
@@ -107,6 +108,39 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         add (app_stack);
         show_welcome ();
         show_all ();
+    }
+
+    public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h) {
+        Object (application: app);
+        move (x, y);
+        default_width = w;
+        default_height = h;
+        try {
+            icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+        } catch (Error err) {
+            debug ("Error: " + err.message);
+        }
+
+        app_stack.add_named (welcome (), "welcome");
+        app_stack.add_named (sheet (), "app");
+        set_titlebar (header);
+
+        add (app_stack);
+        show_welcome ();
+        show_all ();
+    }
+
+    // Save window state
+    public override bool configure_event (Gdk.EventConfigure event) {
+        int x, y, w, h;
+        get_position (out x, out y);
+        get_size (out w, out h);
+        Spreadsheet.App.settings.set_int ("window-x", x);
+        Spreadsheet.App.settings.set_int ("window-y", y);
+        Spreadsheet.App.settings.set_int ("window-width", w);
+        Spreadsheet.App.settings.set_int ("window-height", h);
+
+        return base.configure_event (event);
     }
 
     private Welcome welcome () {
