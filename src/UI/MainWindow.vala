@@ -99,6 +99,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         init ();
     }
 
+    // Not a first time running
     public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h, bool m) {
         Object (application: app);
         move (x, y);
