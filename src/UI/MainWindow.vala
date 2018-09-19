@@ -159,11 +159,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         expression = new Entry () { hexpand = true };
 
         var popup = new Popover (function_list_bt) {
+            width_request = 320,
+            height_request = 600,
             modal = true,
             position = PositionType.BOTTOM,
             border_width = 10
         };
         var function_list = new ListBox ();
+        var function_list_scrolled = new ScrolledWindow (null, null);
         foreach (var func in App.functions) {
             var row = new ListBoxRow () { selectable = false };
             row.margin_top = row.margin_bottom = 6;
@@ -178,7 +181,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             });
             function_list.add (row);
         }
-        popup.add (function_list);
+        function_list_scrolled.add (function_list);
+        popup.add (function_list_scrolled);
 
         function_list_bt.clicked.connect (popup.show_all);
 
