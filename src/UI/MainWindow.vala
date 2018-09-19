@@ -90,10 +90,28 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
-    public MainWindow (Gtk.Application app) {
+    // First time running
+    public MainWindow (Gtk.Application app, int w, int h) {
         Object (application: app);
-        set_default_size (1500, 1000);
         window_position = WindowPosition.CENTER;
+        default_width = w;
+        default_height = h;
+        init ();
+    }
+
+    // Not a first time running
+    public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h, bool m) {
+        Object (application: app);
+        move (x, y);
+        default_width = w;
+        default_height = h;
+        init ();
+        if (m) {
+            maximize ();
+        }
+    }
+
+    private void init () {
         try {
             icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
         } catch (Error err) {
@@ -107,6 +125,22 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         add (app_stack);
         show_welcome ();
         show_all ();
+    }
+
+    // Save position, size and state of window when they're changed
+    public override bool configure_event (Gdk.EventConfigure event) {
+        int x, y, w, h;
+        bool m;
+        get_position (out x, out y);
+        get_size (out w, out h);
+        m = this.is_maximized;
+        Spreadsheet.App.settings.set_int ("window-x", x);
+        Spreadsheet.App.settings.set_int ("window-y", y);
+        Spreadsheet.App.settings.set_int ("window-width", w);
+        Spreadsheet.App.settings.set_int ("window-height", h);
+        Spreadsheet.App.settings.set_boolean ("window-maximized", m);
+
+        return base.configure_event (event);
     }
 
     private Welcome welcome () {

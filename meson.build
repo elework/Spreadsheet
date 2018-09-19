@@ -56,3 +56,10 @@ executable(meson.project_name(),
   install: true,
   link_args: ['-lm']
 )
+
+install_data(
+  'data/xyz.gelez.spreadsheet.gschema.xml',
+  install_dir: join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
+)
+
+meson.add_install_script('meson/post_install.py')
