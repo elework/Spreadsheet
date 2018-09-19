@@ -7,8 +7,6 @@ public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
     public MainWindow window;
 
-    MainWindow window;
-
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
     public static int main (string[] args) {
