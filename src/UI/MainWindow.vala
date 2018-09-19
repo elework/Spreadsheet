@@ -90,6 +90,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
+    // First time running
     public MainWindow (Gtk.Application app, int w, int h) {
         Object (application: app);
         default_width = w;

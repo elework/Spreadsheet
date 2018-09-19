@@ -43,6 +43,7 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     public override void activate () {
+        // Fetch window state from GLib.Settings
         var window_x = settings.get_int ("window-x");
         var window_y = settings.get_int ("window-y");
         var window_width = settings.get_int ("window-width");
@@ -52,7 +53,7 @@ public class Spreadsheet.App : Gtk.Application {
         if (window_x != -1 || window_y != -1) {
             window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height, window_maximized);
         } else {
-            window = new MainWindow (this, window_width, window_height);
+            window = new MainWindow (this, window_width, window_height); // First time running
         }
     }
 }
