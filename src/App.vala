@@ -50,7 +50,7 @@ public class Spreadsheet.App : Gtk.Application {
         var window_maximized = settings.get_boolean ("window-maximized");
 
         if (window_x != -1 || window_y != -1) {
-            window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height);
+            window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height, window_maximized);
         } else {
             window = new MainWindow (this, window_width, window_height);
         }

@@ -110,11 +110,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_all ();
     }
 
-    public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h) {
+    public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h, bool m) {
         Object (application: app);
         move (x, y);
         default_width = w;
         default_height = h;
+        if (m) {
+            maximize ();
+        }
         try {
             icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
         } catch (Error err) {
@@ -130,15 +133,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_all ();
     }
 
-    // Save window state
+    // Save position, size and state of window when they're changed
     public override bool configure_event (Gdk.EventConfigure event) {
         int x, y, w, h;
+        bool m;
         get_position (out x, out y);
         get_size (out w, out h);
+        m = this.is_maximized;
         Spreadsheet.App.settings.set_int ("window-x", x);
         Spreadsheet.App.settings.set_int ("window-y", y);
         Spreadsheet.App.settings.set_int ("window-width", w);
         Spreadsheet.App.settings.set_int ("window-height", h);
+        Spreadsheet.App.settings.set_boolean ("window-maximized", m);
 
         return base.configure_event (event);
     }
