@@ -47,7 +47,7 @@ public class Spreadsheet.App : Gtk.Application {
         var window_y = settings.get_int ("window-y");
         var window_width = settings.get_int ("window-width");
         var window_height = settings.get_int ("window-height");
-        var window_maximized = settings.get_int ("window-maximized");
+        var window_maximized = settings.get_boolean ("window-maximized");
 
         if (window_x != -1 || window_y != -1) {
             window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height);
