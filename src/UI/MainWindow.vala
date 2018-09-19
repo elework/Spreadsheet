@@ -93,22 +93,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // First time running
     public MainWindow (Gtk.Application app, int w, int h) {
         Object (application: app);
+        window_position = WindowPosition.CENTER;
         default_width = w;
         default_height = h;
-        window_position = WindowPosition.CENTER;
-        try {
-            icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
-        } catch (Error err) {
-            debug ("Error: " + err.message);
-        }
-
-        app_stack.add_named (welcome (), "welcome");
-        app_stack.add_named (sheet (), "app");
-        set_titlebar (header);
-
-        add (app_stack);
-        show_welcome ();
-        show_all ();
+        init ();
     }
 
     public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h, bool m) {
@@ -116,9 +104,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         move (x, y);
         default_width = w;
         default_height = h;
+        init ();
         if (m) {
             maximize ();
         }
+    }
+
+    private void init () {
         try {
             icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
         } catch (Error err) {
