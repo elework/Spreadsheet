@@ -166,6 +166,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var function_list = new ListBox ();
         foreach (var func in App.functions) {
             var row = new ListBoxRow () { selectable = false };
+            row.margin_top = row.margin_bottom = 6;
             row.add (new FunctionPresenter (func));
             row.realize.connect (() => {
                 row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
