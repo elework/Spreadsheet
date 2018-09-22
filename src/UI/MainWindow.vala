@@ -146,8 +146,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Welcome welcome () {
         var welcome = new Welcome ("Spreadsheet", "Start something new, or continue what you have been working on.");
         welcome.append ("document-new", "New Sheet", "Create an empty sheet");
-        welcome.append ("document-open", "Open a file", "Choose a saved presentation");
-        welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
+        welcome.append ("document-open", "Open File", "Choose a saved file");
+        welcome.append ("x-office-spreadsheet", "Open Last File", "Continue working on foo.xlsx");
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 open_sheet ();
