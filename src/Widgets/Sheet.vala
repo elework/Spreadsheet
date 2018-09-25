@@ -220,6 +220,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.fill ();
                 cr.restore ();
+
+                set_color (cr, cell.cell_style.stroke);
             }
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();

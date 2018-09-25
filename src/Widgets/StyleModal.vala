@@ -42,8 +42,16 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         var bg_button = new Gtk.ColorButton ();
         cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        var sr_label = new Gtk.Label ("Stroke Color");
+        sr_label.get_style_context ().add_class ("h4");
+
+        var sr_button = new Gtk.ColorButton ();
+        cell_style.bind_property ("stroke", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         cells_grid.attach (bg_label, 0, 0, 1, 1);
         cells_grid.attach (bg_button, 0, 1, 1, 1);
+        cells_grid.attach (sr_label, 0, 2, 1, 1);
+        cells_grid.attach (sr_button, 0, 3, 1, 1);
 
         return cells_grid;
     }
