@@ -21,9 +21,11 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         fonts_grid.margin_top = 6;
 
         var color_label = new Gtk.Label ("Font Color");
+        color_label.halign = Gtk.Align.START;
         color_label.get_style_context ().add_class ("h4");
 
         var color_button = new Gtk.ColorButton ();
+        color_button.halign = Gtk.Align.START;
         font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         fonts_grid.attach (color_label, 0, 0, 1, 1);
@@ -37,15 +39,19 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         cells_grid.margin_top = 6;
 
         var bg_label = new Gtk.Label ("Fill Color");
+        bg_label.halign = Gtk.Align.START;
         bg_label.get_style_context ().add_class ("h4");
 
         var bg_button = new Gtk.ColorButton ();
+        bg_button.halign = Gtk.Align.START;
         cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var sr_label = new Gtk.Label ("Stroke Color");
+        sr_label.halign = Gtk.Align.START;
         sr_label.get_style_context ().add_class ("h4");
 
         var sr_button = new Gtk.ColorButton ();
+        sr_button.halign = Gtk.Align.START;
         cell_style.bind_property ("stroke", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         cells_grid.attach (bg_label, 0, 0, 1, 1);
