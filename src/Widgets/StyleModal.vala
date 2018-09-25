@@ -79,6 +79,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         });
         sr_remove_button.clicked.connect (() => {
             cell_style.sr_remove ();
+            sr_width_spin.value = 1.0;
         });
 
         return cells_grid;
