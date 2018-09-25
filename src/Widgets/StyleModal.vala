@@ -50,6 +50,10 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bg_button.tooltip_text = "Set fill color of a selected cell";
         cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        var bg_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        bg_remove_button.halign = Gtk.Align.START;
+        bg_remove_button.tooltip_text = "Remove fill color of a selected cell";
+
         var sr_label = new Gtk.Label ("Stroke");
         sr_label.halign = Gtk.Align.START;
         sr_label.get_style_context ().add_class ("h4");
@@ -64,11 +68,24 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         sr_width_spin.tooltip_text = "Set the border width of a selected cell";
         cell_style.bind_property ("stroke_width", sr_width_spin, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        var sr_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        sr_remove_button.halign = Gtk.Align.START;
+        sr_remove_button.tooltip_text = "Remove stroke color of a selected cell";
+
         cells_grid.attach (bg_label, 0, 0, 1, 1);
         cells_grid.attach (bg_button, 0, 1, 1, 1);
+        cells_grid.attach (bg_remove_button, 1, 1, 1, 1);
         cells_grid.attach (sr_label, 0, 2, 1, 1);
         cells_grid.attach (sr_button, 0, 3, 1, 1);
         cells_grid.attach (sr_width_spin, 1, 3, 1, 1);
+        cells_grid.attach (sr_remove_button, 2, 3, 1, 1);
+
+        bg_remove_button.clicked.connect (() => {
+            cell_style.bg_remove ();
+        });
+        sr_remove_button.clicked.connect (() => {
+            cell_style.sr_remove ();
+        });
 
         return cells_grid;
     }

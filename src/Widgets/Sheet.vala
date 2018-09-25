@@ -221,8 +221,15 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.fill ();
                 cr.restore ();
 
+                cr.save ();
                 cr.set_line_width (cell.cell_style.stroke_width);
                 set_color (cr, cell.cell_style.stroke);
+                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                cr.stroke ();
+                cr.restore ();
+
+                cr.set_line_width (BORDER);
+                set_color (cr, gray_bg);
             }
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();
