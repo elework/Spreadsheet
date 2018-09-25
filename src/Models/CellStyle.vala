@@ -6,7 +6,7 @@ public class Spreadsheet.CellStyle : Object {
     public CellStyle () {
         Gdk.RGBA bg = { 255, 255, 255, 0 };
         Gdk.RGBA sr = { 0, 0, 0, 0 };
-        double sr_w = 0.5;
+        double sr_w = 1.0;
         Object (
             background: bg,
             stroke: sr,
