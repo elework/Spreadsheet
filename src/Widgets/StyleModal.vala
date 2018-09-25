@@ -54,10 +54,15 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         sr_button.halign = Gtk.Align.START;
         cell_style.bind_property ("stroke", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        var sr_width_spin = new Gtk.SpinButton.with_range (0.1, 3, 0.1);
+        sr_width_spin.halign = Gtk.Align.START;
+        cell_style.bind_property ("stroke_width", sr_width_spin, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         cells_grid.attach (bg_label, 0, 0, 1, 1);
         cells_grid.attach (bg_button, 0, 1, 1, 1);
         cells_grid.attach (sr_label, 0, 2, 1, 1);
         cells_grid.attach (sr_button, 0, 3, 1, 1);
+        cells_grid.attach (sr_width_spin, 1, 3, 1, 1);
 
         return cells_grid;
     }
