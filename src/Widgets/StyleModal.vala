@@ -11,7 +11,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_stacksw.halign = Gtk.Align.CENTER;
         style_stacksw.set_stack (style_stack);
 
-        margin = 12;
+        margin = 6;
         attach (style_stacksw, 0, 0, 1, 1);
         attach (style_stack, 0, 1, 1, 1);
     }
