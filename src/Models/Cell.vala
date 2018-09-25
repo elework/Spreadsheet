@@ -26,6 +26,7 @@ public class Spreadsheet.Models.Cell : Object {
     }
     private string _formula = "";
     public bool selected { get; set; default = false; }
-    public CellStyle style { get; set; default = new CellStyle (); }
+    public FontStyle font_style { get; set; default = new FontStyle (); }
+    public CellStyle cell_style { get; set; default = new CellStyle (); }
 }
 

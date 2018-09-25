@@ -1,9 +1,10 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
+    public FontStyle font_style { get; construct; }
     public CellStyle cell_style { get; construct; }
 
-    public StyleModal (CellStyle cell_style) {
+    public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();
-        style_stack.add_titled (fonts_grid (), "fonts-grid", "Fonts");
+        style_stack.add_titled (fonts_grid (font_style), "fonts-grid", "Fonts");
         style_stack.add_titled (cells_grid (cell_style), "cells-grid", "Cells");
 
         var style_stacksw = new Gtk.StackSwitcher ();
@@ -15,9 +16,19 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         attach (style_stack, 0, 1, 1, 1);
     }
 
-    private Gtk.Grid fonts_grid () {
+    private Gtk.Grid fonts_grid (FontStyle font_style) {
         var fonts_grid = new Gtk.Grid ();
-        fonts_grid.margin = 12;
+        fonts_grid.margin_top = 6;
+
+        var color_label = new Gtk.Label ("Font Color");
+        color_label.get_style_context ().add_class ("h4");
+
+        var color_button = new Gtk.ColorButton ();
+        font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        fonts_grid.attach (color_label, 0, 0, 1, 1);
+        fonts_grid.attach (color_button, 0, 1, 1, 1);
+
         return fonts_grid;
     }
 

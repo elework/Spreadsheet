@@ -57,7 +57,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     if (cell != null) {
                         expression.text = cell.formula;
                         expression.sensitive = true;
-                        style_popup.add (new StyleModal (cell.style));
+                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
                     } else {
                         expression.text = "";
                         expression.sensitive = false;
