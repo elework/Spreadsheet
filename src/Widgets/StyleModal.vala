@@ -19,6 +19,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
     private Gtk.Grid fonts_grid (FontStyle font_style) {
         var fonts_grid = new Gtk.Grid ();
         fonts_grid.margin_top = 6;
+        fonts_grid.column_spacing = 6;
 
         var color_label = new Gtk.Label ("Color");
         color_label.halign = Gtk.Align.START;
@@ -38,6 +39,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
     private Gtk.Grid cells_grid (CellStyle cell_style) {
         var cells_grid = new Gtk.Grid ();
         cells_grid.margin_top = 6;
+        cells_grid.column_spacing = 6;
 
         var bg_label = new Gtk.Label ("Fill");
         bg_label.halign = Gtk.Align.START;
