@@ -29,9 +29,17 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_button.halign = Gtk.Align.START;
         color_button.tooltip_text = "Set font color of a selected cell";
         font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        var color_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        color_remove_button.halign = Gtk.Align.START;
+        color_remove_button.tooltip_text = "Reset font color of a selected cell to black";
 
         fonts_grid.attach (color_label, 0, 0, 1, 1);
         fonts_grid.attach (color_button, 0, 1, 1, 1);
+        fonts_grid.attach (color_remove_button, 1, 1, 1, 1);
+
+        color_remove_button.clicked.connect (() => {
+            font_style.color_remove ();
+        });
 
         return fonts_grid;
     }

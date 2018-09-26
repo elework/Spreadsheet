@@ -7,4 +7,8 @@ public class Spreadsheet.FontStyle : Object {
             fontcolor: color
         );
     }
+
+    public void color_remove () {
+        fontcolor = { 0, 0, 0, 1 };
+    }
 }
