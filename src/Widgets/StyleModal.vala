@@ -9,7 +9,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
         var style_stacksw = new Gtk.StackSwitcher ();
         style_stacksw.halign = Gtk.Align.CENTER;
-        style_stacksw.set_stack (style_stack);
+        style_stacksw.stack = style_stack;
 
         margin = 6;
         attach (style_stacksw, 0, 0, 1, 1);
