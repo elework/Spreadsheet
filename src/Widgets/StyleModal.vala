@@ -8,6 +8,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_stack.add_titled (cells_grid (cell_style), "cells-grid", "Cells");
 
         var style_stacksw = new Gtk.StackSwitcher ();
+        style_stacksw.homogeneous = true;
         style_stacksw.halign = Gtk.Align.CENTER;
         style_stacksw.stack = style_stack;
 
