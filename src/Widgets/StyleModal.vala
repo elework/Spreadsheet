@@ -1,6 +1,4 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
-    public FontStyle font_style { get; construct; }
-    public CellStyle cell_style { get; construct; }
     private Gtk.ColorButton color_button;
     private Gtk.Button color_reset_button;
     private Gtk.ColorButton bg_button;
