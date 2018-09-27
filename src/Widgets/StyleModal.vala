@@ -2,12 +2,12 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
     public FontStyle font_style { get; construct; }
     public CellStyle cell_style { get; construct; }
     private Gtk.ColorButton color_button;
-    private Gtk.Button color_remove_button;
+    private Gtk.Button color_reset_button;
     private Gtk.ColorButton bg_button;
-    private Gtk.Button bg_remove_button;
+    private Gtk.Button bg_reset_button;
     private Gtk.ColorButton sr_button;
     private Gtk.SpinButton sr_width_spin;
-    private Gtk.Button sr_remove_button;
+    private Gtk.Button sr_reset_button;
 
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();
@@ -36,26 +36,26 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_button.halign = Gtk.Align.START;
         color_button.tooltip_text = "Set font color of a selected cell";
         font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-        color_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
-        color_remove_button.halign = Gtk.Align.START;
-        color_remove_button.tooltip_text = "Reset font color of a selected cell to black";
+        color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        color_reset_button.halign = Gtk.Align.START;
+        color_reset_button.tooltip_text = "Reset font color of a selected cell to black";
 
         fonts_grid.attach (color_label, 0, 0, 1, 1);
         fonts_grid.attach (color_button, 0, 1, 1, 1);
-        fonts_grid.attach (color_remove_button, 1, 1, 1, 1);
+        fonts_grid.attach (color_reset_button, 1, 1, 1, 1);
 
-        // Set the sensitivity of the color_remove_button by whether it has already reset font color to the default one or not when…
+        // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
         // 1. widgets are created
         Gdk.RGBA font_default_color = { 0, 0, 0, 1 };
-        color_remove_button.sensitive = check_color (color_button, font_default_color);
-        // 2. user clicks the color_remove_button and resets a font color
-        color_remove_button.clicked.connect (() => {
+        color_reset_button.sensitive = check_color (color_button, font_default_color);
+        // 2. user clicks the color_reset_button and resets a font color
+        color_reset_button.clicked.connect (() => {
             font_style.color_remove ();
-            color_remove_button.sensitive = check_color (color_button, font_default_color);
+            color_reset_button.sensitive = check_color (color_button, font_default_color);
         });
         // 3. user clicks the color_button and sets a new font color
         color_button.color_set.connect (() =>{
-            color_remove_button.sensitive = check_color (color_button, font_default_color);
+            color_reset_button.sensitive = check_color (color_button, font_default_color);
         });
 
         return fonts_grid;
@@ -73,9 +73,9 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bg_button.halign = Gtk.Align.START;
         bg_button.tooltip_text = "Set fill color of a selected cell";
         cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-        bg_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
-        bg_remove_button.halign = Gtk.Align.START;
-        bg_remove_button.tooltip_text = "Remove fill color of a selected cell";
+        bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        bg_reset_button.halign = Gtk.Align.START;
+        bg_reset_button.tooltip_text = "Remove fill color of a selected cell";
 
         var sr_label = new Gtk.Label ("Stroke");
         sr_label.halign = Gtk.Align.START;
@@ -88,43 +88,43 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         sr_width_spin.halign = Gtk.Align.START;
         sr_width_spin.tooltip_text = "Set the border width of a selected cell";
         cell_style.bind_property ("stroke_width", sr_width_spin, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-        sr_remove_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
-        sr_remove_button.halign = Gtk.Align.START;
-        sr_remove_button.tooltip_text = "Remove stroke color of a selected cell";
+        sr_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
+        sr_reset_button.halign = Gtk.Align.START;
+        sr_reset_button.tooltip_text = "Remove stroke color of a selected cell";
 
         cells_grid.attach (bg_label, 0, 0, 1, 1);
         cells_grid.attach (bg_button, 0, 1, 1, 1);
-        cells_grid.attach (bg_remove_button, 1, 1, 1, 1);
+        cells_grid.attach (bg_reset_button, 1, 1, 1, 1);
         cells_grid.attach (sr_label, 0, 2, 1, 1);
         cells_grid.attach (sr_button, 0, 3, 1, 1);
         cells_grid.attach (sr_width_spin, 1, 3, 1, 1);
-        cells_grid.attach (sr_remove_button, 2, 3, 1, 1);
+        cells_grid.attach (sr_reset_button, 2, 3, 1, 1);
 
-        // Set the sensitivities of the br_remove_button, sr_remove_button and sr_width_spin by whether they have already reset background/stroke colors to the default ones or not when…
+        // Set the sensitivities of the br_remove_button, sr_reset_button and sr_width_spin by whether they have already reset background/stroke colors to the default ones or not when…
         // 1. widgets are created
         Gdk.RGBA bg_default_color = { 255, 255, 255, 0 };
         Gdk.RGBA sr_default_color = { 0, 0, 0, 0 };
-        bg_remove_button.sensitive = check_color (bg_button, bg_default_color);
-        sr_remove_button.sensitive = check_color (sr_button, sr_default_color);
+        bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
+        sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
         sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
 
-        // 2. user clicks bg_remove_button/sr_remove_button and resets background/stroke colors
-        bg_remove_button.clicked.connect (() => {
+        // 2. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
+        bg_reset_button.clicked.connect (() => {
             cell_style.bg_remove ();
-            bg_remove_button.sensitive = check_color (bg_button, bg_default_color);
+            bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         });
-        sr_remove_button.clicked.connect (() => {
+        sr_reset_button.clicked.connect (() => {
             cell_style.sr_remove ();
             sr_width_spin.value = 1.0;
-            sr_remove_button.sensitive = check_color (sr_button, sr_default_color);
+            sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
         });
         // 3. user clicks br_button/sr_button and sets new background/stroke colors
         bg_button.color_set.connect (() =>{
-            bg_remove_button.sensitive = check_color (bg_button, bg_default_color);
+            bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         });
         sr_button.color_set.connect (() =>{
-            sr_remove_button.sensitive = check_color (sr_button, sr_default_color);
+            sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
         });
 
