@@ -50,6 +50,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 scrolled.add (viewport);
 
                 var sheet = new Sheet (page);
+                foreach (var cell in page.cells) {
+                    if (cell.selected) {
+                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                    }
+                }
                 sheet.selection_changed.connect ((cell) => {
                     style_popup.foreach ((ch) => {
                         style_popup.remove (ch);
