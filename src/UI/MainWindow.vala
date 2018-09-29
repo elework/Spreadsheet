@@ -53,6 +53,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 foreach (var cell in page.cells) {
                     if (cell.selected) {
                         style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                        break;
                     }
                 }
                 sheet.selection_changed.connect ((cell) => {
