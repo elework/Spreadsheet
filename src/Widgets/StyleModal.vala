@@ -105,7 +105,6 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
         sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
-
         // 2. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
         bg_reset_button.clicked.connect (() => {
             cell_style.bg_remove ();
