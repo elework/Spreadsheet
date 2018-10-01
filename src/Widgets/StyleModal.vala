@@ -46,13 +46,13 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         // 1. widgets are created
         Gdk.RGBA font_default_color = { 0, 0, 0, 1 };
         color_reset_button.sensitive = check_color (color_button, font_default_color);
-        // 2. user clicks the color_reset_button and resets a font color
-        color_reset_button.clicked.connect (() => {
-            font_style.color_remove ();
+        // 2. user clicks the color_button and sets a new font color
+        color_button.color_set.connect (() =>{
             color_reset_button.sensitive = check_color (color_button, font_default_color);
         });
-        // 3. user clicks the color_button and sets a new font color
-        color_button.color_set.connect (() =>{
+        // 3. user clicks the color_reset_button and resets a font color
+        color_reset_button.clicked.connect (() => {
+            font_style.color_remove ();
             color_reset_button.sensitive = check_color (color_button, font_default_color);
         });
 
@@ -105,7 +105,15 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
         sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
-        // 2. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
+        // 2. user clicks br_button/sr_button and sets new background/stroke colors
+        bg_button.color_set.connect (() =>{
+            bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
+        });
+        sr_button.color_set.connect (() =>{
+            sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
+            sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
+        });
+        // 3. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
         bg_reset_button.clicked.connect (() => {
             cell_style.bg_remove ();
             bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
@@ -113,14 +121,6 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         sr_reset_button.clicked.connect (() => {
             cell_style.sr_remove ();
             sr_width_spin.value = 1.0;
-            sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
-            sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
-        });
-        // 3. user clicks br_button/sr_button and sets new background/stroke colors
-        bg_button.color_set.connect (() =>{
-            bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
-        });
-        sr_button.color_set.connect (() =>{
             sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
         });
