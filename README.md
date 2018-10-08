@@ -1,6 +1,6 @@
 # Spreadsheet
 
-Spreadsheet is a spreadsheet app built in Vala and GTK+, and especially for elementary OS.
+Spreadsheet is a spreadsheet app built with Vala and GTK+, and especially for elementary OS.
 
 ![Screenshot](screen.png)
 
