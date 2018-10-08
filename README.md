@@ -42,7 +42,7 @@ There are many ways you can contribute, even if you don't know how to code.
 
 ### Reporting Bugs or Suggesting Improvements
 
-Simply create a new issue describing your problem and how to reproduce. If you are not used to do, [this section](https://elementary.io/ja/docs/code/reference#reporting-bugs) is for you.
+Simply [create a new issue](https://github.com/ryonakano/Spreadsheet/issues/new) describing your problem and how to reproduce. If you are not used to do, [this section](https://elementary.io/ja/docs/code/reference#reporting-bugs) is for you.
 
 ### Writing Some Code
 
