@@ -9,7 +9,7 @@ It was originally developed by [Baptiste Gelez](https://github.com/BaptisteGelez
 > One day I was lost on the Internet, I found this great [mockup](https://www.deviantart.com/bassultra/art/Spreadsheet-363147552) of a spreadsheet app, and I decided to make it real.
 
 The goal of this project is to build a Spreadsheet app that perfectly fits in elementary OS
-(so, sorry if you are using another distribution, or if you are not using GNU/Linux, but we propably won't provide builds for you, at least in a near future).
+(so, sorry if you are using another distribution, or if you are not using GNU/Linux, but we probably won't provide builds for you, at least in a near future).
 
 ## Building and Installation
 
@@ -52,7 +52,7 @@ We use Vala, as many other elementary OS apps, so it would be better if you know
 
 Before writing some code, let the others know on what you'll be working. The best way to do that is to go to the related issue (or create one if any related issue doesn't exist yet), and to say that you are working on it. Then start a new branch on your fork, based on `master` (and be sure master is up-to-date). You can start coding.
 
-We follow the [coding style of elementary OS](https://elementary.io/docs/code/reference#code-style) and [its Human Interface Guidlines](https://elementary.io/ja/docs/human-interface-guidelines#human-interface-guidelines) in our code, please try to respect them. But there are two differences:
+We follow the [coding style of elementary OS](https://elementary.io/docs/code/reference#code-style) and [its Human Interface Guidelines](https://elementary.io/ja/docs/human-interface-guidelines#human-interface-guidelines) in our code, please try to respect them. But there are two differences:
 
 * We also name our namespaces after the folder they are in (e.g. `Spreadsheet.Services.Formula.AST` is in `src/Services/Formula/AST`)
 * We don't put the GPL in every file, since the project is licensed under the MIT license
