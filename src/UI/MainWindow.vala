@@ -51,6 +51,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                 var sheet = new Sheet (page);
                 foreach (var cell in page.cells) {
+                    style_popup.foreach ((ch) => {
+                        style_popup.remove (ch);
+                    });
                     if (cell.selected) {
                         style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
                         break;
