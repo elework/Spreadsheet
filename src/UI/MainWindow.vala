@@ -384,6 +384,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         active_sheet.grab_focus ();
     }
 
+    public void clear_content () {
+        active_sheet.selected_cell.formula = "";
+        expression.text = "";
+    }
+
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
     private void draw_rounded_path (Cairo.Context ctx, double x, double y, double width, double height, double radius) {
         double degrees = Math.PI / 180.0;
