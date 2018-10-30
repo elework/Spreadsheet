@@ -294,7 +294,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         Gtk.FileFilter filter = new Gtk.FileFilter ();
         filter.add_pattern ("*.csv");
         filter.set_filter_name ("CSV files");
-        chooser.set_filter (filter);
+        chooser.add_filter (filter);
 
         if (chooser.run () == ResponseType.ACCEPT) {
             try {
@@ -325,7 +325,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             Gtk.FileFilter filter = new Gtk.FileFilter ();
             filter.add_pattern ("*.csv");
             filter.set_filter_name ("CSV files");
-            chooser.set_filter (filter);
+            chooser.add_filter (filter);
 
             if (chooser.run () == ResponseType.ACCEPT) {
                 path = chooser.get_filename ();
