@@ -146,8 +146,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Welcome welcome () {
         var welcome = new Welcome ("Spreadsheet", "Start something new, or continue what you have been working on.");
         welcome.append ("document-new", "New Sheet", "Create an empty sheet");
-        welcome.append ("document-open", "Open a file", "Choose a saved presentation");
-        welcome.append ("x-office-spreadsheet", "Open last file", "Continue working on foo.xlsx");
+        welcome.append ("document-open", "Open File", "Choose a saved file");
+        welcome.append ("x-office-spreadsheet", "Open Last File", "Continue working on foo.xlsx");
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
@@ -162,7 +162,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 Gtk.FileFilter filter = new Gtk.FileFilter ();
                 filter.add_pattern ("*.csv");
                 filter.set_filter_name ("CSV files");
-                chooser.set_filter (filter);
+                chooser.add_filter (filter);
 
                 if (chooser.run () == ResponseType.ACCEPT) {
                     try {
@@ -190,7 +190,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             column_spacing = 10
         };
         var function_list_bt = new Button.with_label ("f (x)");
+        function_list_bt.tooltip_text = "Insert functions to a selected cell";
         expression = new Entry () { hexpand = true };
+        expression.tooltip_text = "Click to insert numbers or functions to a selected cell";
 
         var popup = new Popover (function_list_bt) {
             width_request = 320,
@@ -223,6 +225,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         expression.activate.connect (update_formula);
 
         var style_toggle = new ToggleButton.with_label ("Open Sans 14");
+        style_toggle.tooltip_text = "Set colors to letters in a selected cell";
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 20;
@@ -406,6 +409,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
+        file_button.tooltip_text = "Create a new empty file";
         file_button.clicked.connect (() => {
             print ("New file\n");
         });
@@ -413,6 +417,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
         ToolButton open_button = new ToolButton (open_ico, null);
+        open_button.tooltip_text = "Open a file";
         open_button.clicked.connect (() => {
             open_sheet ();
         });
@@ -420,6 +425,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
         save_button = new ToolButton (save_ico, null);
+        save_button.tooltip_text = "Save this file";
         save_button.clicked.connect (() => {
             save_sheet ();
         });
@@ -427,6 +433,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
+        redo_button.tooltip_text = "Redo";
         redo_button.clicked.connect (() => {
             redo_sheet ();
         });
@@ -434,6 +441,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
         undo_button = new ToolButton (undo_ico, null);
+        undo_button.tooltip_text = "Undo";
         undo_button.clicked.connect (() => {
             undo_sheet ();
         });
