@@ -389,6 +389,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void clear_content () {
         active_sheet.selected_cell.formula = "";
+        update_formula ();
         expression.text = "";
     }
 
