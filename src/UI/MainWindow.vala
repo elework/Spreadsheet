@@ -50,6 +50,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 scrolled.add (viewport);
 
                 var sheet = new Sheet (page);
+                foreach (var cell in page.cells) {
+                    style_popup.foreach ((ch) => {
+                        style_popup.remove (ch);
+                    });
+                    if (cell.selected) {
+                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                        break;
+                    }
+                }
                 sheet.selection_changed.connect ((cell) => {
                     style_popup.foreach ((ch) => {
                         style_popup.remove (ch);
@@ -57,7 +66,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     if (cell != null) {
                         expression.text = cell.formula;
                         expression.sensitive = true;
-                        style_popup.add (new StyleModal (cell.style));
+                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
                     } else {
                         expression.text = "";
                         expression.sensitive = false;

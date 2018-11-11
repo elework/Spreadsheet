@@ -30,7 +30,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             }
 
             cell.notify["display-content"].connect (queue_draw);
-            cell.style.notify.connect (queue_draw);
+            cell.font_style.notify.connect (queue_draw);
+            cell.cell_style.notify.connect (queue_draw);
         }
         can_focus = true;
         button_press_event.connect (on_click);
@@ -215,16 +216,26 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 set_color (cr, select_border);
             } else {
                 cr.save ();
-                set_color (cr, cell.style.background);
+                set_color (cr, cell.cell_style.background);
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.fill ();
                 cr.restore ();
+
+                cr.save ();
+                cr.set_line_width (cell.cell_style.stroke_width);
+                set_color (cr, cell.cell_style.stroke);
+                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                cr.stroke ();
+                cr.restore ();
+
+                cr.set_line_width (BORDER);
+                set_color (cr, gray_bg);
             }
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();
 
             // display the text
-            set_color (cr, light_gray);
+            set_color (cr, cell.font_style.fontcolor);
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
