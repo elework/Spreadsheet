@@ -99,28 +99,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
-    // First time running
     public MainWindow (Gtk.Application app, int w, int h) {
-        Object (application: app);
-        window_position = WindowPosition.CENTER;
-        default_width = w;
-        default_height = h;
-        init ();
+        Object (
+            application: app,
+            default_width: w,
+            default_height: h
+        );
     }
 
-    // Not a first time running
-    public MainWindow.with_state (Gtk.Application app, int x, int y, int w, int h, bool m) {
-        Object (application: app);
-        move (x, y);
-        default_width = w;
-        default_height = h;
-        init ();
-        if (m) {
-            maximize ();
-        }
-    }
-
-    private void init () {
+    construct {
         try {
             icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
         } catch (Error err) {
@@ -133,7 +120,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         add (app_stack);
         show_welcome ();
-        show_all ();
     }
 
     // Save position, size and state of window when they're changed

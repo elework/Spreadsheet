@@ -51,11 +51,18 @@ public class Spreadsheet.App : Gtk.Application {
         var window_height = settings.get_int ("window-height");
         var window_maximized = settings.get_boolean ("window-maximized");
 
-        if (window_x != -1 || window_y != -1) { // Not a first time running
-            window = new MainWindow.with_state (this, window_x, window_y, window_width, window_height, window_maximized);
-        } else {
-            window = new MainWindow (this, window_width, window_height); // First time running
+        if (window_x != -1 || window_y != -1) { // Not a first time launch
+            window = new MainWindow (this, window_width, window_height);
+            window.move (window_x, window_y);
+            if (window_maximized) {
+                window.maximize ();
+            }
+        } else { // First time launch
+            window = new MainWindow (this, window_width, window_height);
+            window.window_position = Gtk.WindowPosition.CENTER;
         }
+
+        window.show_all ();
 
         var back_action = new SimpleAction ("back", null);
         add_action (back_action);
