@@ -114,12 +114,5 @@ public class Spreadsheet.App : Gtk.Application {
             window.active_sheet.grab_focus ();
             window.expression.text = "";
         });
-
-        var clear_content_action = new SimpleAction ("clear_content", null);
-        add_action (clear_content_action);
-        set_accels_for_action ("app.clear_content", {"Delete"});
-        clear_content_action.activate.connect (() => {
-            window.clear_content ();
-        });
     }
 }
