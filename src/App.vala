@@ -1,4 +1,5 @@
 using Gee;
+using Spreadsheet.Services;
 using Spreadsheet.UI;
 using Spreadsheet.Models;
 
@@ -55,5 +56,63 @@ public class Spreadsheet.App : Gtk.Application {
         } else {
             window = new MainWindow (this, window_width, window_height); // First time running
         }
+
+        var back_action = new SimpleAction ("back", null);
+        add_action (back_action);
+        set_accels_for_action ("app.back", {"<Alt>Home"});
+        back_action.activate.connect (() => {
+            window.show_welcome ();
+        });
+
+        var open_action = new SimpleAction ("open", null);
+        add_action (open_action);
+        set_accels_for_action ("app.open", {"<Control>o"});
+        open_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.open_sheet ();
+            }
+        });
+
+        var save_action = new SimpleAction ("save", null);
+        add_action (save_action);
+        set_accels_for_action ("app.save", {"<Control>s"});
+        save_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.save_sheet ();
+            }
+        });
+
+        var undo_action = new SimpleAction ("undo", null);
+        add_action (undo_action);
+        set_accels_for_action ("app.undo", {"<Control>z"});
+        undo_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_undo ()) {
+                window.undo_sheet ();
+            }
+        });
+
+        var redo_action = new SimpleAction ("redo", null);
+        add_action (redo_action);
+        set_accels_for_action ("app.redo", {"<Control><Shift>z"});
+        redo_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_redo ()) {
+                window.redo_sheet ();
+            }
+        });
+
+        var focus_expression_action = new SimpleAction ("focus_expression", null);
+        add_action (focus_expression_action);
+        set_accels_for_action ("app.focus_expression", {"F2"});
+        focus_expression_action.activate.connect (() => {
+            window.expression.grab_focus ();
+        });
+
+        var back_focus_action = new SimpleAction ("back_focus", null);
+        add_action (back_focus_action);
+        set_accels_for_action ("app.back_focus", {"Escape"});
+        back_focus_action.activate.connect (() => {
+            window.active_sheet.grab_focus ();
+            window.expression.text = "";
+        });
     }
 }
