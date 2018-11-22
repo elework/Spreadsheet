@@ -15,8 +15,8 @@
    viewBox="0 0 128 128"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="icon grad.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="icon.svg"
    inkscape:export-filename="/home/baptistegelez/Images/dev/Spreadsheet/icon@128 grad.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -117,7 +117,7 @@
        fx="13.880716"
        fy="1041.3864"
        r="11.402097"
-       gradientTransform="matrix(-1.5800261,2.7737e-7,-6.7359962e-8,-0.38372093,-87.964036,-644.00982)"
+       gradientTransform="matrix(-1.5800261,2.7737e-7,-6.7359962e-8,-0.38372093,-87.964036,-643.76031)"
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
@@ -136,9 +136,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="37.566321"
-     inkscape:cy="58.726611"
+     inkscape:zoom="8"
+     inkscape:cx="71.591582"
+     inkscape:cy="61.369677"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -164,35 +164,43 @@
     <sodipodi:guide
        position="0,0"
        orientation="0,128"
-       id="guide4692" />
+       id="guide4692"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="128,0"
        orientation="-128,0"
-       id="guide4694" />
+       id="guide4694"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="128,128"
        orientation="0,-128"
-       id="guide4696" />
+       id="guide4696"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="0,128"
        orientation="128,0"
-       id="guide4698" />
+       id="guide4698"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="-13,113"
        orientation="0,1"
-       id="guide4708" />
+       id="guide4708"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="-18,9"
        orientation="0,1"
-       id="guide4710" />
+       id="guide4710"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="9,19.5"
        orientation="1,0"
-       id="guide4714" />
+       id="guide4714"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="119,11"
        orientation="1,0"
-       id="guide4716" />
+       id="guide4716"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -202,7 +210,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -217,8 +225,8 @@
        width="18"
        height="8.7504463"
        x="-128"
-       y="-1047.8622"
-       transform="scale(-1,-1)" />
+       y="-1047.6127"
+       transform="scale(-1)" />
     <rect
        style="opacity:0.6;fill:url(#radialGradient4987);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4979"

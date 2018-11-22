@@ -1,11 +1,14 @@
-using Gee;
+/**
+* Class representing a whole Spreadsheet file.
+*/
+public class Spreadsheet.Models.SpreadSheet : Object {
 
-namespace Spreadsheet.Models {
-
-    public class SpreadSheet : Object {
-
-        public string title { get; set; }
-        public string file_path { get; set; }
-        public ArrayList<Page> pages { get; set; }
+    public void add_page (Page p) {
+        p.document = this;
+        pages.add (p);
     }
+
+    public string title { get; set; }
+    public string file_path { get; set; }
+    public Gee.ArrayList<Page> pages { get; set; default = new Gee.ArrayList<Page> (); }
 }

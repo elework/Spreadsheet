@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/xyz/gelez/spreadsheet/" id="xyz.gelez.spreadsheet">
+    <key name="window-width" type="i">
+      <default>800</default>
+      <summary>Window width</summary>
+      <description>Width of last closed window</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>700</default>
+      <summary>Window height</summary>
+      <description>Height of last closed window</description>
+    </key>
+    <key name="window-x" type="i">
+      <default>-1</default>
+      <summary>Window x position</summary>
+      <description>X position of last closed window</description>
+    </key>
+    <key name="window-y" type="i">
+      <default>-1</default>
+      <summary>Window y position</summary>
+      <description>Y position of last closed window</description>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+      <summary>Open window maximized</summary>
+      <description>If true, window opens maximized</description>
+    </key>
+  </schema>
+</schemalist>
