@@ -271,12 +271,21 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void new_sheet () {
         init_header ();
+        string file_name = "Untitled Presentation 1.csv";
+        var documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS) + "/%s".printf ("Spreadsheets");
+        if (documents != null) {
+            DirUtils.create_with_parents (documents, 0775);
+        } else {
+            documents = Environment.get_home_dir ();
+        }
         var file = new SpreadSheet () {
-            title = "New Spreadsheet"
+            title = file_name,
+            file_path = Path.build_filename ("%s/%s".printf (documents, file_name))
         };
         file.add_page (new Page.empty () { title = "Page 1" });
         this.file = file;
         show_all ();
+        save_sheet ();
 
         app_stack.set_visible_child_name ("app");
     }
@@ -309,13 +318,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public void save_sheet () {
-        string path = "";
-        if (file.file_path.has_suffix (".csv")) {
-            path = file.file_path;
-            new CSVWriter (active_sheet.page).write_to_file (path);
-        } else {
-            save_as_sheet ();
-        }
+        new CSVWriter (active_sheet.page).write_to_file (file.file_path);
     }
 
     public void save_as_sheet () {
