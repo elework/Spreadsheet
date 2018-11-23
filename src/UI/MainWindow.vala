@@ -341,6 +341,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         if (chooser.run () == ResponseType.ACCEPT) {
             path = chooser.get_filename ();
+            if (!path.has_suffix (".csv")) {
+                path += ".csv";
+            }
         } else {
             chooser.close ();
             return;
