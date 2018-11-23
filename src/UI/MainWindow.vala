@@ -91,7 +91,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     ToolButton file_button { get; set; }
     ToolButton open_button { get; set; }
-    ToolButton save_button { get; set; }
+    ToolButton save_as_button { get; set; }
     ToolButton undo_button { get; set; }
     ToolButton redo_button { get; set; }
 
@@ -337,6 +337,31 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         new CSVWriter (active_sheet.page).write_to_file (path);
     }
 
+    public void save_as_sheet () {
+        string path = "";
+        var chooser = new FileChooserDialog (
+            "Save your work", this, FileChooserAction.SAVE,
+            "_Cancel",
+            ResponseType.CANCEL,
+            "_Save",
+            ResponseType.ACCEPT);
+
+        Gtk.FileFilter filter = new Gtk.FileFilter ();
+        filter.add_pattern ("*.csv");
+        filter.set_filter_name ("CSV files");
+        chooser.add_filter (filter);
+
+        if (chooser.run () == ResponseType.ACCEPT) {
+            path = chooser.get_filename ();
+        } else {
+            chooser.close ();
+            return;
+        }
+
+        chooser.close ();
+        new CSVWriter (active_sheet.page).write_to_file (path);
+    }
+
     public void undo_sheet () {
         HistoryManager.instance.undo ();
         update_header ();
@@ -415,13 +440,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
         header.pack_start (open_button);
 
-        Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
-        save_button = new ToolButton (save_ico, null);
-        save_button.tooltip_text = "Save this file";
-        save_button.clicked.connect (() => {
-            save_sheet ();
+        Image save_as_ico = new Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
+        save_as_button = new ToolButton (save_as_ico, null);
+        save_as_button.tooltip_text = "Save this file with a different name";
+        save_as_button.clicked.connect (() => {
+            save_as_sheet ();
         });
-        header.pack_start (save_button);
+        header.pack_start (save_as_button);
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
