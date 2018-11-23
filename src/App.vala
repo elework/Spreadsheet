@@ -89,6 +89,15 @@ public class Spreadsheet.App : Gtk.Application {
             }
         });
 
+        var save_as_action = new SimpleAction ("save_as", null);
+        add_action (save_as_action);
+        set_accels_for_action ("app.save_as", {"<Control><Shift>s"});
+        save_as_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.save_as_sheet ();
+            }
+        });
+
         var undo_action = new SimpleAction ("undo", null);
         add_action (undo_action);
         set_accels_for_action ("app.undo", {"<Control>z"});
