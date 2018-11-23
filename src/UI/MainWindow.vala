@@ -11,7 +11,11 @@ using Gee;
 
 public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
-    public HeaderBar header { get; set; default = new HeaderBar (); }
+    public HeaderBar header {
+        get;
+        set;
+        default = new HeaderBar () { show_close_button = true };
+    }
 
     public Stack app_stack { get; set; default = new Stack (); }
 
@@ -272,7 +276,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         };
         file.add_page (new Page.empty () { title = "Page 1" });
         this.file = file;
-        header.show_close_button = true;
         show_all ();
 
         app_stack.set_visible_child_name ("app");
@@ -348,7 +351,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         clear_header ();
         header.title = "Spreadsheet";
         header.subtitle = null;
-        header.show_close_button = true;
         expression.text = "";
 
         app_stack.set_visible_child_name ("welcome");
