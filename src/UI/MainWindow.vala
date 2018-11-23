@@ -273,7 +273,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void new_sheet () {
         init_header ();
-        string file_name = "Untitled Presentation %i".printf (id);
+        string file_name = "Untitled Spreadsheet %i".printf (id);
         string suffix = ".csv";
         var documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS) + "/%s".printf ("Spreadsheets");
         if (documents != null) {
