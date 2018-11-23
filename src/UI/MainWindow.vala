@@ -53,7 +53,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 viewport.set_size_request (tabs.get_allocated_width (), tabs.get_allocated_height ());
                 scrolled.add (viewport);
 
-                var sheet = new Sheet (page);
+                var sheet = new Sheet (page, this);
                 foreach (var cell in page.cells) {
                     style_popup.foreach ((ch) => {
                         style_popup.remove (ch);
