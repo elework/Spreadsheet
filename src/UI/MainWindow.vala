@@ -312,29 +312,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string path = "";
         if (file.file_path.has_suffix (".csv")) {
             path = file.file_path;
+            new CSVWriter (active_sheet.page).write_to_file (path);
         } else {
-            var chooser = new FileChooserDialog (
-                "Save your work", this, FileChooserAction.SAVE,
-                "_Cancel",
-                ResponseType.CANCEL,
-                "_Save",
-                ResponseType.ACCEPT);
-
-            Gtk.FileFilter filter = new Gtk.FileFilter ();
-            filter.add_pattern ("*.csv");
-            filter.set_filter_name ("CSV files");
-            chooser.add_filter (filter);
-
-            if (chooser.run () == ResponseType.ACCEPT) {
-                path = chooser.get_filename ();
-            } else {
-                chooser.close ();
-                return;
-            }
-
-            chooser.close ();
+            save_as_sheet ();
         }
-        new CSVWriter (active_sheet.page).write_to_file (path);
     }
 
     public void save_as_sheet () {
