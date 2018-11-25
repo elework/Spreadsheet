@@ -338,6 +338,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         filter.add_pattern ("*.csv");
         filter.set_filter_name ("CSV files");
         chooser.add_filter (filter);
+        chooser.do_overwrite_confirmation = true;
 
         if (chooser.run () == ResponseType.ACCEPT) {
             path = chooser.get_filename ();
