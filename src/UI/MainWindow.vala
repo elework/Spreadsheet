@@ -273,14 +273,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void new_sheet () {
         init_header ();
+
         string file_name = "Untitled Spreadsheet %i".printf (id);
         string suffix = ".csv";
+
         var documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS) + "/%s".printf ("Spreadsheets");
         if (documents != null) {
             DirUtils.create_with_parents (documents, 0775);
         } else {
             documents = Environment.get_home_dir ();
         }
+
         var file = new SpreadSheet () {
             title = file_name,
             file_path = Path.build_filename ("%s/%s%s".printf (documents, file_name, suffix))
@@ -321,6 +324,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.close ();
     }
 
+    // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
     }
@@ -352,6 +356,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         chooser.close ();
         new CSVWriter (active_sheet.page).write_to_file (path);
+
+        // Open the saved file
         try {
             file = new CSVParser.from_file (path).parse ();
         } catch (ParserError err) {
