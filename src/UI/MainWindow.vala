@@ -351,6 +351,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         chooser.close ();
         new CSVWriter (active_sheet.page).write_to_file (path);
+        try {
+            file = new CSVParser.from_file (path).parse ();
+        } catch (ParserError err) {
+            debug ("Error: " + err.message);
+        }
     }
 
     public void undo_sheet () {
