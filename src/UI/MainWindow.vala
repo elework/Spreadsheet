@@ -293,7 +293,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var file = new SpreadSheet () {
             title = file_name,
-            file_path = Path.build_filename ("%s/%s%s".printf (documents, file_name, suffix))
+            file_path = path.get_path ()
         };
         file.add_page (new Page.empty () { title = "Page 1" });
         this.file = file;
