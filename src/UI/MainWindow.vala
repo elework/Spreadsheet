@@ -98,8 +98,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     Popover style_popup;
 
-    int id = 1;
-
     private void update_header () {
         undo_button.sensitive = HistoryManager.instance.can_undo ();
         redo_button.sensitive = HistoryManager.instance.can_redo ();
@@ -272,17 +270,26 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void new_sheet () {
+        int id = 1;
+        string file_name = "";
+        string suffix = "";
+        string documents = "";
+        File? path = null;
+
         init_header ();
 
-        string file_name = "Untitled Spreadsheet %i".printf (id);
-        string suffix = ".csv";
+        do {
+            file_name = "Untitled Spreadsheet %i".printf (id++);
+            suffix = ".csv";
 
-        var documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS) + "/%s".printf ("Spreadsheets");
-        if (documents != null) {
-            DirUtils.create_with_parents (documents, 0775);
-        } else {
-            documents = Environment.get_home_dir ();
-        }
+            documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS) + "/%s".printf ("Spreadsheets");
+            path = File.new_for_path ("%s/%s%s".printf (documents, file_name, suffix));
+            if (documents != null) {
+                DirUtils.create_with_parents (documents, 0775);
+            } else {
+                documents = Environment.get_home_dir ();
+            }
+        } while (path.query_exists ());
 
         var file = new SpreadSheet () {
             title = file_name,
