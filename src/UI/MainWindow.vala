@@ -200,8 +200,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             position = PositionType.BOTTOM,
             border_width = 10
         };
+
         var function_list = new ListBox ();
-        var function_list_scrolled = new ScrolledWindow (null, null);
         foreach (var func in App.functions) {
             var row = new ListBoxRow () { selectable = false };
             row.margin_top = row.margin_bottom = 3;
@@ -216,8 +216,21 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             });
             function_list.add (row);
         }
+
+        var function_list_search_entry = new SearchEntry ();
+        function_list_search_entry.margin_bottom = 6;
+        function_list_search_entry.placeholder_text = "Search functions";
+
+        var function_list_scrolled = new ScrolledWindow (null, null);
+        function_list_scrolled.expand = true;
         function_list_scrolled.add (function_list);
-        popup.add (function_list_scrolled);
+
+        var function_list_grid = new Grid ();
+        function_list_grid.orientation = Orientation.HORIZONTAL;
+        function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
+        function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
+
+        popup.add (function_list_grid);
 
         function_list_bt.clicked.connect (popup.show_all);
 
