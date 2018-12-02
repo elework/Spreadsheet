@@ -14,6 +14,8 @@ res = gnome.compile_resources(
     source_dir: [ join_paths(meson.source_root(), 'data') ]
 )
 
+subdir('data')
+
 executable(meson.project_name(),
     'src/AlphabetGenerator.vala',
     'src/App.vala',
