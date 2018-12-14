@@ -4,8 +4,8 @@ gnome = import('gnome')
 glib = dependency('glib-2.0', version: '>=2.38')
 gobject = dependency('gobject-2.0')
 gee = dependency('gee-0.8')
-gtk = dependency('gtk+-3.0')
-granite = dependency('granite')
+gtk = dependency('gtk+-3.0', version: '>=3.22')
+granite = dependency('granite', version: '>=5.2.0')
 pango = dependency('pango')
 
 res = gnome.compile_resources(
