@@ -16,8 +16,8 @@ The goal of this project is to build a Spreadsheet app that perfectly fits in el
 You'll need the following dependencies:
 
 * libgee-0.8-dev
-* libgranite-dev
-* libgtk-3-dev
+* libgranite-dev (>= 5.2.0)
+* libgtk-3-dev (>= 3.22)
 * meson
 * valac
 
