@@ -414,7 +414,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
-        file_button.tooltip_text = "Create a new empty file";
+        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, "Create a new empty file");
         file_button.clicked.connect (() => {
             print ("New file\n");
         });
@@ -422,7 +422,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
         ToolButton open_button = new ToolButton (open_ico, null);
-        open_button.tooltip_text = "Open a file";
+        open_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>O"}, "Open a file");
         open_button.clicked.connect (() => {
             open_sheet ();
         });
@@ -430,7 +430,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image save_ico = new Image.from_icon_name ("document-save", Gtk.IconSize.SMALL_TOOLBAR);
         save_button = new ToolButton (save_ico, null);
-        save_button.tooltip_text = "Save this file";
+        save_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>S"}, "Save this file");
         save_button.clicked.connect (() => {
             save_sheet ();
         });
@@ -438,7 +438,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
-        redo_button.tooltip_text = "Redo";
+        redo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>Z"}, "Redo");
         redo_button.clicked.connect (() => {
             redo_sheet ();
         });
@@ -446,7 +446,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
         undo_button = new ToolButton (undo_ico, null);
-        undo_button.tooltip_text = "Undo";
+        undo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>Z"}, "Undo");
         undo_button.clicked.connect (() => {
             undo_sheet ();
         });
