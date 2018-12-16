@@ -242,6 +242,16 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
 
             cr.move_to (x, y);
+            cr.set_font_size (cell.font_style.fontsize);
+            Cairo.FontWeight font_weight = Cairo.FontWeight.NORMAL;
+            Cairo.FontSlant font_slant = Cairo.FontSlant.NORMAL;
+            if (cell.font_style.is_bold) {
+                font_weight = Cairo.FontWeight.BOLD;
+            }
+            if (cell.font_style.is_italic) {
+                font_slant = Cairo.FontSlant.ITALIC;
+            }
+            cr.select_font_face ("Open Sans", font_slant, font_weight);
             cr.show_text (cell.display_content);
             set_color (cr, gray_bg);
 

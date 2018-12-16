@@ -17,15 +17,34 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_stacksw.halign = Gtk.Align.CENTER;
         style_stacksw.stack = style_stack;
 
-        margin = 6;
         attach (style_stacksw, 0, 0, 1, 1);
         attach (style_stack, 0, 1, 1, 1);
     }
 
     private Gtk.Grid fonts_grid (FontStyle font_style) {
-        var fonts_grid = new Gtk.Grid ();
-        fonts_grid.margin_top = 6;
-        fonts_grid.column_spacing = 6;
+        var size_spin_button = new Gtk.SpinButton.with_range (5, 45, 2);
+        size_spin_button.tooltip_text = "Set font size";
+        font_style.bind_property ("fontsize", size_spin_button, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        // TODO: Add a widget that can choose a font
+
+        var style_label = new Granite.HeaderLabel ("Style");
+        style_label.halign = Gtk.Align.START;
+
+        var bold_button = new Gtk.ToggleButton ();
+        bold_button.add (new Gtk.Image.from_icon_name ("format-text-bold-symbolic", Gtk.IconSize.BUTTON));
+        bold_button.focus_on_click = false;
+        bold_button.tooltip_text = "Bold text";
+        font_style.bind_property ("is_bold", bold_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        var italic_button = new Gtk.ToggleButton ();
+        italic_button.add (new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON));
+        italic_button.focus_on_click = false;
+        italic_button.tooltip_text = "Italic text";
+        font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
+        style_box.pack_start (bold_button);
+        style_box.pack_start (italic_button);
 
         var color_label = new Granite.HeaderLabel ("Color");
         color_label.halign = Gtk.Align.START;
@@ -37,9 +56,25 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_reset_button.halign = Gtk.Align.START;
         color_reset_button.tooltip_text = "Reset font color of a selected cell to black";
 
-        fonts_grid.attach (color_label, 0, 0, 1, 1);
-        fonts_grid.attach (color_button, 0, 1, 1, 1);
-        fonts_grid.attach (color_reset_button, 1, 1, 1, 1);
+        var left_grid = new Gtk.Grid ();
+        left_grid.margin = 6;
+        left_grid.attach (size_spin_button, 0, 0, 1, 1);
+
+        var right_grid = new Gtk.Grid ();
+        right_grid.margin = 6;
+        right_grid.attach (style_label, 0, 0, 1, 1);
+        right_grid.attach (style_box, 0, 1, 1, 1);
+        right_grid.attach (color_label, 0, 2, 1, 1);
+        right_grid.attach (color_button, 0, 3, 1, 1);
+        right_grid.attach (color_reset_button, 1, 3, 1, 1);
+
+        var fonts_grid = new Gtk.Grid ();
+        fonts_grid.margin_top = 6;
+        fonts_grid.orientation = Gtk.Orientation.VERTICAL;
+        fonts_grid.column_spacing = 6;
+        fonts_grid.attach (left_grid, 0, 0, 1, 1);
+        fonts_grid.attach (new Gtk.Separator (Gtk.Orientation.VERTICAL), 1, 0, 1, 1);
+        fonts_grid.attach (right_grid, 2, 0, 1, 1);
 
         // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
         // 1. widgets are created
