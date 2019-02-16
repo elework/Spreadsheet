@@ -31,10 +31,10 @@ Then clone the project and go to its root directory. Run `meson build` to config
     cd build
     ninja
 
-To install, use `ninja install`, then execute with `xyz.gelez.spreadsheet`
+To install, use `ninja install`, then execute with `com.github.ryonakano.spreadsheet`
 
     sudo ninja install
-    xyz.gelez.spreadsheet
+    com.github.ryonakano.spreadsheet
 
 ## Contributing
 
