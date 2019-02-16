@@ -146,6 +146,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         var main_window = this.get_toplevel ();
         Gtk.StyleContext style = main_window.get_style_context ();
 
+        RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
+        RGBA selected = style.get_color (Gtk.StateFlags.SELECTED);
+
         cr.set_font_size (HEIGHT - PADDING * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
@@ -168,9 +171,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 style.render_frame (cr, 0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                 cr.restore ();
 
-                set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                set_color (cr, selected);
             } else {
-                set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
+                set_color (cr, normal);
             }
 
             TextExtents extents;
@@ -195,9 +198,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 style.render_frame (cr, left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                 cr.restore ();
 
-                set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                set_color (cr, selected);
             } else {
-                set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
+                set_color (cr, normal);
             }
 
             double x = left_margin + (WIDTH * i) + PADDING;
@@ -217,15 +220,15 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.save ();
                 cr.restore ();
 
-                set_color (cr, style.get_color (Gtk.StateFlags.SELECTED));
+                set_color (cr, selected);
             } else {
-                set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
+                set_color (cr, normal);
             }
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();
 
             // display the text
-            set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
+            set_color (cr, normal);
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
