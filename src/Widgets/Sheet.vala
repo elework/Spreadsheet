@@ -160,7 +160,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         style.render_background (cr, left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
 
         // draw the letters and the numbers on the side
-        set_color (cr, style.get_color (Gtk.StateFlags.NORMAL));
+        set_color (cr, normal);
         cr.set_line_width (BORDER);
 
         // numbers on the left side
