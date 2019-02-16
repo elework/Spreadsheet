@@ -15,6 +15,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     const double BORDER = 0.5;
 
     public Page page { get; set; }
+    
+    private MainWindow window;
 
     public Cell? selected_cell { get; set; }
 
@@ -24,6 +26,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
+        this.window = window;
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
@@ -143,8 +146,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     public override bool draw (Context cr) {
-        var main_window = this.get_toplevel ();
-        Gtk.StyleContext style = main_window.get_style_context ();
+        var style = window.get_style_context ();
 
         RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
         RGBA selected = style.get_color (Gtk.StateFlags.SELECTED);
