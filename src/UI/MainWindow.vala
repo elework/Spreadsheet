@@ -113,7 +113,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     construct {
         try {
-            icon = new Pixbuf.from_resource_at_scale ("/xyz/gelez/spreadsheet/icons/icon.svg", 48, 48, true);
+            icon = new Pixbuf.from_resource_at_scale ("/com/github/ryonakano/spreadsheet/icons/icon.svg", 48, 48, true);
         } catch (Error err) {
             debug ("Error: " + err.message);
         }

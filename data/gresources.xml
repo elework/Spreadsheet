@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/xyz/gelez/spreadsheet/icons">
+  <gresource prefix="/com/github/ryonakano/spreadsheet/icons">
     <file alias="icon.svg" compressed="true" preprocess="xml-stripblanks">icon.svg</file>
   </gresource>
 </gresources>

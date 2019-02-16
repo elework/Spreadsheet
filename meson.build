@@ -1,4 +1,4 @@
-project('xyz.gelez.spreadsheet', 'vala', 'c')
+project('com.github.ryonakano.spreadsheet', 'vala', 'c')
 
 gnome = import('gnome')
 glib = dependency('glib-2.0', version: '>=2.38')
@@ -61,7 +61,7 @@ executable(meson.project_name(),
 )
 
 install_data(
-    'data/xyz.gelez.spreadsheet.gschema.xml',
+    'data/com.github.ryonakano.spreadsheet.gschema.xml',
     install_dir: join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
 )
 
