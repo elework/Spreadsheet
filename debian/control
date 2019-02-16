@@ -1,4 +1,4 @@
-Source: xyz.gelez.spreadsheet
+Source: com.github.ryonakano.spreadsheet
 Section: x11
 Priority: optional
 Maintainer: Ryo Nakano <ryonakaknock3@gmail.com>
@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 10.5.1),
                valac (>= 0.40.0)
 Standards-Version: 4.1.1
 
-Package: xyz.gelez.spreadsheet
+Package: com.github.ryonakano.spreadsheet
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Create simple and beautiful spreadsheets
