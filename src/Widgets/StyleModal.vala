@@ -27,9 +27,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         fonts_grid.margin_top = 6;
         fonts_grid.column_spacing = 6;
 
-        var color_label = new Gtk.Label ("Color");
+        var color_label = new Granite.HeaderLabel ("Color");
         color_label.halign = Gtk.Align.START;
-        color_label.get_style_context ().add_class ("h4");
         color_button = new Gtk.ColorButton ();
         color_button.halign = Gtk.Align.START;
         color_button.tooltip_text = "Set font color of a selected cell";
@@ -64,9 +63,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         cells_grid.margin_top = 6;
         cells_grid.column_spacing = 6;
 
-        var bg_label = new Gtk.Label ("Fill");
+        var bg_label = new Granite.HeaderLabel ("Fill");
         bg_label.halign = Gtk.Align.START;
-        bg_label.get_style_context ().add_class ("h4");
         bg_button = new Gtk.ColorButton ();
         bg_button.halign = Gtk.Align.START;
         bg_button.tooltip_text = "Set fill color of a selected cell";
@@ -75,9 +73,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bg_reset_button.halign = Gtk.Align.START;
         bg_reset_button.tooltip_text = "Remove fill color of a selected cell";
 
-        var sr_label = new Gtk.Label ("Stroke");
+        var sr_label = new Granite.HeaderLabel ("Stroke");
         sr_label.halign = Gtk.Align.START;
-        sr_label.get_style_context ().add_class ("h4");
         sr_button = new Gtk.ColorButton ();
         sr_button.halign = Gtk.Align.START;
         sr_button.tooltip_text = "Set stroke color of a selected cell";

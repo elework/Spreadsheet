@@ -3,6 +3,7 @@ using Gee;
 using Gtk;
 using Cairo;
 using Spreadsheet.Models;
+using Spreadsheet.UI;
 
 
 public class Spreadsheet.Widgets.Sheet : EventBox {
@@ -21,7 +22,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void focus_expression_entry ();
 
-    public Sheet (Page page) {
+    public Sheet (Page page, MainWindow window) {
         this.page = page;
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
@@ -29,9 +30,18 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cell.selected = true;
             }
 
-            cell.notify["display-content"].connect (queue_draw);
-            cell.font_style.notify.connect (queue_draw);
-            cell.cell_style.notify.connect (queue_draw);
+            cell.notify["display-content"].connect (() => {
+                queue_draw ();
+                window.save_sheet ();
+            });
+            cell.font_style.notify.connect (() => {
+                queue_draw ();
+                window.save_sheet ();
+            });
+            cell.cell_style.notify.connect (() => {
+                queue_draw ();
+                window.save_sheet ();
+            });
         }
         can_focus = true;
         button_press_event.connect (on_click);
