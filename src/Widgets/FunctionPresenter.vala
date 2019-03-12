@@ -13,10 +13,10 @@ public class Spreadsheet.Widgets.FunctionPresenter : EventBox {
         name_label.halign = Align.START;
         box.pack_start (name_label);
 
-        var doc_label = new Label (@"<span foreground=\"gray\">$(function.doc)</span>");
+        var doc_label = new Label (function.doc);
         doc_label.justify = Justification.FILL;
         doc_label.halign = Align.START;
-        doc_label.use_markup = true;
+        doc_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
         box.pack_start (doc_label);
 
         add (box);
