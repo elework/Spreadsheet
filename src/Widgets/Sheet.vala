@@ -215,22 +215,49 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
         // draw the cells
         foreach (var cell in page.cells) {
+            Gdk.RGBA bg = cell.cell_style.background;
+            Gdk.RGBA bg_default = { 255, 255, 255, 0 };
+            if (bg != bg_default) {
+                cr.save ();
+                set_color (cr, bg);
+                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                cr.fill ();
+                cr.restore ();
+            }
+
+            Gdk.RGBA sr = cell.cell_style.stroke;
+            Gdk.RGBA sr_default = { 0, 0, 0, 0 };
+            double sr_w = cell.cell_style.stroke_width;
+            cr.save ();
+
+            if (sr_w != 1.0) {
+                cr.set_line_width (sr_w);
+            } else {
+                cr.set_line_width (1.0);
+            }
+
             if (cell.selected) {
                 cr.set_line_width (3.0);
-
-                // blue background
-                cr.save ();
-                cr.restore ();
-
                 set_color (cr, selected);
+            } else if (sr != sr_default) {
+                set_color (cr, sr);
             } else {
                 set_color (cr, normal);
             }
+
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();
+            cr.restore ();
 
             // display the text
-            set_color (cr, normal);
+            Gdk.RGBA color = cell.font_style.fontcolor;
+            Gdk.RGBA color_default = { 0, 0, 0, 1 };
+            cr.save ();
+            if (color != color_default) {
+                set_color (cr, color);
+            } else {
+                set_color (cr, normal);
+            }
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
@@ -238,6 +265,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             cr.move_to (x, y);
             cr.show_text (cell.display_content);
+            cr.restore ();
 
             if (cell.selected) {
                 cr.set_line_width (BORDER);
