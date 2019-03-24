@@ -15,7 +15,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     const double BORDER = 0.5;
 
     public Page page { get; set; }
-    
+
     private MainWindow window;
 
     public Cell? selected_cell { get; set; }
@@ -258,20 +258,16 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             } else {
                 set_color (cr, normal);
             }
+
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
             double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
-
             cr.move_to (x, y);
             cr.show_text (cell.display_content);
             cr.restore ();
-
-            if (cell.selected) {
-                cr.set_line_width (BORDER);
-            }
         }
+
         return true;
     }
 }
-
