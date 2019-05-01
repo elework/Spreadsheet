@@ -5,7 +5,6 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
-    public MainWindow window;
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -51,14 +50,16 @@ public class Spreadsheet.App : Gtk.Application {
         var window_height = settings.get_int ("window-height");
         var window_maximized = settings.get_boolean ("window-maximized");
 
+        var window = new MainWindow (this);
+        window.set_default_size (window_width, window_height);
+
         if (window_x != -1 || window_y != -1) { // Not a first time launch
-            window = new MainWindow (this, window_width, window_height);
             window.move (window_x, window_y);
+
             if (window_maximized) {
                 window.maximize ();
             }
         } else { // First time launch
-            window = new MainWindow (this, window_width, window_height);
             window.window_position = Gtk.WindowPosition.CENTER;
         }
 
