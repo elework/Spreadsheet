@@ -146,6 +146,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     public override bool draw (Context cr) {
+        RGBA default_cell_stroke = { 77.0, 77.0, 77.0, 1 };
+        RGBA default_font_color = { 0, 0, 0, 1 };
+
         var style = window.get_style_context ();
 
         RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
@@ -157,7 +160,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         double left_margin = get_left_margin ();
 
         // white background
-        style.render_background (cr, left_margin, HEIGHT, this.get_allocated_width () - left_margin, this.get_allocated_height () - HEIGHT);
+        cr.set_source_rgb (1, 1, 1);
+        cr.rectangle (left_margin, HEIGHT, get_allocated_width () - left_margin, get_allocated_height () - HEIGHT);
+        cr.fill ();
 
         // draw the letters and the numbers on the side
         set_color (cr, normal);
@@ -236,13 +241,14 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.set_line_width (1.0);
             }
 
-            if (cell.selected) {
-                cr.set_line_width (3.0);
-                set_color (cr, selected);
-            } else if (sr != sr_default) {
+            if (sr != sr_default) {
                 set_color (cr, sr);
             } else {
-                set_color (cr, normal);
+                set_color (cr, default_cell_stroke);
+            }
+
+            if (cell.selected) {
+                cr.set_line_width (3.0);
             }
 
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
@@ -256,7 +262,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             if (color != color_default) {
                 set_color (cr, color);
             } else {
-                set_color (cr, normal);
+                set_color (cr, default_font_color);
             }
 
             TextExtents extents;
