@@ -16,6 +16,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public Page page { get; set; }
 
+    private MainWindow window;
+
     public Cell? selected_cell { get; set; }
 
     public signal void selection_changed (Cell? new_selection);
@@ -24,6 +26,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
+        this.window = window;
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
@@ -143,10 +146,13 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     public override bool draw (Context cr) {
-        RGBA select_bg = { 205.0, 232.0, 245.0, 1 };
-        RGBA select_border = { 0, 136.0, 204.0, 1 };
-        RGBA gray_bg = { 200.0, 200.0, 200.0, 1 };
-        RGBA light_gray = { 51.0, 51.0, 51.0, 1 };
+        RGBA default_cell_stroke = { 77.0, 77.0, 77.0, 1 };
+        RGBA default_font_color = { 0, 0, 0, 1 };
+
+        var style = window.get_style_context ();
+
+        RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
+        RGBA selected = style.get_color (Gtk.StateFlags.SELECTED);
 
         cr.set_font_size (HEIGHT - PADDING * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
@@ -159,7 +165,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.fill ();
 
         // draw the letters and the numbers on the side
-        set_color (cr, gray_bg);
+        set_color (cr, normal);
         cr.set_line_width (BORDER);
 
         // numbers on the left side
@@ -169,22 +175,23 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             if (selected_cell != null && selected_cell.line == i) {
                 cr.save ();
-                set_color (cr, select_bg);
-                cr.rectangle (0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
-                cr.fill ();
+                style.render_frame (cr, 0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                 cr.restore ();
+
+                set_color (cr, selected);
+            } else {
+                set_color (cr, normal);
             }
 
             TextExtents extents;
             cr.text_extents (i.to_string (), out extents);
             double x = left_margin - (PADDING + BORDER + extents.width);
             double y = HEIGHT + HEIGHT * i - (PADDING + BORDER);
-            set_color (cr, light_gray);
+
             cr.move_to (x, y);
             if (i != 0) {
                 cr.show_text (i.to_string ());
             }
-            set_color (cr, gray_bg);
         }
 
         // letters on the top
@@ -195,71 +202,78 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             if (selected_cell != null && selected_cell.column == i) {
                 cr.save ();
-                set_color (cr, select_bg);
-                cr.rectangle (left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
-                cr.fill ();
+                style.render_frame (cr, left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                 cr.restore ();
+
+                set_color (cr, selected);
+            } else {
+                set_color (cr, normal);
             }
 
             double x = left_margin + (WIDTH * i) + PADDING;
             double y = HEIGHT - PADDING;
-            set_color (cr, light_gray);
             cr.move_to (x, y);
             cr.show_text (letter);
-            set_color (cr, gray_bg);
 
             i++;
         }
 
         // draw the cells
         foreach (var cell in page.cells) {
+            Gdk.RGBA bg = cell.cell_style.background;
+            Gdk.RGBA bg_default = { 255, 255, 255, 0 };
+            if (bg != bg_default) {
+                cr.save ();
+                set_color (cr, bg);
+                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
+                cr.fill ();
+                cr.restore ();
+            }
+
+            Gdk.RGBA sr = cell.cell_style.stroke;
+            Gdk.RGBA sr_default = { 0, 0, 0, 0 };
+            double sr_w = cell.cell_style.stroke_width;
+            cr.save ();
+
+            if (sr_w != 1.0) {
+                cr.set_line_width (sr_w);
+            } else {
+                cr.set_line_width (1.0);
+            }
+
+            if (sr != sr_default) {
+                set_color (cr, sr);
+            } else {
+                set_color (cr, default_cell_stroke);
+            }
+
             if (cell.selected) {
                 cr.set_line_width (3.0);
-
-                // blue background
-                cr.save ();
-                set_color (cr, select_bg);
-                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
-                cr.fill ();
-                cr.restore ();
-
-                set_color (cr, select_border);
-            } else {
-                cr.save ();
-                set_color (cr, cell.cell_style.background);
-                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
-                cr.fill ();
-                cr.restore ();
-
-                cr.save ();
-                cr.set_line_width (cell.cell_style.stroke_width);
-                set_color (cr, cell.cell_style.stroke);
-                cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
-                cr.stroke ();
-                cr.restore ();
-
-                cr.set_line_width (BORDER);
-                set_color (cr, gray_bg);
             }
+
             cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
             cr.stroke ();
+            cr.restore ();
 
             // display the text
-            set_color (cr, cell.font_style.fontcolor);
+            Gdk.RGBA color = cell.font_style.fontcolor;
+            Gdk.RGBA color_default = { 0, 0, 0, 1 };
+            cr.save ();
+            if (color != color_default) {
+                set_color (cr, color);
+            } else {
+                set_color (cr, default_font_color);
+            }
+
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
             double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
-
             cr.move_to (x, y);
             cr.show_text (cell.display_content);
-            set_color (cr, gray_bg);
-
-            if (cell.selected) {
-                cr.set_line_width (BORDER);
-            }
+            cr.restore ();
         }
+
         return true;
     }
 }
-
