@@ -194,7 +194,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         };
 
         var function_list = new ListBox ();
+        var functions_liststore = new GLib.ListStore (Type.OBJECT);
         foreach (var func in App.functions) {
+            functions_liststore.append (new FuncSearchList (func.name, func.doc));
+
             var row = new ListBoxRow () { selectable = false };
             row.margin_top = row.margin_bottom = 3;
             row.add (new FunctionPresenter (func));
@@ -227,6 +230,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_bt.clicked.connect (popup.show_all);
 
         expression.activate.connect (update_formula);
+
+        function_list.set_filter_func ((list_box_row) => {
+            var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
+            return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
+        });
+
+        function_list_search_entry.search_changed.connect (() => {
+            function_list.invalidate_filter ();
+        });
 
         var style_toggle = new ToggleButton.with_label ("Open Sans 14");
         style_toggle.tooltip_text = "Set colors to letters in a selected cell";
