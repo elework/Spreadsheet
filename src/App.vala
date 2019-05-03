@@ -5,7 +5,6 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
-    public MainWindow window;
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -15,11 +14,11 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     static construct {
-        settings = new Settings ("xyz.gelez.spreadsheet");
+        settings = new Settings ("com.github.ryonakano.spreadsheet");
     }
 
     construct {
-        application_id = "xyz.gelez.spreadsheet";
+        application_id = "com.github.ryonakano.spreadsheet";
         flags = ApplicationFlags.FLAGS_NONE;
         functions.add (new Function ("sum", Functions.sum, "Add numbers"));
         functions.add (new Function ("mul", Functions.mul, "Multiply numbers"));
@@ -51,14 +50,16 @@ public class Spreadsheet.App : Gtk.Application {
         var window_height = settings.get_int ("window-height");
         var window_maximized = settings.get_boolean ("window-maximized");
 
+        var window = new MainWindow (this);
+        window.set_default_size (window_width, window_height);
+
         if (window_x != -1 || window_y != -1) { // Not a first time launch
-            window = new MainWindow (this, window_width, window_height);
             window.move (window_x, window_y);
+
             if (window_maximized) {
                 window.maximize ();
             }
         } else { // First time launch
-            window = new MainWindow (this, window_width, window_height);
             window.window_position = Gtk.WindowPosition.CENTER;
         }
 
@@ -86,6 +87,15 @@ public class Spreadsheet.App : Gtk.Application {
         save_action.activate.connect (() => {
             if (window != null && window.app_stack.visible_child_name == "app") {
                 window.save_sheet ();
+            }
+        });
+
+        var save_as_action = new SimpleAction ("save_as", null);
+        add_action (save_as_action);
+        set_accels_for_action ("app.save_as", {"<Control><Shift>s"});
+        save_as_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.save_as_sheet ();
             }
         });
 

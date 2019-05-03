@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Spreadsheet
+GenericName=Spreadsheet App
+Comment=Create simple and beautiful spreadsheets
+Categories=Office;Spreadsheet;
+Exec=com.github.ryonakano.spreadsheet
+Icon=com.github.ryonakano.spreadsheet
+Terminal=false
+Type=Application
+Keywords=Office;Book;

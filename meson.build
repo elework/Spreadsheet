@@ -1,4 +1,4 @@
-project('xyz.gelez.spreadsheet', 'vala', 'c')
+project('com.github.ryonakano.spreadsheet', 'vala', 'c')
 
 gnome = import('gnome')
 glib = dependency('glib-2.0', version: '>=2.38')
@@ -7,12 +7,6 @@ gee = dependency('gee-0.8')
 gtk = dependency('gtk+-3.0', version: '>=3.22')
 granite = dependency('granite', version: '>=5.2.0')
 pango = dependency('pango')
-
-res = gnome.compile_resources(
-    'spreadsheet',
-    files('data/gresources.xml'),
-    source_dir: [ join_paths(meson.source_root(), 'data') ]
-)
 
 subdir('data')
 
@@ -47,7 +41,6 @@ executable(meson.project_name(),
     'src/Widgets/FunctionPresenter.vala',
     'src/Widgets/Sheet.vala',
     'src/Widgets/StyleModal.vala',
-    res,
     dependencies: [
         glib,
         gobject,
@@ -61,7 +54,7 @@ executable(meson.project_name(),
 )
 
 install_data(
-    'data/xyz.gelez.spreadsheet.gschema.xml',
+    'data/com.github.ryonakano.spreadsheet.gschema.xml',
     install_dir: join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
 )
 
