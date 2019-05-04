@@ -192,9 +192,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             position = PositionType.BOTTOM,
             border_width = 10
         };
+
         var function_list = new ListBox ();
-        var function_list_scrolled = new ScrolledWindow (null, null);
+        var functions_liststore = new GLib.ListStore (Type.OBJECT);
         foreach (var func in App.functions) {
+            functions_liststore.append (new FuncSearchList (func.name, func.doc));
+
             var row = new ListBoxRow () { selectable = false };
             row.margin_top = row.margin_bottom = 3;
             row.add (new FunctionPresenter (func));
@@ -208,12 +211,34 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             });
             function_list.add (row);
         }
+
+        var function_list_search_entry = new SearchEntry ();
+        function_list_search_entry.margin_bottom = 6;
+        function_list_search_entry.placeholder_text = "Search functions";
+
+        var function_list_scrolled = new ScrolledWindow (null, null);
+        function_list_scrolled.expand = true;
         function_list_scrolled.add (function_list);
-        popup.add (function_list_scrolled);
+
+        var function_list_grid = new Grid ();
+        function_list_grid.orientation = Orientation.HORIZONTAL;
+        function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
+        function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
+
+        popup.add (function_list_grid);
 
         function_list_bt.clicked.connect (popup.show_all);
 
         expression.activate.connect (update_formula);
+
+        function_list.set_filter_func ((list_box_row) => {
+            var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
+            return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
+        });
+
+        function_list_search_entry.search_changed.connect (() => {
+            function_list.invalidate_filter ();
+        });
 
         var style_toggle = new ToggleButton.with_label ("Open Sans 14");
         style_toggle.tooltip_text = "Set colors to letters in a selected cell";
