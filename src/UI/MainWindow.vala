@@ -245,6 +245,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
+            int padding = 5;
             int border = get_style_context ().get_border (StateFlags.NORMAL).left;
             int square_size = style_toggle.get_allocated_height () - (border * 2);
             int width = style_toggle.get_allocated_width ();
@@ -256,7 +257,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             cr.set_source_rgb (0, 0, 0);
-            draw_rounded_path (cr, width - (border + square_size - 5), border + 5, square_size - 10, square_size - 10, 2);
+            draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
             cr.fill ();
             return false;
         });
