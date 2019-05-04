@@ -185,8 +185,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             TextExtents extents;
             cr.text_extents (i.to_string (), out extents);
-            double x = left_margin / 2 - (BORDER + extents.width / 2);
-            double y = HEIGHT * (i + 1) - (BORDER + extents.height / 2);
+            double x = left_margin / 2 - extents.width / 2;
+            double y = BORDER + HEIGHT * i + HEIGHT / 2 + extents.height / 2;
 
             cr.move_to (x, y);
             if (i != 0) {
@@ -212,8 +212,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             TextExtents extents;
             cr.text_extents (letter, out extents);
-            double x = left_margin + (WIDTH * i) + WIDTH / 2 - extents.width / 2;
-            double y = HEIGHT / 2 + extents.height / 2;
+            double x = left_margin + BORDER + WIDTH * i + WIDTH / 2 - extents.width / 2;
+            double y = BORDER + HEIGHT / 2 + extents.height / 2;
             cr.fill ();
             cr.move_to (x, y);
             cr.show_text (letter);
