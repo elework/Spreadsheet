@@ -244,18 +244,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         style_toggle.tooltip_text = "Set colors to letters in a selected cell";
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
-            int spacing = 20;
+            int spacing = 10;
             int border = get_style_context ().get_border (StateFlags.NORMAL).left;
             int square_size = style_toggle.get_allocated_height () - (border * 2);
             int width = style_toggle.get_allocated_width ();
 
             if (!resized) {
+                style_toggle.get_child ().halign = Gtk.Align.START;
                 style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
                 resized = true;
             }
 
             cr.set_source_rgb (0, 0, 0);
-            draw_rounded_path (cr, width - (border + square_size), border, square_size, square_size, 2);
+            draw_rounded_path (cr, width - (border + square_size - 5), border + 5, square_size - 10, square_size - 10, 2);
             cr.fill ();
             return false;
         });
