@@ -1,0 +1,242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.ryonakano.spreadsheet package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.ryonakano.spreadsheet\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-21 17:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/UI/MainWindow.vala:43
+msgid "Not saved yet"
+msgstr ""
+
+#: src/UI/MainWindow.vala:138 src/UI/MainWindow.vala:401
+msgid "Spreadsheet"
+msgstr ""
+
+#: src/UI/MainWindow.vala:138
+msgid "Start something new, or continue what you have been working on."
+msgstr ""
+
+#: src/UI/MainWindow.vala:139
+msgid "New Sheet"
+msgstr ""
+
+#: src/UI/MainWindow.vala:139
+msgid "Create an empty sheet"
+msgstr ""
+
+#: src/UI/MainWindow.vala:140
+msgid "Open File"
+msgstr ""
+
+#: src/UI/MainWindow.vala:140
+msgid "Choose a saved file"
+msgstr ""
+
+#: src/UI/MainWindow.vala:141
+msgid "Open Last File"
+msgstr ""
+
+#: src/UI/MainWindow.vala:141
+msgid "Continue working on foo.xlsx"
+msgstr ""
+
+#: src/UI/MainWindow.vala:147 src/UI/MainWindow.vala:323
+#: src/UI/MainWindow.vala:461
+msgid "Open a file"
+msgstr ""
+
+#: src/UI/MainWindow.vala:148 src/UI/MainWindow.vala:324
+#: src/UI/MainWindow.vala:357
+msgid "_Cancel"
+msgstr ""
+
+#: src/UI/MainWindow.vala:150 src/UI/MainWindow.vala:326
+msgid "_Open"
+msgstr ""
+
+#: src/UI/MainWindow.vala:155 src/UI/MainWindow.vala:331
+#: src/UI/MainWindow.vala:364
+msgid "CSV files"
+msgstr ""
+
+#: src/UI/MainWindow.vala:184
+msgid "Insert functions to a selected cell"
+msgstr ""
+
+#: src/UI/MainWindow.vala:186
+msgid "Click to insert numbers or functions to a selected cell"
+msgstr ""
+
+#: src/UI/MainWindow.vala:217
+msgid "Search functions"
+msgstr ""
+
+#: src/UI/MainWindow.vala:244
+msgid "Set colors to letters in a selected cell"
+msgstr ""
+
+#: src/UI/MainWindow.vala:301
+#, c-format
+msgid "Untitled Spreadsheet %i"
+msgstr ""
+
+#: src/UI/MainWindow.vala:312
+msgid "Page 1"
+msgstr ""
+
+#: src/UI/MainWindow.vala:356
+msgid "Save your work"
+msgstr ""
+
+#: src/UI/MainWindow.vala:359
+msgid "_Save"
+msgstr ""
+
+#: src/UI/MainWindow.vala:453
+msgid "Create a new empty file"
+msgstr ""
+
+#: src/UI/MainWindow.vala:469
+msgid "Save this file with a different name"
+msgstr ""
+
+#: src/UI/MainWindow.vala:477
+msgid "Redo"
+msgstr ""
+
+#: src/UI/MainWindow.vala:485
+msgid "Undo"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:12
+msgid "Fonts"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:13
+msgid "Cells"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:30
+msgid "Color"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:34
+msgid "Set font color of a selected cell"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:38
+msgid "Reset font color of a selected cell to black"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:66
+msgid "Fill"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:70
+msgid "Set fill color of a selected cell"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:74
+msgid "Remove fill color of a selected cell"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:76
+msgid "Stroke"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:80
+msgid "Set stroke color of a selected cell"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:84
+msgid "Set the border width of a selected cell"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:88
+msgid "Remove stroke color of a selected cell"
+msgstr ""
+
+#: src/App.vala:23
+msgid "Add numbers"
+msgstr ""
+
+#: src/App.vala:24
+msgid "Multiply numbers"
+msgstr ""
+
+#: src/App.vala:25
+msgid "Divide numbers"
+msgstr ""
+
+#: src/App.vala:26
+msgid "Substract numbers"
+msgstr ""
+
+#: src/App.vala:27
+msgid "Gives the modulo of numbers"
+msgstr ""
+
+#: src/App.vala:29
+msgid "Elevate a number to the power of a second one"
+msgstr ""
+
+#: src/App.vala:30
+msgid "The square root of a number"
+msgstr ""
+
+#: src/App.vala:31
+msgid "Rounds a number to the nearest integer"
+msgstr ""
+
+#: src/App.vala:32
+msgid "Removes the decimal part of a number"
+msgstr ""
+
+#: src/App.vala:33
+msgid "Return the smallest value"
+msgstr ""
+
+#: src/App.vala:34
+msgid "Return the biggest value"
+msgstr ""
+
+#: src/App.vala:35
+msgid "Gives the mean of a list of numbers"
+msgstr ""
+
+#: src/App.vala:37
+msgid "Gives the cosinus of a number (in radians)"
+msgstr ""
+
+#: src/App.vala:38
+msgid "Gives the sinus of an angle (in radians)"
+msgstr ""
+
+#: src/App.vala:39
+msgid "Gives the tangent of a number (in radians)"
+msgstr ""
+
+#: src/App.vala:40
+msgid "Gives the arc cosinus of a number"
+msgstr ""
+
+#: src/App.vala:41
+msgid "Gives the arc sinus of a number"
+msgstr ""
+
+#: src/App.vala:42
+msgid "Gives the arg tangent of a number"
+msgstr ""
