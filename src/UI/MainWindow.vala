@@ -40,7 +40,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         set {
             _file = value;
             header.title = value.title;
-            header.subtitle = value.file_path == null ? "Not saved yet" : value.file_path;
+            header.subtitle = value.file_path == null ? _("Not saved yet") : value.file_path;
 
             while (tabs.n_tabs > 0) {
                 tabs.remove_tab (tabs.get_tab_by_index (0));
@@ -135,24 +135,24 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Welcome welcome () {
-        var welcome = new Welcome ("Spreadsheet", "Start something new, or continue what you have been working on.");
-        welcome.append ("document-new", "New Sheet", "Create an empty sheet");
-        welcome.append ("document-open", "Open File", "Choose a saved file");
-        welcome.append ("x-office-spreadsheet", "Open Last File", "Continue working on foo.xlsx");
+        var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
+        welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
+        welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
+        welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
             } else if (index == 1) {
                 var chooser = new FileChooserDialog (
-                    "Open a file", this, FileChooserAction.OPEN,
-                    "_Cancel",
+                    _("Open a file"), this, FileChooserAction.OPEN,
+                    _("_Cancel"),
                     ResponseType.CANCEL,
-                    "_Open",
+                    _("_Open"),
                     ResponseType.ACCEPT);
 
                 Gtk.FileFilter filter = new Gtk.FileFilter ();
                 filter.add_pattern ("*.csv");
-                filter.set_filter_name ("CSV files");
+                filter.set_filter_name (_("CSV files"));
                 chooser.add_filter (filter);
 
                 if (chooser.run () == ResponseType.ACCEPT) {
@@ -181,9 +181,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             column_spacing = 10
         };
         var function_list_bt = new Button.with_label ("f (x)");
-        function_list_bt.tooltip_text = "Insert functions to a selected cell";
+        function_list_bt.tooltip_text = _("Insert functions to a selected cell");
         expression = new Entry () { hexpand = true };
-        expression.tooltip_text = "Click to insert numbers or functions to a selected cell";
+        expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
 
         var popup = new Popover (function_list_bt) {
             width_request = 320,
@@ -214,7 +214,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var function_list_search_entry = new SearchEntry ();
         function_list_search_entry.margin_bottom = 6;
-        function_list_search_entry.placeholder_text = "Search functions";
+        function_list_search_entry.placeholder_text = _("Search functions");
 
         var function_list_scrolled = new ScrolledWindow (null, null);
         function_list_scrolled.expand = true;
@@ -241,7 +241,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         var style_toggle = new ToggleButton.with_label ("Open Sans 14");
-        style_toggle.tooltip_text = "Set colors to letters in a selected cell";
+        style_toggle.tooltip_text = _("Set colors to letters in a selected cell");
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
@@ -298,7 +298,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         init_header ();
 
         do {
-            file_name = "Untitled Spreadsheet %i".printf (id++);
+            file_name = _("Untitled Spreadsheet %i").printf (id++);
             suffix = ".csv";
 
             documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS);
@@ -309,7 +309,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             title = file_name,
             file_path = path.get_path ()
         };
-        file.add_page (new Page.empty () { title = "Page 1" });
+        file.add_page (new Page.empty () { title = _("Page 1") });
         this.file = file;
         show_all ();
         save_sheet ();
@@ -320,15 +320,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void open_sheet () {
         var chooser = new FileChooserDialog (
-            "Open a file", this, FileChooserAction.OPEN,
-            "_Cancel",
+            _("Open a file"), this, FileChooserAction.OPEN,
+            _("_Cancel"),
             ResponseType.CANCEL,
-            "_Open",
+            _("_Open"),
             ResponseType.ACCEPT);
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
         filter.add_pattern ("*.csv");
-        filter.set_filter_name ("CSV files");
+        filter.set_filter_name (_("CSV files"));
         chooser.add_filter (filter);
 
         if (chooser.run () == ResponseType.ACCEPT) {
@@ -353,15 +353,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public void save_as_sheet () {
         string path = "";
         var chooser = new FileChooserDialog (
-            "Save your work", this, FileChooserAction.SAVE,
-            "_Cancel",
+            _("Save your work"), this, FileChooserAction.SAVE,
+            _("_Cancel"),
             ResponseType.CANCEL,
-            "_Save",
+            _("_Save"),
             ResponseType.ACCEPT);
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
         filter.add_pattern ("*.csv");
-        filter.set_filter_name ("CSV files");
+        filter.set_filter_name (_("CSV files"));
         chooser.add_filter (filter);
         chooser.do_overwrite_confirmation = true;
 
@@ -398,7 +398,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void show_welcome () {
         clear_header ();
-        header.title = "Spreadsheet";
+        header.title = _("Spreadsheet");
         header.subtitle = null;
         expression.text = "";
 
@@ -450,7 +450,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
-        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, "Create a new empty file");
+        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Create a new empty file"));
         file_button.clicked.connect (() => {
             print ("New file\n");
         });
@@ -458,7 +458,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
         ToolButton open_button = new ToolButton (open_ico, null);
-        open_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>O"}, "Open a file");
+        open_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>O"}, _("Open a file"));
         open_button.clicked.connect (() => {
             open_sheet ();
         });
@@ -466,7 +466,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image save_as_ico = new Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
         save_as_button = new ToolButton (save_as_ico, null);
-        save_as_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>S"}, "Save this file with a different name");
+        save_as_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>S"}, _("Save this file with a different name"));
         save_as_button.clicked.connect (() => {
             save_as_sheet ();
         });
@@ -474,7 +474,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
-        redo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>Z"}, "Redo");
+        redo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>Z"}, _("Redo"));
         redo_button.clicked.connect (() => {
             redo_sheet ();
         });
@@ -482,7 +482,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
         undo_button = new ToolButton (undo_ico, null);
-        undo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>Z"}, "Undo");
+        undo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>Z"}, _("Undo"));
         undo_button.clicked.connect (() => {
             undo_sheet ();
         });

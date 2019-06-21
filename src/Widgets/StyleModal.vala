@@ -9,8 +9,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();
-        style_stack.add_titled (fonts_grid (font_style), "fonts-grid", "Fonts");
-        style_stack.add_titled (cells_grid (cell_style), "cells-grid", "Cells");
+        style_stack.add_titled (fonts_grid (font_style), "fonts-grid", _("Fonts"));
+        style_stack.add_titled (cells_grid (cell_style), "cells-grid", _("Cells"));
 
         var style_stacksw = new Gtk.StackSwitcher ();
         style_stacksw.homogeneous = true;
@@ -27,15 +27,15 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         fonts_grid.margin_top = 6;
         fonts_grid.column_spacing = 6;
 
-        var color_label = new Granite.HeaderLabel ("Color");
+        var color_label = new Granite.HeaderLabel (_"Color"));
         color_label.halign = Gtk.Align.START;
         color_button = new Gtk.ColorButton ();
         color_button.halign = Gtk.Align.START;
-        color_button.tooltip_text = "Set font color of a selected cell";
+        color_button.tooltip_text = _("Set font color of a selected cell");
         font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
         color_reset_button.halign = Gtk.Align.START;
-        color_reset_button.tooltip_text = "Reset font color of a selected cell to black";
+        color_reset_button.tooltip_text = _("Reset font color of a selected cell to black");
 
         fonts_grid.attach (color_label, 0, 0, 1, 1);
         fonts_grid.attach (color_button, 0, 1, 1, 1);
@@ -63,29 +63,29 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         cells_grid.margin_top = 6;
         cells_grid.column_spacing = 6;
 
-        var bg_label = new Granite.HeaderLabel ("Fill");
+        var bg_label = new Granite.HeaderLabel (_("Fill"));
         bg_label.halign = Gtk.Align.START;
         bg_button = new Gtk.ColorButton ();
         bg_button.halign = Gtk.Align.START;
-        bg_button.tooltip_text = "Set fill color of a selected cell";
+        bg_button.tooltip_text = _("Set fill color of a selected cell");
         cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
         bg_reset_button.halign = Gtk.Align.START;
-        bg_reset_button.tooltip_text = "Remove fill color of a selected cell";
+        bg_reset_button.tooltip_text = _("Remove fill color of a selected cell");
 
-        var sr_label = new Granite.HeaderLabel ("Stroke");
+        var sr_label = new Granite.HeaderLabel (_("Stroke"));
         sr_label.halign = Gtk.Align.START;
         sr_button = new Gtk.ColorButton ();
         sr_button.halign = Gtk.Align.START;
-        sr_button.tooltip_text = "Set stroke color of a selected cell";
+        sr_button.tooltip_text = _("Set stroke color of a selected cell");
         cell_style.bind_property ("stroke", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         sr_width_spin = new Gtk.SpinButton.with_range (0.1, 3, 0.1);
         sr_width_spin.halign = Gtk.Align.START;
-        sr_width_spin.tooltip_text = "Set the border width of a selected cell";
+        sr_width_spin.tooltip_text = _("Set the border width of a selected cell");
         cell_style.bind_property ("stroke_width", sr_width_spin, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         sr_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
         sr_reset_button.halign = Gtk.Align.START;
-        sr_reset_button.tooltip_text = "Remove stroke color of a selected cell";
+        sr_reset_button.tooltip_text = _("Remove stroke color of a selected cell");
 
         cells_grid.attach (bg_label, 0, 0, 1, 1);
         cells_grid.attach (bg_button, 0, 1, 1, 1);
