@@ -1,14 +1,12 @@
 project('com.github.ryonakano.spreadsheet', 'vala', 'c')
 
 gnome = import('gnome')
-glib = dependency('glib-2.0', version: '>=2.38')
-gobject = dependency('gobject-2.0')
-gee = dependency('gee-0.8')
-gtk = dependency('gtk+-3.0', version: '>=3.22')
-granite = dependency('granite', version: '>=5.2.0')
-pango = dependency('pango')
 
-subdir('data')
+i18n = import('i18n')
+add_global_arguments(
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+    language:'c'
+)
 
 executable(meson.project_name(),
     'src/AlphabetGenerator.vala',
@@ -43,16 +41,19 @@ executable(meson.project_name(),
     'src/Widgets/Sheet.vala',
     'src/Widgets/StyleModal.vala',
     dependencies: [
-        glib,
-        gobject,
-        gee,
-        gtk,
-        granite,
-        pango
+        dependency('glib-2.0', version: '>=2.38'),
+        dependency('gobject-2.0'),
+        dependency('gee-0.8'),
+        dependency('gtk+-3.0', version: '>=3.22'),
+        dependency('granite', version: '>=5.2.0'),
+        dependency('pango')
     ],
     install: true,
     link_args: ['-lm']
 )
+
+subdir('data')
+subdir('po')
 
 install_data(
     'data/com.github.ryonakano.spreadsheet.gschema.xml',
