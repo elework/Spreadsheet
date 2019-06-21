@@ -27,7 +27,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         fonts_grid.margin_top = 6;
         fonts_grid.column_spacing = 6;
 
-        var color_label = new Granite.HeaderLabel (_"Color"));
+        var color_label = new Granite.HeaderLabel (_("Color"));
         color_label.halign = Gtk.Align.START;
         color_button = new Gtk.ColorButton ();
         color_button.halign = Gtk.Align.START;
