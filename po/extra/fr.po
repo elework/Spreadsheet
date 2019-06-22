@@ -1,65 +1,72 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# French translations for extra package.
+# Copyright (C) 2019 THE extra'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the extra package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# NathanBnm, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-22 16:07+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2019-06-22 16:01+0200\n"
+"Last-Translator: NathaBnm\n"
+"Language-Team: none\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: data/com.github.ryonakano.spreadsheet.desktop.in:3
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:7
 msgid "Spreadsheet"
-msgstr ""
+msgstr "Spreadsheet"
 
 #: data/com.github.ryonakano.spreadsheet.desktop.in:4
 msgid "Spreadsheet App"
-msgstr ""
+msgstr "Application Spreadsheet"
 
 #: data/com.github.ryonakano.spreadsheet.desktop.in:5
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:8
 msgid "Create simple and beautiful spreadsheets"
-msgstr ""
+msgstr "Créez des feuilles de calcul simples et belles"
 
 #: data/com.github.ryonakano.spreadsheet.desktop.in:8
 msgid "com.github.ryonakano.spreadsheet"
-msgstr ""
+msgstr "com.github.ryonakano.spreadsheet"
 
 #: data/com.github.ryonakano.spreadsheet.desktop.in:11
 msgid "Office;Book;"
-msgstr ""
+msgstr "Bureautique;Livre;"
 
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:10
 msgid ""
 "A spreadsheet app that lets you create simple and beautiful spreadsheets."
 msgstr ""
+"Une application tableur qui vous permet de créer des feuilles de calcul "
+"simples et belles."
 
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:13
 msgid "Features include:"
-msgstr ""
+msgstr "Fonctionnalités incluses :"
 
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:15
 msgid ""
 "Keyboard shortcuts for better experience. You can use your accustomed "
 "keyboard shortcuts e.g. Ctrl + Z to undo, Ctrl + Shift + Z to redo, etc."
 msgstr ""
+"Raccourcis clavier pour une meilleure expérience. Vous pouvez utiliser vos "
+"raccourcis clavier habituels comme par exemple CTRL + Z pour annuler, CTRL + "
+"Maj + Z pour rétablir etc."
 
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:16
 msgid ""
 "Save your works automatically. Your sheets are saved automatically when "
 "created or changed."
 msgstr ""
+"Enregistrement automatique de votre travail. Vos feuilles de calcul sont "
+"automatiquement enregistrées lors de leur création ou modification."
 
 #: data/com.github.ryonakano.spreadsheet.appdata.xml.in:55
 msgid "Spreadsheet Developers"
-msgstr ""
+msgstr "Les développeurs de Spreadsheet"
