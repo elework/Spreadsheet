@@ -240,5 +240,5 @@ msgid "Gives the arc sinus of a number"
 msgstr "Donne l'arc sinus d'un nombre"
 
 #: src/App.vala:42
-msgid "Gives the arc tangent of a number"
+msgid "Gives the arg tangent of a number"
 msgstr "Donne l'arc tangente d'un nombre"
