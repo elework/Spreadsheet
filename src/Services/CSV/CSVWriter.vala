@@ -49,7 +49,7 @@ public class Spreadsheet.Services.CSV.CSVWriter : Object {
         try {
             FileUtils.set_contents (path, to_string ());
         } catch (Error e) {
-
+            critical ("Error: " + e.message);
         }
     }
 }

@@ -18,8 +18,8 @@ public class Spreadsheet.Models.HistoryAction<G, H> : Object {
     public delegate StateChange DoFunc<G> (G data, Object target);
     public delegate void UndoFunc<G> (G data, Object target);
 
-    public DoFunc<G> run { get; set; }
-    public UndoFunc<G> undo { get; set; }
+    public DoFunc<G> run;
+    public UndoFunc<G> undo;
     public string description { get; set; }
 
     /**

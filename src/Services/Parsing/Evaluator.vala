@@ -3,7 +3,7 @@ public delegate Spreadsheet.Services.Parsing.Token Evaluation (string match);
 
 public class Spreadsheet.Services.Parsing.Evaluator : Object {
 
-    public Evaluation evaluation { get; owned set; }
+    public Evaluation evaluation;
 
     public Regex pattern { get; set; }
 

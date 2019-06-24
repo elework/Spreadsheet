@@ -5,7 +5,6 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
-    public MainWindow window;
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -15,32 +14,32 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     static construct {
-        settings = new Settings ("xyz.gelez.spreadsheet");
+        settings = new Settings ("com.github.ryonakano.spreadsheet");
     }
 
     construct {
-        application_id = "xyz.gelez.spreadsheet";
+        application_id = "com.github.ryonakano.spreadsheet";
         flags = ApplicationFlags.FLAGS_NONE;
-        functions.add (new Function ("sum", Functions.sum, "Add numbers"));
-        functions.add (new Function ("mul", Functions.mul, "Multiply numbers"));
-        functions.add (new Function ("div", Functions.div, "Divide numbers"));
-        functions.add (new Function ("sub", Functions.sub, "Substract numbers"));
-        functions.add (new Function ("mod", Functions.mod, "Gives the modulo of numbers"));
+        functions.add (new Function ("sum", Functions.sum, _("Add numbers")));
+        functions.add (new Function ("mul", Functions.mul, _("Multiply numbers")));
+        functions.add (new Function ("div", Functions.div, _("Divide numbers")));
+        functions.add (new Function ("sub", Functions.sub, _("Substract numbers")));
+        functions.add (new Function ("mod", Functions.mod, _("Gives the modulo of numbers")));
 
-        functions.add (new Function ("pow", Functions.pow, "Elevate a number to the power of a second one"));
-        functions.add (new Function ("sqrt", Functions.sqrt, "The square root of a number"));
-        functions.add (new Function ("round", Functions.round, "Rounds a number to the nearest integer"));
-        functions.add (new Function ("floor", Functions.floor, "Removes the decimal part of a number"));
-        functions.add (new Function ("min", Functions.min, "Return the smallest value"));
-        functions.add (new Function ("max", Functions.max, "Return the biggest value"));
-        functions.add (new Function ("mean", Functions.mean, "Gives the mean of a list of numbers"));
+        functions.add (new Function ("pow", Functions.pow, _("Elevate a number to the power of a second one")));
+        functions.add (new Function ("sqrt", Functions.sqrt, _("The square root of a number")));
+        functions.add (new Function ("round", Functions.round, _("Rounds a number to the nearest integer")));
+        functions.add (new Function ("floor", Functions.floor, _("Removes the decimal part of a number")));
+        functions.add (new Function ("min", Functions.min, _("Return the smallest value")));
+        functions.add (new Function ("max", Functions.max, _("Return the biggest value")));
+        functions.add (new Function ("mean", Functions.mean, _("Gives the mean of a list of numbers")));
 
-        functions.add (new Function ("cos", Functions.cos, "Gives the cosinus of a number (in radians)"));
-        functions.add (new Function ("sin", Functions.sin, "Gives the sinus of an angle (in radians)"));
-        functions.add (new Function ("tan", Functions.tan, "Gives the tangent of a number (in radians)"));
-        functions.add (new Function ("arccos", Functions.arccos, "Gives the arc cosinus of a number"));
-        functions.add (new Function ("arcsin", Functions.arcsin, "Gives the arc sinus of a number"));
-        functions.add (new Function ("arctan", Functions.arctan, "Gives the arg tangent of a number"));
+        functions.add (new Function ("cos", Functions.cos, _("Gives the cosinus of a number (in radians)")));
+        functions.add (new Function ("sin", Functions.sin, _("Gives the sinus of an angle (in radians)")));
+        functions.add (new Function ("tan", Functions.tan, _("Gives the tangent of a number (in radians)")));
+        functions.add (new Function ("arccos", Functions.arccos, _("Gives the arc cosinus of a number")));
+        functions.add (new Function ("arcsin", Functions.arcsin, _("Gives the arc sinus of a number")));
+        functions.add (new Function ("arctan", Functions.arctan, _("Gives the arg tangent of a number")));
     }
 
     public override void activate () {
@@ -51,14 +50,16 @@ public class Spreadsheet.App : Gtk.Application {
         var window_height = settings.get_int ("window-height");
         var window_maximized = settings.get_boolean ("window-maximized");
 
+        var window = new MainWindow (this);
+        window.set_default_size (window_width, window_height);
+
         if (window_x != -1 || window_y != -1) { // Not a first time launch
-            window = new MainWindow (this, window_width, window_height);
             window.move (window_x, window_y);
+
             if (window_maximized) {
                 window.maximize ();
             }
         } else { // First time launch
-            window = new MainWindow (this, window_width, window_height);
             window.window_position = Gtk.WindowPosition.CENTER;
         }
 
@@ -86,6 +87,15 @@ public class Spreadsheet.App : Gtk.Application {
         save_action.activate.connect (() => {
             if (window != null && window.app_stack.visible_child_name == "app") {
                 window.save_sheet ();
+            }
+        });
+
+        var save_as_action = new SimpleAction ("save_as", null);
+        add_action (save_as_action);
+        set_accels_for_action ("app.save_as", {"<Control><Shift>s"});
+        save_as_action.activate.connect (() => {
+            if (window != null && window.app_stack.visible_child_name == "app") {
+                window.save_as_sheet ();
             }
         });
 

@@ -4,12 +4,11 @@ Spreadsheet is a spreadsheet app built with Vala and GTK+, and especially for el
 
 ![Screenshot](screen.png)
 
-It was originally developed by [Baptiste Gelez](https://github.com/BaptisteGelez). He wrote:
+It was originally developed by [Baptiste Gelez](https://github.com/BaptisteGelez), who wrote:
 
 > One day I was lost on the Internet, I found this great [mockup](https://www.deviantart.com/bassultra/art/Spreadsheet-363147552) of a spreadsheet app, and I decided to make it real.
 
-The goal of this project is to build a Spreadsheet app that perfectly fits in elementary OS
-(so, sorry if you are using another distribution, or if you are not using GNU/Linux, but we probably won't provide builds for you, at least in a near future).
+The goal of this project is to build a spreadsheet app that perfectly fits in elementary OS. However, this app may have been built and made available elsewhere by community members. These builds may have modifications or changes and are not provided or supported by us.
 
 ## Building and Installation
 
@@ -31,10 +30,10 @@ Then clone the project and go to its root directory. Run `meson build` to config
     cd build
     ninja
 
-To install, use `ninja install`, then execute with `xyz.gelez.spreadsheet`
+To install, use `ninja install`, then execute with `com.github.ryonakano.spreadsheet`
 
     sudo ninja install
-    xyz.gelez.spreadsheet
+    com.github.ryonakano.spreadsheet
 
 ## Contributing
 

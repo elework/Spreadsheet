@@ -1,20 +1,12 @@
-project('xyz.gelez.spreadsheet', 'vala', 'c')
+project('com.github.ryonakano.spreadsheet', 'vala', 'c')
 
 gnome = import('gnome')
-glib = dependency('glib-2.0', version: '>=2.38')
-gobject = dependency('gobject-2.0')
-gee = dependency('gee-0.8')
-gtk = dependency('gtk+-3.0', version: '>=3.22')
-granite = dependency('granite', version: '>=5.2.0')
-pango = dependency('pango')
 
-res = gnome.compile_resources(
-    'spreadsheet',
-    files('data/gresources.xml'),
-    source_dir: [ join_paths(meson.source_root(), 'data') ]
+i18n = import('i18n')
+add_global_arguments(
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+    language:'c'
 )
-
-subdir('data')
 
 executable(meson.project_name(),
     'src/AlphabetGenerator.vala',
@@ -42,26 +34,29 @@ executable(meson.project_name(),
     'src/Services/Parsing/Lexer.vala',
     'src/Services/Parsing/Parser.vala',
     'src/Services/Parsing/Token.vala',
+    'src/Services/FuncSearchList.vala',
     'src/Services/HistoryManager.vala',
     'src/UI/MainWindow.vala',
     'src/Widgets/FunctionPresenter.vala',
     'src/Widgets/Sheet.vala',
     'src/Widgets/StyleModal.vala',
-    res,
     dependencies: [
-        glib,
-        gobject,
-        gee,
-        gtk,
-        granite,
-        pango
+        dependency('glib-2.0', version: '>=2.38'),
+        dependency('gobject-2.0'),
+        dependency('gee-0.8'),
+        dependency('gtk+-3.0', version: '>=3.22'),
+        dependency('granite', version: '>=5.2.0'),
+        dependency('pango')
     ],
     install: true,
     link_args: ['-lm']
 )
 
+subdir('data')
+subdir('po')
+
 install_data(
-    'data/xyz.gelez.spreadsheet.gschema.xml',
+    'data/com.github.ryonakano.spreadsheet.gschema.xml',
     install_dir: join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
 )
 
