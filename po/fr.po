@@ -217,7 +217,7 @@ msgstr "Renvoie la plus grande valeur"
 
 #: src/App.vala:35
 msgid "Gives the mean of a list of numbers"
-msgstr "Donne le sens d'une liste de nombres"
+msgstr "Donne la moyenne d'une liste de nombres"
 
 #: src/App.vala:37
 msgid "Gives the cosinus of a number (in radians)"
