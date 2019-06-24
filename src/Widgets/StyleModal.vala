@@ -23,30 +23,30 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
     private Gtk.Grid fonts_grid (FontStyle font_style) {
         var size_spin_button = new Gtk.SpinButton.with_range (5, 45, 2);
-        size_spin_button.tooltip_text = "Set font size";
+        size_spin_button.tooltip_text = _("Set font size");
         font_style.bind_property ("fontsize", size_spin_button, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         // TODO: Add a widget that can choose a font
 
-        var style_label = new Granite.HeaderLabel ("Style");
+        var style_label = new Granite.HeaderLabel (_("Style"));
         style_label.halign = Gtk.Align.START;
 
         var bold_button = new Gtk.ToggleButton ();
         bold_button.add (new Gtk.Image.from_icon_name ("format-text-bold-symbolic", Gtk.IconSize.BUTTON));
         bold_button.focus_on_click = false;
-        bold_button.tooltip_text = "Bold text";
+        bold_button.tooltip_text = _("Bold text");
         font_style.bind_property ("is_bold", bold_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var italic_button = new Gtk.ToggleButton ();
         italic_button.add (new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON));
         italic_button.focus_on_click = false;
-        italic_button.tooltip_text = "Italic text";
+        italic_button.tooltip_text = _("Italic text");
         font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var underline_button = new Gtk.ToggleButton ();
         underline_button.add (new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON));
         underline_button.focus_on_click = false;
-        underline_button.tooltip_text = "Italic text";
+        underline_button.tooltip_text = _("Italic text");
         font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
