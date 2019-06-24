@@ -34,19 +34,19 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         var bold_button = new Gtk.ToggleButton ();
         bold_button.add (new Gtk.Image.from_icon_name ("format-text-bold-symbolic", Gtk.IconSize.BUTTON));
         bold_button.focus_on_click = false;
-        bold_button.tooltip_text = _("Bold text");
+        bold_button.tooltip_text = _("Bold");
         font_style.bind_property ("is_bold", bold_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var italic_button = new Gtk.ToggleButton ();
         italic_button.add (new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON));
         italic_button.focus_on_click = false;
-        italic_button.tooltip_text = _("Italic text");
+        italic_button.tooltip_text = _("Italic");
         font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var underline_button = new Gtk.ToggleButton ();
         underline_button.add (new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON));
         underline_button.focus_on_click = false;
-        underline_button.tooltip_text = _("Italic text");
+        underline_button.tooltip_text = _("Underline");
         font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
