@@ -290,8 +290,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             cr.move_to (x, y);
             cr.set_font_size (cell.font_style.fontsize);
-            Cairo.FontWeight font_weight = Cairo.FontWeight.NORMAL;
-            Cairo.FontSlant font_slant = Cairo.FontSlant.NORMAL;
+            var font_weight = Cairo.FontWeight.NORMAL;
+            var font_slant = Cairo.FontSlant.NORMAL;
 
             if (cell.font_style.is_bold) {
                 font_weight = Cairo.FontWeight.BOLD;
