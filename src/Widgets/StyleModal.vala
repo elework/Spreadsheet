@@ -41,10 +41,16 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         italic_button.focus_on_click = false;
         italic_button.tooltip_text = "Italic text";
         font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        var underline_button = new Gtk.ToggleButton ();
+        underline_button.add (new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON));
+        underline_button.focus_on_click = false;
+        underline_button.tooltip_text = "Italic text";
+        font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
         style_box.pack_start (bold_button);
         style_box.pack_start (italic_button);
+        style_box.pack_start (underline_button);
 
         var color_label = new Granite.HeaderLabel (_("Color"));
         color_label.halign = Gtk.Align.START;

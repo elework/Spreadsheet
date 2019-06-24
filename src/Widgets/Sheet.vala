@@ -272,6 +272,13 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
             double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
+            if (cell.font_style.is_underline) {
+                const int UNDERLINE_PADDING = 3;
+                cr.move_to (x, y + UNDERLINE_PADDING);
+                cr.set_line_width (1);
+                cr.rel_line_to (extents.width, 0);
+                cr.stroke ();
+            }
             cr.move_to (x, y);
             cr.set_font_size (cell.font_style.fontsize);
             Cairo.FontWeight font_weight = Cairo.FontWeight.NORMAL;
