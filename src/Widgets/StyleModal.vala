@@ -36,16 +36,19 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         bold_button.focus_on_click = false;
         bold_button.tooltip_text = "Bold text";
         font_style.bind_property ("is_bold", bold_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         var italic_button = new Gtk.ToggleButton ();
         italic_button.add (new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON));
         italic_button.focus_on_click = false;
         italic_button.tooltip_text = "Italic text";
         font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         var underline_button = new Gtk.ToggleButton ();
         underline_button.add (new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON));
         underline_button.focus_on_click = false;
         underline_button.tooltip_text = "Italic text";
         font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
         style_box.pack_start (bold_button);
