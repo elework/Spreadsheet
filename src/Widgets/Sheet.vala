@@ -281,6 +281,13 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.stroke ();
             }
 
+            if (cell.font_style.is_strikethrough) {
+                cr.move_to (x, y - extents.height / 2);
+                cr.set_line_width (1);
+                cr.rel_line_to (extents.width, 0);
+                cr.stroke ();
+            }
+
             cr.move_to (x, y);
             cr.set_font_size (cell.font_style.fontsize);
             Cairo.FontWeight font_weight = Cairo.FontWeight.NORMAL;

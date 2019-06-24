@@ -49,11 +49,18 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         underline_button.tooltip_text = _("Underline");
         font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
+        var strikethrough_button = new Gtk.ToggleButton ();
+        strikethrough_button.add (new Gtk.Image.from_icon_name ("format-text-strikethrough-symbolic", Gtk.IconSize.BUTTON));
+        strikethrough_button.focus_on_click = false;
+        strikethrough_button.tooltip_text = _("Strikethrough");
+        font_style.bind_property ("is_strikethrough", strikethrough_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
         style_box.pack_start (bold_button);
         style_box.pack_start (italic_button);
         style_box.pack_start (underline_button);
+        style_box.pack_start (strikethrough_button);
 
         var color_label = new Granite.HeaderLabel (_("Color"));
         color_label.halign = Gtk.Align.START;
