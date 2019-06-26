@@ -9,8 +9,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();
-        style_stack.add_titled (fonts_grid (font_style), "fonts-grid", _("Fonts"));
-        style_stack.add_titled (cells_grid (cell_style), "cells-grid", _("Cells"));
+        style_stack.add_titled (fonts_grid (font_style), "fonts-grid", _("Font"));
+        style_stack.add_titled (cells_grid (cell_style), "cells-grid", _("Cell"));
 
         var style_stacksw = new Gtk.StackSwitcher ();
         style_stacksw.homogeneous = true;
