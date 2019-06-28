@@ -309,7 +309,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             title = file_name,
             file_path = path.get_path ()
         };
-        file.add_page (new Page.empty () { title = _("Page 1") });
+        file.add_page (new Page.empty () { title = _("Sheet 1") });
         this.file = file;
         show_all ();
         save_sheet ();
