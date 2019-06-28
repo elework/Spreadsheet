@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.ryonakano.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-22 16:21+0200\n"
+"POT-Creation-Date: 2019-06-28 17:32+0200\n"
 "PO-Revision-Date: 2019-06-22 16:00+0200\n"
 "Last-Translator: NathanBnm\n"
 "Language-Team: none\n"
@@ -96,7 +96,7 @@ msgid "Untitled Spreadsheet %i"
 msgstr "Classeur sans titre %i"
 
 #: src/UI/MainWindow.vala:312
-msgid "Page 1"
+msgid "Sheet 1"
 msgstr "Feuille 1"
 
 #: src/UI/MainWindow.vala:356
@@ -124,11 +124,11 @@ msgid "Undo"
 msgstr "Annuler"
 
 #: src/Widgets/StyleModal.vala:12
-msgid "Fonts"
+msgid "Font"
 msgstr "Police"
 
 #: src/Widgets/StyleModal.vala:13
-msgid "Cells"
+msgid "Cell"
 msgstr "Cellule"
 
 #: src/Widgets/StyleModal.vala:30
