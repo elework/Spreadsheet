@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.ryonakano.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-21 17:58+0200\n"
+"POT-Creation-Date: 2019-06-30 13:13+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,7 +94,7 @@ msgid "Untitled Spreadsheet %i"
 msgstr ""
 
 #: src/UI/MainWindow.vala:312
-msgid "Page 1"
+msgid "Sheet 1"
 msgstr ""
 
 #: src/UI/MainWindow.vala:356
@@ -122,11 +122,11 @@ msgid "Undo"
 msgstr ""
 
 #: src/Widgets/StyleModal.vala:12
-msgid "Fonts"
+msgid "Font"
 msgstr ""
 
 #: src/Widgets/StyleModal.vala:13
-msgid "Cells"
+msgid "Cell"
 msgstr ""
 
 #: src/Widgets/StyleModal.vala:30
