@@ -67,6 +67,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 case Gdk.Key.Left:
                     move_left ();
                     return false;
+                case Gdk.Key.Delete:
+                    selected_cell.clear ();
+                    return false;
             }
             return true;
         });
