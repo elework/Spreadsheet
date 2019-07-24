@@ -76,8 +76,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         expression.sensitive = false;
                     }
                 });
-                sheet.focus_expression_entry.connect (() => {
-                    expression.grab_focus ();
+                sheet.focus_expression_entry.connect ((input) => {
+                    if (input != null) {
+                        expression.text += input;
+                    }
+                    expression.grab_focus_without_selecting ();
+                    // int.MAX so that it moves to the end of the buffer, whatever size it is
+                    expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, int.MAX, false);
                 });
                 viewport.add (sheet);
                 last_sheet = sheet;

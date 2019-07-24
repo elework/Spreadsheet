@@ -22,7 +22,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_changed (Cell? new_selection);
 
-    public signal void focus_expression_entry ();
+    public signal void focus_expression_entry (string? input);
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -68,6 +68,10 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     move_left ();
                     return false;
             }
+
+            // No special key is used, thus the intent is user input
+            // Switch focus to the formula entry
+            focus_expression_entry (key.str);
             return true;
         });
     }
