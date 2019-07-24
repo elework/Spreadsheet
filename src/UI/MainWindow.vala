@@ -79,6 +79,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 sheet.focus_expression_entry.connect (() => {
                     expression.grab_focus ();
                 });
+
+                sheet.selection_cleared.connect(() => {
+                    expression.text = "";
+                });
+
                 viewport.add (sheet);
                 last_sheet = sheet;
 
