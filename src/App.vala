@@ -81,6 +81,15 @@ public class Spreadsheet.App : Gtk.Application {
             }
         });
 
+        var quit_action = new SimpleAction ("quit", null);
+        add_action (quit_action);
+        set_accels_for_action ("app.quit", {"<Control>q"});
+        quit_action.activate.connect (() => {
+            if (window != null) {
+                window.destroy ();
+            }
+        });
+
         var save_action = new SimpleAction ("save", null);
         add_action (save_action);
         set_accels_for_action ("app.save", {"<Control>s"});
