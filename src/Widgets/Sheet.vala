@@ -22,6 +22,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_changed (Cell? new_selection);
 
+    public signal void selection_cleared ();
+
     public signal void focus_expression_entry ();
 
     public Sheet (Page page, MainWindow window) {
@@ -66,6 +68,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     return false;
                 case Gdk.Key.Left:
                     move_left ();
+                    return false;
+                case Gdk.Key.Delete:
+                    selection_cleared ();
                     return false;
             }
             return true;

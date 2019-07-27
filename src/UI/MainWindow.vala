@@ -79,6 +79,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 sheet.focus_expression_entry.connect (() => {
                     expression.grab_focus ();
                 });
+
+                sheet.selection_cleared.connect(() => {
+                    clear_formula ();
+                });
+
                 viewport.add (sheet);
                 last_sheet = sheet;
 
@@ -431,6 +436,29 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         update_header ();
         active_sheet.grab_focus ();
+    }
+
+    private void clear_formula () {
+        if (active_sheet.selected_cell != null) {
+            HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
+                "Clear the formula",
+                active_sheet.selected_cell,
+                (_text, _target) => {
+                    Cell target = (Cell)_target;
+                    string undo_data = target.formula;
+                    target.clear ();
+                    expression.text = "";
+                    return new StateChange<string> (undo_data, "");
+                },
+                (_text, _target) => {
+                    string text = (string)_text;
+                    Cell target = (Cell)_target;
+
+                    target.formula = text;
+                    expression.text = text;
+                }
+            ));
+        }
     }
 
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk

@@ -28,5 +28,10 @@ public class Spreadsheet.Models.Cell : Object {
     public bool selected { get; set; default = false; }
     public FontStyle font_style { get; set; default = new FontStyle (); }
     public CellStyle cell_style { get; set; default = new CellStyle (); }
+
+    public void clear () {
+        _formula = "";
+        display_content = "";
+    }
 }
 
