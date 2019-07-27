@@ -22,6 +22,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_changed (Cell? new_selection);
 
+    public signal void selection_cleared ();
+
     public signal void focus_expression_entry (string? input);
 
     public Sheet (Page page, MainWindow window) {
@@ -74,6 +76,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     return true;
                 case Gdk.Key.Left:
                     move_left ();
+                    return true;
+                case Gdk.Key.Delete:
+                    selection_cleared ();
                     return true;
             }
             // No special key is used, thus the intent is user input
