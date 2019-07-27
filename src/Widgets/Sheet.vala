@@ -70,7 +70,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     move_left ();
                     return false;
                 case Gdk.Key.Delete:
-                    selected_cell.clear ();
                     selection_cleared ();
                     return false;
             }
