@@ -59,7 +59,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_popup.remove (ch);
                     });
                     if (cell.selected) {
-                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                        var style_modal = new StyleModal (cell.font_style, cell.cell_style);
+                        style_modal.update_style_history.connect (update_font_style);
+                        style_popup.add (style_modal);
                         break;
                     }
                 }
@@ -70,7 +72,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     if (cell != null) {
                         expression.text = cell.formula;
                         expression.sensitive = true;
-                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+
+                        var style_modal = new StyleModal (cell.font_style, cell.cell_style);
+                        style_modal.update_style_history.connect (update_font_style);
+                        style_popup.add (style_modal);
                     } else {
                         expression.text = "";
                         expression.sensitive = false;
@@ -459,6 +464,33 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
+    }
+
+    public void update_font_style () {
+        if (active_sheet.selected_cell != null) {
+            HistoryManager.instance.do_action (new HistoryAction<Gdk.RGBA?, Cell> (
+                "Change font style of selected cell",
+                active_sheet.selected_cell,
+                (_font_style, _target) => {
+                    Cell target = (Cell)_target;
+                    Gdk.RGBA font_style = _font_style == null ? target.font_style.fontcolor : (Gdk.RGBA)_font_style;
+
+                    Gdk.RGBA last_style = target.font_style.fontcolor;
+                    target.font_style.fontcolor = font_style;
+
+                    var undo_data = last_style;
+                    return new StateChange<Gdk.RGBA?> (undo_data, font_style);
+                },
+                (_font_style, _target) => {
+                    Gdk.RGBA font_style = (Gdk.RGBA)_font_style;
+                    Cell target = (Cell)_target;
+
+                    target.font_style.fontcolor = font_style;
+                }
+            ));
+        }
+        update_header ();
+        active_sheet.grab_focus ();
     }
 
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk

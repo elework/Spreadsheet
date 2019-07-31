@@ -1,4 +1,6 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
+    public signal void update_style_history ();
+
     private Gtk.ColorButton color_button;
     private Gtk.Button color_reset_button;
     private Gtk.ColorButton bg_button;
@@ -48,11 +50,13 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         // 2. user clicks the color_button and sets a new font color
         color_button.color_set.connect (() =>{
             color_reset_button.sensitive = check_color (color_button, font_default_color);
+            update_style_history ();
         });
         // 3. user clicks the color_reset_button and resets a font color
         color_reset_button.clicked.connect (() => {
             font_style.color_remove ();
             color_reset_button.sensitive = check_color (color_button, font_default_color);
+            update_style_history ();
         });
 
         return fonts_grid;
@@ -105,21 +109,25 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         // 2. user clicks br_button/sr_button and sets new background/stroke colors
         bg_button.color_set.connect (() =>{
             bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
+            update_style_history ();
         });
         sr_button.color_set.connect (() =>{
             sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
+            update_style_history ();
         });
         // 3. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
         bg_reset_button.clicked.connect (() => {
             cell_style.bg_remove ();
             bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
+            update_style_history ();
         });
         sr_reset_button.clicked.connect (() => {
             cell_style.sr_remove ();
             sr_width_spin.value = 1.0;
             sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
+            update_style_history ();
         });
 
         return cells_grid;
