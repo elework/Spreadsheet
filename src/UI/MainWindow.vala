@@ -446,7 +446,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 (_text, _target) => {
                     Cell target = (Cell)_target;
                     string undo_data = target.formula;
-                    target.clear ();
+                    target.formula = "";
                     expression.text = "";
                     return new StateChange<string> (undo_data, "");
                 },
