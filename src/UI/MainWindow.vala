@@ -459,6 +459,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
+        update_header ();
+        active_sheet.grab_focus ();
     }
 
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
