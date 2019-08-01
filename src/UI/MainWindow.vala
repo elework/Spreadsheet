@@ -77,6 +77,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                         style_modal = null;
                         style_modal = new StyleModal (cell.font_style, cell.cell_style);
+                        style_modal.update_style_history.connect ((old_font_style) => {
+                            update_font_style (old_font_style);
+                        });
                         style_popup.add (style_modal);
                     } else {
                         expression.text = "";
