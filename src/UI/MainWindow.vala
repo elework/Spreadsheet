@@ -59,8 +59,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_popup.remove (ch);
                     });
                     if (cell.selected) {
-                        var style_modal = new StyleModal (cell.font_style, cell.cell_style);
-                        style_modal.update_style_history.connect (update_font_style);
+                        style_modal = new StyleModal (cell.font_style, cell.cell_style);
+                        style_modal.update_style_history.connect ((old_font_style) => {
+                            update_font_style (old_font_style);
+                        });
                         style_popup.add (style_modal);
                         break;
                     }
@@ -73,8 +75,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         expression.text = cell.formula;
                         expression.sensitive = true;
 
-                        var style_modal = new StyleModal (cell.font_style, cell.cell_style);
-                        style_modal.update_style_history.connect (update_font_style);
+                        style_modal = null;
+                        style_modal = new StyleModal (cell.font_style, cell.cell_style);
                         style_popup.add (style_modal);
                     } else {
                         expression.text = "";
@@ -99,6 +101,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
     private SpreadSheet _file;
 
+    private StyleModal style_modal;
     ToolButton file_button { get; set; }
     ToolButton open_button { get; set; }
     ToolButton save_as_button { get; set; }
@@ -468,14 +471,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         active_sheet.grab_focus ();
     }
 
-    public void update_font_style () {
+    public void update_font_style (Gdk.RGBA old_font_style) {
         if (active_sheet.selected_cell != null) {
             HistoryManager.instance.do_action (new HistoryAction<Gdk.RGBA?, Cell> (
                 "Change font style of selected cell",
                 active_sheet.selected_cell,
                 (_font_style, _target) => {
                     Cell target = (Cell)_target;
-                    Gdk.RGBA font_style = _font_style == null ? target.font_style.fontcolor : (Gdk.RGBA)_font_style;
+                    Gdk.RGBA font_style = old_font_style;
 
                     Gdk.RGBA last_style = target.font_style.fontcolor;
                     target.font_style.fontcolor = font_style;
