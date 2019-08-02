@@ -1,5 +1,5 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
-    public signal void update_style_history (Gdk.RGBA old_font_style);
+    public signal void update_style_history (Gdk.RGBA new_font_style);
 
     public Gtk.ColorButton color_button { get; private set; }
     private Gtk.Button color_reset_button;

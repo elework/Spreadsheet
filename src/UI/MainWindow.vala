@@ -60,8 +60,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     });
                     if (cell.selected) {
                         style_modal = new StyleModal (cell.font_style, cell.cell_style);
-                        style_modal.update_style_history.connect ((old_font_style) => {
-                            update_font_style (old_font_style);
+                        style_modal.update_style_history.connect ((new_font_style) => {
+                            update_font_style (new_font_style);
                         });
                         style_popup.add (style_modal);
                         break;
@@ -77,8 +77,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                         style_modal = null;
                         style_modal = new StyleModal (cell.font_style, cell.cell_style);
-                        style_modal.update_style_history.connect ((old_font_style) => {
-                            update_font_style (old_font_style);
+                        style_modal.update_style_history.connect ((new_font_style) => {
+                            update_font_style (new_font_style);
                         });
                         style_popup.add (style_modal);
                     } else {
@@ -474,17 +474,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         active_sheet.grab_focus ();
     }
 
-    public void update_font_style (Gdk.RGBA old_font_style) {
+    public void update_font_style (Gdk.RGBA new_font_style) {
         if (active_sheet.selected_cell != null) {
             HistoryManager.instance.do_action (new HistoryAction<Gdk.RGBA?, Cell> (
                 "Change font style of selected cell",
                 active_sheet.selected_cell,
                 (_font_style, _target) => {
                     Cell target = (Cell)_target;
-                    Gdk.RGBA font_style = old_font_style;
+                    Gdk.RGBA font_style = new_font_style;
 
                     Gdk.RGBA last_style = target.font_style.fontcolor;
                     target.font_style.fontcolor = font_style;
+                    stdout.printf ("Old: %s\n", last_style.to_string ());
+                    stdout.printf ("New: %s\n", new_font_style.to_string ());
 
                     var undo_data = last_style;
                     return new StateChange<Gdk.RGBA?> (undo_data, font_style);
