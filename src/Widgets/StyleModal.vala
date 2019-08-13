@@ -1,5 +1,6 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
-    public signal void update_style_history (Gdk.RGBA new_font_style);
+    public signal void update_style_history (Gdk.RGBA new_font_style, Gdk.RGBA old_font_style);
+    const Gdk.RGBA font_default_color = { 0, 0, 0, 1 };
 
     public Gtk.ColorButton color_button { get; private set; }
     private Gtk.Button color_reset_button;
@@ -34,7 +35,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_button = new Gtk.ColorButton ();
         color_button.halign = Gtk.Align.START;
         color_button.tooltip_text = _("Set font color of a selected cell");
-        font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        color_button.rgba = font_default_color;
         color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON);
         color_reset_button.halign = Gtk.Align.START;
         color_reset_button.tooltip_text = _("Reset font color of a selected cell to black");
@@ -45,18 +46,20 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
         // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
         // 1. widgets are created
-        Gdk.RGBA font_default_color = { 0, 0, 0, 1 };
+        Gdk.RGBA color_button_before = color_button.rgba;
         color_reset_button.sensitive = check_color (color_button, font_default_color);
         // 2. user clicks the color_button and sets a new font color
         color_button.color_set.connect (() =>{
             color_reset_button.sensitive = check_color (color_button, font_default_color);
-            update_style_history (color_button.rgba);
+            update_style_history (color_button.rgba, color_button_before);
+            color_button_before = color_button.rgba;
         });
         // 3. user clicks the color_reset_button and resets a font color
         color_reset_button.clicked.connect (() => {
-            font_style.color_remove ();
+            color_button.rgba = font_default_color;
             color_reset_button.sensitive = check_color (color_button, font_default_color);
-            update_style_history (color_button.rgba);
+            update_style_history (color_button.rgba, color_button_before);
+            color_button_before = color_button.rgba;
         });
 
         return fonts_grid;
