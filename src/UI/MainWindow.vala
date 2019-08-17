@@ -143,7 +143,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
         welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
         welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
+        //  TODO: Uncomment when we support opening recent files in welcome screen
+        //  See https://github.com/ryonakano/Spreadsheet/issues/56
+        //  welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
