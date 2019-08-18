@@ -107,7 +107,7 @@ public class Spreadsheet.App : Gtk.Application {
         set_accels_for_action ("app.undo", {"<Control>z"});
         undo_action.activate.connect (() => {
             var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_undo ()) {
+            if (active_window != null && active_window.app_stack.visible_child_name == "app" && active_window.history_manager.can_undo ()) {
                 active_window.undo_sheet ();
             }
         });
@@ -117,7 +117,7 @@ public class Spreadsheet.App : Gtk.Application {
         set_accels_for_action ("app.redo", {"<Control><Shift>z"});
         redo_action.activate.connect (() => {
             var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_redo ()) {
+            if (active_window != null && active_window.app_stack.visible_child_name == "app" && active_window.history_manager.can_redo ()) {
                 active_window.redo_sheet ();
             }
         });
