@@ -103,14 +103,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     Popover style_popup;
 
+    public App app { get; construct; }
+
     private void update_header () {
         undo_button.sensitive = HistoryManager.instance.can_undo ();
         redo_button.sensitive = HistoryManager.instance.can_redo ();
     }
 
-    public MainWindow (Gtk.Application app) {
+    public MainWindow (App app) {
         Object (
-            application: app
+            application: app,
+            app: app
         );
     }
 
@@ -484,7 +487,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         file_button = new ToolButton (file_ico, null);
         file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Create a new empty file"));
         file_button.clicked.connect (() => {
-            print ("New file\n");
+            app.new_window ();
         });
         header.pack_start (file_button);
 

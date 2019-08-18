@@ -5,6 +5,7 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
+    public MainWindow window { get; private set; }
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -43,27 +44,7 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     public override void activate () {
-        // Fetch window state from GLib.Settings
-        var window_x = settings.get_int ("window-x");
-        var window_y = settings.get_int ("window-y");
-        var window_width = settings.get_int ("window-width");
-        var window_height = settings.get_int ("window-height");
-        var window_maximized = settings.get_boolean ("window-maximized");
-
-        var window = new MainWindow (this);
-        window.set_default_size (window_width, window_height);
-
-        if (window_x != -1 || window_y != -1) { // Not a first time launch
-            window.move (window_x, window_y);
-
-            if (window_maximized) {
-                window.maximize ();
-            }
-        } else { // First time launch
-            window.window_position = Gtk.WindowPosition.CENTER;
-        }
-
-        window.show_all ();
+        new_window ();
 
         var back_action = new SimpleAction ("back", null);
         add_action (back_action);
@@ -140,5 +121,32 @@ public class Spreadsheet.App : Gtk.Application {
             window.active_sheet.grab_focus ();
             window.expression.text = "";
         });
+    }
+
+    public void new_window () {
+        // Fetch window state from GLib.Settings
+        var window_x = settings.get_int ("window-x");
+        var window_y = settings.get_int ("window-y");
+        var window_width = settings.get_int ("window-width");
+        var window_height = settings.get_int ("window-height");
+        var window_maximized = settings.get_boolean ("window-maximized");
+
+        if (window != null) {
+            window = new MainWindow (this);
+            window.move (window_x + 30, window_y + 30);
+        } else if (window_x != -1 || window_y != -1) { // Not a first time launch
+            window = new MainWindow (this);
+            window.move (window_x, window_y);
+
+            if (window_maximized) {
+                window.maximize ();
+            }
+        } else { // First time launch
+            window = new MainWindow (this);
+            window.window_position = Gtk.WindowPosition.CENTER;
+        }
+
+        window.set_default_size (window_width, window_height);
+        window.show_all ();
     }
 }
