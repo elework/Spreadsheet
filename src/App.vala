@@ -51,7 +51,7 @@ public class Spreadsheet.App : Gtk.Application {
         back_action.activate.connect (() => {
             var active_window = get_windows ().nth_data (0) as MainWindow;
             if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                (get_windows ().nth_data (0) as MainWindow).show_welcome ();
+                active_window.show_welcome ();
             }
         });
 
