@@ -50,24 +50,26 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (back_action);
         set_accels_for_action ("app.back", {"<Alt>Home"});
         back_action.activate.connect (() => {
-            window.show_welcome ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                (get_windows ().nth_data (0) as MainWindow).show_welcome ();
+            }
         });
 
         var new_action = new SimpleAction ("new", null);
         add_action (new_action);
         set_accels_for_action ("app.new", {"<Control>n"});
         new_action.activate.connect (() => {
-            if (window != null) {
-                new_window ();
-            }
+            new_window ();
         });
 
         var open_action = new SimpleAction ("open", null);
         add_action (open_action);
         set_accels_for_action ("app.open", {"<Control>o"});
         open_action.activate.connect (() => {
-            if (window != null && window.app_stack.visible_child_name == "app") {
-                window.open_sheet ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                active_window.open_sheet ();
             }
         });
 
@@ -75,8 +77,9 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (quit_action);
         set_accels_for_action ("app.quit", {"<Control>q"});
         quit_action.activate.connect (() => {
-            if (window != null) {
-                window.destroy ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null) {
+                active_window.destroy ();
             }
         });
 
@@ -84,8 +87,9 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (save_action);
         set_accels_for_action ("app.save", {"<Control>s"});
         save_action.activate.connect (() => {
-            if (window != null && window.app_stack.visible_child_name == "app") {
-                window.save_sheet ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                active_window.save_sheet ();
             }
         });
 
@@ -93,8 +97,9 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (save_as_action);
         set_accels_for_action ("app.save_as", {"<Control><Shift>s"});
         save_as_action.activate.connect (() => {
-            if (window != null && window.app_stack.visible_child_name == "app") {
-                window.save_as_sheet ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                active_window.save_as_sheet ();
             }
         });
 
@@ -102,8 +107,9 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (undo_action);
         set_accels_for_action ("app.undo", {"<Control>z"});
         undo_action.activate.connect (() => {
-            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_undo ()) {
-                window.undo_sheet ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_undo ()) {
+                active_window.undo_sheet ();
             }
         });
 
@@ -111,8 +117,9 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (redo_action);
         set_accels_for_action ("app.redo", {"<Control><Shift>z"});
         redo_action.activate.connect (() => {
-            if (window != null && window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_redo ()) {
-                window.redo_sheet ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app" && HistoryManager.instance.can_redo ()) {
+                active_window.redo_sheet ();
             }
         });
 
@@ -120,15 +127,21 @@ public class Spreadsheet.App : Gtk.Application {
         add_action (focus_expression_action);
         set_accels_for_action ("app.focus_expression", {"F2"});
         focus_expression_action.activate.connect (() => {
-            window.expression.grab_focus ();
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                active_window.expression.grab_focus ();
+            }
         });
 
         var back_focus_action = new SimpleAction ("back_focus", null);
         add_action (back_focus_action);
         set_accels_for_action ("app.back_focus", {"Escape"});
         back_focus_action.activate.connect (() => {
-            window.active_sheet.grab_focus ();
-            window.expression.text = "";
+            var active_window = get_windows ().nth_data (0) as MainWindow;
+            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
+                active_window.active_sheet.grab_focus ();
+                active_window.expression.text = "";
+            }
         });
     }
 
