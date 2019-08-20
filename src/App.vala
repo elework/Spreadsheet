@@ -39,7 +39,7 @@ public class Spreadsheet.App : Gtk.Application {
         functions.add (new Function ("tan", Functions.tan, _("Gives the tangent of a number (in radians)")));
         functions.add (new Function ("arccos", Functions.arccos, _("Gives the arc cosine of a number")));
         functions.add (new Function ("arcsin", Functions.arcsin, _("Gives the arc sine of a number")));
-        functions.add (new Function ("arctan", Functions.arctan, _("Gives the arg tangent of a number")));
+        functions.add (new Function ("arctan", Functions.arctan, _("Gives the arc tangent of a number")));
     }
 
     public override void activate () {
