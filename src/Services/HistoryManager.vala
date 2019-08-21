@@ -4,17 +4,6 @@ public class Spreadsheet.Services.HistoryManager : Object {
 
     private const int HISTORY_LIMIT = 20; // TODO: make it configurable?
 
-    public static HistoryManager instance {
-        owned get {
-            if (HistoryManager._instance == null) {
-                HistoryManager._instance = new HistoryManager ();
-            }
-
-            return HistoryManager._instance;
-        }
-    }
-    private static HistoryManager _instance;
-
     public Queue<HistoryAction> undo_history = new Queue<HistoryAction> ();
     public Queue<HistoryAction> redo_history = new Queue<HistoryAction> ();
 
