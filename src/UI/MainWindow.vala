@@ -484,9 +484,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     void init_header () {
         clear_header ();
 
-        Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
+        Image file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
-        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Create a new empty file"));
+        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Open another window"));
         file_button.clicked.connect (() => {
             app.new_window ();
         });
