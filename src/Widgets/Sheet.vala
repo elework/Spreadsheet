@@ -29,6 +29,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     public Sheet (Page page, MainWindow window) {
         this.page = page;
         this.window = window;
+        set_size_request ((int) get_left_margin () + WIDTH * page.columns, HEIGHT * page.lines);
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
