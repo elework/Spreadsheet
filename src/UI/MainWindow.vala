@@ -108,14 +108,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     Popover style_popup;
 
+    public App app { get; construct; }
+    public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
+
     private void update_header () {
-        undo_button.sensitive = HistoryManager.instance.can_undo ();
-        redo_button.sensitive = HistoryManager.instance.can_redo ();
+        undo_button.sensitive = history_manager.can_undo ();
+        redo_button.sensitive = history_manager.can_redo ();
     }
 
-    public MainWindow (Gtk.Application app) {
+    public MainWindow (App app) {
         Object (
-            application: app
+            application: app,
+            app: app
         );
     }
 
@@ -148,7 +152,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
         welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
         welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
+        //  TODO: Uncomment when we support opening recent files in welcome screen
+        //  See https://github.com/ryonakano/Spreadsheet/issues/56
+        //  welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
@@ -397,12 +403,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public void undo_sheet () {
-        HistoryManager.instance.undo ();
+        history_manager.undo ();
         update_header ();
     }
 
     public void redo_sheet () {
-        HistoryManager.instance.redo ();
+        history_manager.redo ();
         update_header ();
     }
 
@@ -417,7 +423,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void update_formula () {
         if (active_sheet.selected_cell != null) {
-            HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
+            history_manager.do_action (new HistoryAction<string?, Cell> (
                 @"Change the formula to $(expression.text)",
                 active_sheet.selected_cell,
                 (_text, _target) => {
@@ -445,13 +451,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void clear_formula () {
         if (active_sheet.selected_cell != null) {
-            HistoryManager.instance.do_action (new HistoryAction<string?, Cell> (
+            history_manager.do_action (new HistoryAction<string?, Cell> (
                 "Clear the formula",
                 active_sheet.selected_cell,
                 (_text, _target) => {
                     Cell target = (Cell)_target;
                     string undo_data = target.formula;
-                    target.clear ();
+                    target.formula = "";
                     expression.text = "";
                     return new StateChange<string> (undo_data, "");
                 },
@@ -464,6 +470,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
+        update_header ();
+        active_sheet.grab_focus ();
     }
 
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
@@ -481,11 +489,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     void init_header () {
         clear_header ();
 
-        Image file_ico = new Image.from_icon_name ("document-new", Gtk.IconSize.SMALL_TOOLBAR);
+        Image file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
         file_button = new ToolButton (file_ico, null);
-        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Create a new empty file"));
+        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Open another window"));
         file_button.clicked.connect (() => {
-            print ("New file\n");
+            app.new_window ();
         });
         header.pack_start (file_button);
 

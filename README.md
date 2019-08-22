@@ -4,7 +4,7 @@ Spreadsheet is a spreadsheet app built with Vala and GTK+, and especially for el
 
 ![Screenshot](screen.png)
 
-It was originally developed by [Baptiste Gelez](https://github.com/BaptisteGelez), who wrote:
+It was originally developed by [Ana Gelez](https://github.com/AnaGelez), who wrote:
 
 > One day I was lost on the Internet, I found this great [mockup](https://www.deviantart.com/bassultra/art/Spreadsheet-363147552) of a spreadsheet app, and I decided to make it real.
 
