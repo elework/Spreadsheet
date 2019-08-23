@@ -22,11 +22,14 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_changed (Cell? new_selection);
 
+    public signal void selection_cleared ();
+
     public signal void focus_expression_entry ();
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
         this.window = window;
+        set_size_request ((int) get_left_margin () + WIDTH * page.columns, HEIGHT * page.lines);
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
@@ -66,6 +69,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     return false;
                 case Gdk.Key.Left:
                     move_left ();
+                    return false;
+                case Gdk.Key.Delete:
+                    selection_cleared ();
                     return false;
             }
             return true;

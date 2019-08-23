@@ -14,6 +14,12 @@ public class Spreadsheet.Models.Cell : Object {
         }
         set {
             _formula = value;
+
+            if (_formula == "") {
+                display_content = _formula;
+                return;
+            }
+
             try {
                 var parser = new FormulaParser (new Lexer (new FormulaGrammar ()).tokenize (value));
                 var expression = parser.parse ();
@@ -29,4 +35,3 @@ public class Spreadsheet.Models.Cell : Object {
     public FontStyle font_style { get; set; default = new FontStyle (); }
     public CellStyle cell_style { get; set; default = new CellStyle (); }
 }
-

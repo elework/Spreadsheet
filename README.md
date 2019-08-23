@@ -4,7 +4,7 @@ Spreadsheet is a spreadsheet app built with Vala and GTK+, and especially for el
 
 ![Screenshot](screen.png)
 
-It was originally developed by [Baptiste Gelez](https://github.com/BaptisteGelez), who wrote:
+It was originally developed by [Ana Gelez](https://github.com/AnaGelez), who wrote:
 
 > One day I was lost on the Internet, I found this great [mockup](https://www.deviantart.com/bassultra/art/Spreadsheet-363147552) of a spreadsheet app, and I decided to make it real.
 
@@ -55,3 +55,7 @@ We follow the [coding style of elementary OS](https://elementary.io/docs/code/re
 
 * We also name our namespaces after the folder they are in (e.g. `Spreadsheet.Services.Formula.AST` is in `src/Services/Formula/AST`)
 * We don't put the GPL in every file, since the project is licensed under the MIT license
+
+### Translating This App
+
+We accept translations through Pull Requests. If you're not sure how to do, [the guideline I made](po/README.md) might be helpful.
