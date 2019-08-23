@@ -55,3 +55,7 @@ We follow the [coding style of elementary OS](https://elementary.io/docs/code/re
 
 * We also name our namespaces after the folder they are in (e.g. `Spreadsheet.Services.Formula.AST` is in `src/Services/Formula/AST`)
 * We don't put the GPL in every file, since the project is licensed under the MIT license
+
+### Translating This App
+
+We accept translations through Pull Requests. If you're not sure how to do, [the guideline I made](po/README.md) might be helpful.
