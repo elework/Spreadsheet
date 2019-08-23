@@ -17,15 +17,46 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_stacksw.halign = Gtk.Align.CENTER;
         style_stacksw.stack = style_stack;
 
-        margin = 6;
         attach (style_stacksw, 0, 0, 1, 1);
         attach (style_stack, 0, 1, 1, 1);
     }
 
     private Gtk.Grid fonts_grid (FontStyle font_style) {
-        var fonts_grid = new Gtk.Grid ();
-        fonts_grid.margin_top = 6;
-        fonts_grid.column_spacing = 6;
+        // TODO: Add a widget that can choose a font and its size
+
+        var style_label = new Granite.HeaderLabel (_("Style"));
+        style_label.halign = Gtk.Align.START;
+
+        var bold_button = new Gtk.ToggleButton ();
+        bold_button.add (new Gtk.Image.from_icon_name ("format-text-bold-symbolic", Gtk.IconSize.BUTTON));
+        bold_button.focus_on_click = false;
+        bold_button.tooltip_text = _("Bold");
+        font_style.bind_property ("is_bold", bold_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        var italic_button = new Gtk.ToggleButton ();
+        italic_button.add (new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON));
+        italic_button.focus_on_click = false;
+        italic_button.tooltip_text = _("Italic");
+        font_style.bind_property ("is_italic", italic_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        var underline_button = new Gtk.ToggleButton ();
+        underline_button.add (new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON));
+        underline_button.focus_on_click = false;
+        underline_button.tooltip_text = _("Underline");
+        font_style.bind_property ("is_underline", underline_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        var strikethrough_button = new Gtk.ToggleButton ();
+        strikethrough_button.add (new Gtk.Image.from_icon_name ("format-text-strikethrough-symbolic", Gtk.IconSize.BUTTON));
+        strikethrough_button.focus_on_click = false;
+        strikethrough_button.tooltip_text = _("Strikethrough");
+        font_style.bind_property ("is_strikethrough", strikethrough_button, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+
+        var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
+        style_box.pack_start (bold_button);
+        style_box.pack_start (italic_button);
+        style_box.pack_start (underline_button);
+        style_box.pack_start (strikethrough_button);
 
         var color_label = new Granite.HeaderLabel (_("Color"));
         color_label.halign = Gtk.Align.START;
@@ -37,9 +68,19 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_reset_button.halign = Gtk.Align.START;
         color_reset_button.tooltip_text = _("Reset font color of a selected cell to black");
 
-        fonts_grid.attach (color_label, 0, 0, 1, 1);
-        fonts_grid.attach (color_button, 0, 1, 1, 1);
-        fonts_grid.attach (color_reset_button, 1, 1, 1, 1);
+        var right_grid = new Gtk.Grid ();
+        right_grid.margin = 6;
+        right_grid.attach (style_label, 0, 0, 1, 1);
+        right_grid.attach (style_box, 0, 1, 1, 1);
+        right_grid.attach (color_label, 0, 2, 1, 1);
+        right_grid.attach (color_button, 0, 3, 1, 1);
+        right_grid.attach (color_reset_button, 1, 3, 1, 1);
+
+        var fonts_grid = new Gtk.Grid ();
+        fonts_grid.margin_top = 6;
+        fonts_grid.orientation = Gtk.Orientation.VERTICAL;
+        fonts_grid.column_spacing = 6;
+        fonts_grid.attach (right_grid, 0, 0, 1, 1);
 
         // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
         // 1. widgets are created
