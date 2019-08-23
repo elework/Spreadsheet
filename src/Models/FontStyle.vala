@@ -1,6 +1,5 @@
 public class Spreadsheet.FontStyle : Object {
     public Gdk.RGBA fontcolor { get; set; }
-    public int fontsize { get; set; }
     public bool is_bold { get; set; }
     public bool is_italic { get; set; }
     public bool is_underline { get; set; }
@@ -8,7 +7,6 @@ public class Spreadsheet.FontStyle : Object {
 
     public FontStyle () {
         fontcolor = { 0, 0, 0, 1 };
-        fontsize = 15;
     }
 
     public void color_remove () {

@@ -22,11 +22,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
     }
 
     private Gtk.Grid fonts_grid (FontStyle font_style) {
-        var size_spin_button = new Gtk.SpinButton.with_range (5, 45, 2);
-        size_spin_button.tooltip_text = _("Set font size");
-        font_style.bind_property ("fontsize", size_spin_button, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-
-        // TODO: Add a widget that can choose a font
+        // TODO: Add a widget that can choose a font and its size
 
         var style_label = new Granite.HeaderLabel (_("Style"));
         style_label.halign = Gtk.Align.START;
@@ -72,10 +68,6 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         color_reset_button.halign = Gtk.Align.START;
         color_reset_button.tooltip_text = _("Reset font color of a selected cell to black");
 
-        var left_grid = new Gtk.Grid ();
-        left_grid.margin = 6;
-        left_grid.attach (size_spin_button, 0, 0, 1, 1);
-
         var right_grid = new Gtk.Grid ();
         right_grid.margin = 6;
         right_grid.attach (style_label, 0, 0, 1, 1);
@@ -88,9 +80,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         fonts_grid.margin_top = 6;
         fonts_grid.orientation = Gtk.Orientation.VERTICAL;
         fonts_grid.column_spacing = 6;
-        fonts_grid.attach (left_grid, 0, 0, 1, 1);
-        fonts_grid.attach (new Gtk.Separator (Gtk.Orientation.VERTICAL), 1, 0, 1, 1);
-        fonts_grid.attach (right_grid, 2, 0, 1, 1);
+        fonts_grid.attach (right_grid, 0, 0, 1, 1);
 
         // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
         // 1. widgets are created

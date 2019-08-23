@@ -295,7 +295,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             }
 
             cr.move_to (x, y);
-            cr.set_font_size (cell.font_style.fontsize);
             var font_weight = Cairo.FontWeight.NORMAL;
             var font_slant = Cairo.FontSlant.NORMAL;
 
