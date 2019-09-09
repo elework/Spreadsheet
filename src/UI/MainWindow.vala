@@ -111,6 +111,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
+    private uint configure_id;
 
     private void update_header () {
         undo_button.sensitive = history_manager.can_undo ();
@@ -133,18 +134,26 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_welcome ();
     }
 
-    // Save position, size and state of window when they're changed
-    public override bool configure_event (Gdk.EventConfigure event) {
-        int x, y, w, h;
-        bool m;
-        get_position (out x, out y);
-        get_size (out w, out h);
-        m = this.is_maximized;
-        Spreadsheet.App.settings.set_int ("window-x", x);
-        Spreadsheet.App.settings.set_int ("window-y", y);
-        Spreadsheet.App.settings.set_int ("window-width", w);
-        Spreadsheet.App.settings.set_int ("window-height", h);
-        Spreadsheet.App.settings.set_boolean ("window-maximized", m);
+    protected override bool configure_event (Gdk.EventConfigure event) {
+        if (configure_id != 0) {
+            GLib.Source.remove (configure_id);
+        }
+
+        configure_id = Timeout.add (100, () => {
+            configure_id = 0;
+
+            Spreadsheet.App.settings.set_boolean ("is-maximized", is_maximized);
+
+            if (!is_maximized) {
+                int x, y, w, h;
+                get_position (out x, out y);
+                get_size (out w, out h);
+                Spreadsheet.App.settings.set ("window-position", "(ii)", x, y);
+                Spreadsheet.App.settings.set ("window-size", "(ii)", w, h);
+            }
+
+            return false;
+        });
 
         return base.configure_event (event);
     }
