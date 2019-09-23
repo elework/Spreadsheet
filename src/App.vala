@@ -5,6 +5,7 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
+    private MainWindow window;
 
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
@@ -145,24 +146,24 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     public void new_window () {
-        // Fetch window state from GLib.Settings
-        var window_x = settings.get_int ("window-x");
-        var window_y = settings.get_int ("window-y");
-        var window_width = settings.get_int ("window-width");
-        var window_height = settings.get_int ("window-height");
-        var window_maximized = settings.get_boolean ("window-maximized");
+        int window_x, window_y, window_width, window_height;
+        settings.get ("window-position", "(ii)", out window_x, out window_y);
+        settings.get ("window-size", "(ii)", out window_width, out window_height);
+        var is_maximized = settings.get_boolean ("is-maximized");
 
-        var window = new MainWindow (this);
         if (get_windows () != null) {
+            window = new MainWindow (this);
             window.move (window_x + 30, window_y + 30);
         } else if (window_x != -1 || window_y != -1) { // Not a first time launch
+            window = new MainWindow (this);
             window.move (window_x, window_y);
-
-            if (window_maximized) {
-                window.maximize ();
-            }
         } else { // First time launch
+            window = new MainWindow (this);
             window.window_position = Gtk.WindowPosition.CENTER;
+        }
+
+        if (is_maximized) {
+            window.maximize ();
         }
 
         window.set_default_size (window_width, window_height);

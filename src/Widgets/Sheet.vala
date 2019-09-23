@@ -29,6 +29,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     public Sheet (Page page, MainWindow window) {
         this.page = page;
         this.window = window;
+        set_size_request ((int) get_left_margin () + WIDTH * page.columns, HEIGHT * page.lines);
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
@@ -288,7 +289,35 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
             double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
+
+            if (cell.font_style.is_underline) {
+                const int UNDERLINE_PADDING = 3;
+                cr.move_to (x, y + UNDERLINE_PADDING);
+                cr.set_line_width (1);
+                cr.rel_line_to (extents.width, 0);
+                cr.stroke ();
+            }
+
+            if (cell.font_style.is_strikethrough) {
+                cr.move_to (x, y - extents.height / 2);
+                cr.set_line_width (1);
+                cr.rel_line_to (extents.width, 0);
+                cr.stroke ();
+            }
+
             cr.move_to (x, y);
+            var font_weight = Cairo.FontWeight.NORMAL;
+            var font_slant = Cairo.FontSlant.NORMAL;
+
+            if (cell.font_style.is_bold) {
+                font_weight = Cairo.FontWeight.BOLD;
+            }
+
+            if (cell.font_style.is_italic) {
+                font_slant = Cairo.FontSlant.ITALIC;
+            }
+
+            cr.select_font_face ("Open Sans", font_slant, font_weight);
             cr.show_text (cell.display_content);
             cr.restore ();
         }
