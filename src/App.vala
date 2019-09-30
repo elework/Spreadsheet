@@ -43,21 +43,23 @@ public class Spreadsheet.App : Gtk.Application {
         functions.add (new Function ("arctan", Functions.arctan, _("Gives the arc tangent of a number")));
     }
 
-    protected override void open (File[] files, string hint) {
-        if (files.length != 1) {
+    protected override void open (File[] csv_files, string hint) {
+        if (csv_files.length == 0) {
             return;
         }
 
         activate ();
 
-        try {
-            var file = new Spreadsheet.Services.CSV.CSVParser.from_file (files[0].get_path ()).parse ();
-            window.file = file;
-            window.init_header ();
-            window.show_all ();
-            window.app_stack.set_visible_child_name ("app");
-        } catch (Spreadsheet.Services.Parsing.ParserError err) {
-            debug ("Error: " + err.message);
+        foreach (var csv_file in csv_files) {
+            try {
+                var file = new Spreadsheet.Services.CSV.CSVParser.from_file (csv_file.get_path ()).parse ();
+                window.file = file;
+                window.init_header ();
+                window.show_all ();
+                window.app_stack.set_visible_child_name ("app");
+            } catch (Spreadsheet.Services.Parsing.ParserError err) {
+                debug ("Error: " + err.message);
+            }
         }
     }
 
