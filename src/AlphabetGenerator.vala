@@ -16,7 +16,7 @@ using Gee;
 */
 public class Spreadsheet.AlphabetGenerator : Object {
 
-    private const string[] alphabet = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    private const string[] ALPHABET = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
                                         "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
     public uint limit { get; construct set; }
@@ -35,7 +35,7 @@ public class Spreadsheet.AlphabetGenerator : Object {
         int i = 0;
         foreach (char letter in letters.to_utf8 ()) {
             int power = letters.length - i;
-            int index_in_alphabet = new ArrayList<string>.wrap (alphabet).index_of (letter.to_string ());
+            int index_in_alphabet = new ArrayList<string>.wrap (ALPHABET).index_of (letter.to_string ());
             res += (int)Math.pow (index_in_alphabet, power);
             i++;
         }
@@ -43,10 +43,10 @@ public class Spreadsheet.AlphabetGenerator : Object {
     }
 
     public string get_at (uint index) {
-        if (index >= alphabet.length) {
-            return get_at ((index / alphabet.length) - 1) + get_at (index % alphabet.length);
+        if (index >= ALPHABET.length) {
+            return get_at ((index / ALPHABET.length) - 1) + get_at (index % ALPHABET.length);
         } else {
-            return alphabet[index];
+            return ALPHABET[index];
         }
     }
 
@@ -60,4 +60,3 @@ public class Spreadsheet.AlphabetGenerator : Object {
         return index < limit;
     }
 }
-
