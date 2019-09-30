@@ -144,4 +144,3 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
         return cell;
     }
 }
-

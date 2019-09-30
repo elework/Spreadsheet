@@ -84,7 +84,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     expression.grab_focus ();
                 });
 
-                sheet.selection_cleared.connect(() => {
+                sheet.selection_cleared.connect (() => {
                     clear_formula ();
                 });
 
@@ -548,4 +548,3 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 }
-

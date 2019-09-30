@@ -79,4 +79,3 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
         return res;
     }
 }
-
