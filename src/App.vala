@@ -48,9 +48,11 @@ public class Spreadsheet.App : Gtk.Application {
             return;
         }
 
-        activate ();
+        setup_shortcuts ();
 
         foreach (var csv_file in csv_files) {
+            new_window ();
+
             try {
                 var file = new Spreadsheet.Services.CSV.CSVParser.from_file (csv_file.get_path ()).parse ();
                 window.file = file;
@@ -65,7 +67,10 @@ public class Spreadsheet.App : Gtk.Application {
 
     protected override void activate () {
         new_window ();
+        setup_shortcuts ();
+    }
 
+    private void setup_shortcuts () {
         var back_action = new SimpleAction ("back", null);
         add_action (back_action);
         set_accels_for_action ("app.back", {"<Alt>Home"});
