@@ -276,8 +276,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
             TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
-            double x = left_margin + ((cell.column + 1) * WIDTH  - (PADDING + BORDER + extents.width));
-            double y = HEIGHT      + ((cell.line + 1)   * HEIGHT - (PADDING + BORDER));
+            double x = left_margin + ((cell.column + 1) * WIDTH - (PADDING + BORDER + extents.width));
+            double y = HEIGHT + ((cell.line + 1) * HEIGHT - (PADDING + BORDER));
 
             if (cell.font_style.is_underline) {
                 const int UNDERLINE_PADDING = 3;

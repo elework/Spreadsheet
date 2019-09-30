@@ -46,4 +46,3 @@ public class Spreadsheet.Services.HistoryManager : Object {
         }
     }
 }
-

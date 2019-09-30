@@ -1,4 +1,3 @@
-
 public delegate Spreadsheet.Services.Parsing.Token Evaluation (string match);
 
 public class Spreadsheet.Services.Parsing.Evaluator : Object {
@@ -41,4 +40,3 @@ public class Spreadsheet.Services.Parsing.Evaluator : Object {
         return new Token ("[[error]]", "oops");
     }
 }
-
