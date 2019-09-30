@@ -8,4 +8,4 @@ Icon=com.github.ryonakano.spreadsheet
 Terminal=false
 Type=Application
 Keywords=Office;Book;
-MimeType=text/csv
+MimeType=text/csv;
