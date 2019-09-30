@@ -20,7 +20,7 @@ public class Spreadsheet.App : Gtk.Application {
 
     construct {
         application_id = "com.github.ryonakano.spreadsheet";
-        flags = ApplicationFlags.FLAGS_NONE;
+        flags = ApplicationFlags.HANDLES_OPEN;
         functions.add (new Function ("sum", Functions.sum, _("Add numbers")));
         functions.add (new Function ("mul", Functions.mul, _("Multiply numbers")));
         functions.add (new Function ("div", Functions.div, _("Divide numbers")));
@@ -43,7 +43,25 @@ public class Spreadsheet.App : Gtk.Application {
         functions.add (new Function ("arctan", Functions.arctan, _("Gives the arc tangent of a number")));
     }
 
-    public override void activate () {
+    protected override void open (File[] files, string hint) {
+        if (files.length != 1) {
+            return;
+        }
+
+        activate ();
+
+        try {
+            var file = new Spreadsheet.Services.CSV.CSVParser.from_file (files[0].get_path ()).parse ();
+            window.file = file;
+            window.init_header ();
+            window.show_all ();
+            window.app_stack.set_visible_child_name ("app");
+        } catch (Spreadsheet.Services.Parsing.ParserError err) {
+            debug ("Error: " + err.message);
+        }
+    }
+
+    protected override void activate () {
         new_window ();
 
         var back_action = new SimpleAction ("back", null);

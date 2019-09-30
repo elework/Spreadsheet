@@ -496,7 +496,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         ctx.close_path ();
     }
 
-    void init_header () {
+    public void init_header () {
         clear_header ();
 
         Image file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
