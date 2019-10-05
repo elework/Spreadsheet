@@ -17,7 +17,7 @@ public abstract class Spreadsheet.Services.Parsing.Parser : Object {
 
     protected Token next { owned get { return tokens[index + 1]; } }
 
-    public Parser (ArrayList<Token> tokens) {
+    protected Parser (ArrayList<Token> tokens) {
        Object (tokens: tokens);
     }
 
