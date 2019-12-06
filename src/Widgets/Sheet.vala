@@ -51,9 +51,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         }
         can_focus = true;
         button_press_event.connect (on_click);
-        
-        key_press_event.connect ((key) => {
 
+        key_press_event.connect ((key) => {
             // This is true if the ONLY button pressed is a modifier. If a combination
             // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
             // instead be checked with the EventKey::state field.
