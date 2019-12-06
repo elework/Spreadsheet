@@ -38,4 +38,3 @@ public class Spreadsheet.Models.HistoryAction<G, H> : Object {
         this.undo = (owned) undo;
     }
 }
-

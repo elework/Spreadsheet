@@ -89,7 +89,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, int.MAX, false);
                 });
 
-                sheet.selection_cleared.connect(() => {
+                sheet.selection_cleared.connect (() => {
                     clear_formula ();
                 });
 
@@ -501,7 +501,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         ctx.close_path ();
     }
 
-    void init_header () {
+    public void init_header () {
         clear_header ();
 
         Image file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
@@ -553,4 +553,3 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 }
-

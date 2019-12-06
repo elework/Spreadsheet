@@ -24,4 +24,3 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
         });
     }
 }
-
