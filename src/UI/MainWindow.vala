@@ -85,7 +85,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         expression.text += input;
                     }
                     expression.grab_focus_without_selecting ();
-                    // int.MAX so that it moves to the end of the buffer, whatever size it is
                     expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
                 });
 
