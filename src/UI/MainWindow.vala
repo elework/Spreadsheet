@@ -461,6 +461,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             ));
         }
         update_header ();
+        active_sheet.move_bottom ();
         active_sheet.grab_focus ();
     }
 
