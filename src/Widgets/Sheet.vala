@@ -24,7 +24,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_cleared ();
 
-    public signal void focus_expression_entry ();
+    public signal void focus_expression_entry (string? input);
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -51,29 +51,39 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         }
         can_focus = true;
         button_press_event.connect (on_click);
+
         key_press_event.connect ((key) => {
-            return true; // without this Tab is not handled correctly ¯\_(ツ)_/¯
-        });
-        key_release_event.connect ((key) => {
+            // This is true if the ONLY button pressed is a modifier. If a combination
+            // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
+            // instead be checked with the EventKey::state field.
+            if (key.is_modifier != 0) {
+                return true;
+            }
+
             switch (key.keyval) {
-                case Gdk.Key.Right:
                 case Gdk.Key.Tab:
                     move_right ();
-                    return false;
+                    return true;
+                case Gdk.Key.Right:
+                    move_right ();
+                    return true;
                 case Gdk.Key.Down:
                 case Gdk.Key.Return:
                     move_bottom ();
-                    return false;
+                    return true;
                 case Gdk.Key.Up:
                     move_top ();
-                    return false;
+                    return true;
                 case Gdk.Key.Left:
                     move_left ();
-                    return false;
+                    return true;
                 case Gdk.Key.Delete:
                     selection_cleared ();
-                    return false;
+                    return true;
             }
+            // No special key is used, thus the intent is user input
+            // Switch focus to the expression entry
+            focus_expression_entry (key.str);
             return true;
         });
     }

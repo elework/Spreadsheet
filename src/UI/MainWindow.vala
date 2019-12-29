@@ -80,8 +80,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_toggle.sensitive = false;
                     }
                 });
-                sheet.focus_expression_entry.connect (() => {
-                    expression.grab_focus ();
+                sheet.focus_expression_entry.connect ((input) => {
+                    if (input != null) {
+                        expression.text += input;
+                    }
+                    expression.grab_focus_without_selecting ();
+                    expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
                 });
 
                 sheet.selection_cleared.connect (() => {
@@ -456,6 +460,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             ));
         }
         update_header ();
+        active_sheet.move_bottom ();
         active_sheet.grab_focus ();
     }
 
