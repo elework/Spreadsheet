@@ -162,13 +162,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return base.configure_event (event);
     }
 
-    private Welcome welcome () {
+    private Box welcome () {
         var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
         welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
         welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        //  TODO: Uncomment when we support opening recent files in welcome screen
-        //  See https://github.com/ryonakano/Spreadsheet/issues/56
-        //  welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
@@ -202,7 +199,58 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 app_stack.set_visible_child_name ("app");
             }
         });
-        return welcome;
+
+        var box = new Box (Orientation.HORIZONTAL, 0);
+
+        // This is so that the background becomes white - there may be a better way
+        box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
+
+        var recent_files_box = recent_files ();
+
+        box.pack_start (welcome);
+        box.pack_start (new Separator (Orientation.VERTICAL));
+        box.pack_start (recent_files_box);
+        return box;
+    }
+
+    private Box recent_files () {
+        var title = new Label (_("Recent files"));
+
+        title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+
+        var list_view = new ListBox ();
+        var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
+
+        foreach (var file_name in recent_files) {
+        	var file = File.new_for_path (file_name);
+        	if (file.query_exists ()) {
+        	    var basename = file.get_basename ();
+            	var path = file.get_path ();
+                // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
+                var spreadsheet_icon = new Image.from_icon_name ("x-office-spreadsheet",
+                    IconSize.DIALOG);
+                var list_item = new WelcomeButton (spreadsheet_icon, basename, path);
+                list_item.clicked.connect (() => {
+                    try {
+                        this.file = new CSVParser.from_file (path).parse ();
+                        init_header ();
+                        show_all ();
+                        app_stack.set_visible_child_name ("app");
+                    } catch (ParserError err) {
+                        debug ("Error: " + err.message);
+                    }
+                });
+                list_view.add (list_item);
+        	} else {
+        	    /* In case the file doesn't exist, display a list item, but
+        	       mark the file as missing? */
+        	}
+        }
+
+        var recent_files_box = new Box (Orientation.VERTICAL, 0);
+        recent_files_box.pack_start (title);
+        recent_files_box.pack_start (list_view);
+        return recent_files_box;
     }
 
     private Grid toolbar () {
