@@ -192,9 +192,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     }
 
                     var recents = Spreadsheet.App.settings.get_strv ("recent-files");
-                    recents += chooser.get_filename ();
-                    Spreadsheet.App.settings.set_strv ("recent-files", recents);
-                    update_listview ();
+                    bool has_added = false;
+                    foreach (var recent in recents) {
+                        if (recent == file.file_path) {
+                            has_added = true;
+                        }
+                    }
+
+                    if (!has_added) {
+                        recents += file.file_path;
+                        Spreadsheet.App.settings.set_strv ("recent-files", recents);
+                        update_listview ();
+                    }
                 } else {
                     chooser.close ();
                     return;
@@ -443,6 +452,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+        foreach (var recent in recents) {
+            if (recent == file.file_path) {
+                return;
+            }
+        }
+
         recents += file.file_path;
         Spreadsheet.App.settings.set_strv ("recent-files", recents);
         update_listview ();
