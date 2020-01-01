@@ -196,6 +196,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     foreach (var recent in recents) {
                         if (recent == file.file_path) {
                             has_added = true;
+                            break;
                         }
                     }
 
