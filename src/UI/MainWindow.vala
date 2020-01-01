@@ -113,6 +113,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private ToggleButton style_toggle;
     Popover style_popup;
 
+    private Gtk.ListBox list_view = new ListBox ();
+
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private uint configure_id;
@@ -188,6 +190,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     } catch (ParserError err) {
                         debug ("Error: " + err.message);
                     }
+
+                    var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+                    recents += chooser.get_filename ();
+                    Spreadsheet.App.settings.set_strv ("recent-files", recents);
+                    update_listview ();
                 } else {
                     chooser.close ();
                     return;
@@ -218,7 +225,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        var list_view = new ListBox ();
+        update_listview ();
+
+        var recent_files_box = new Box (Orientation.VERTICAL, 0);
+        recent_files_box.pack_start (title);
+        recent_files_box.pack_start (list_view);
+        return recent_files_box;
+    }
+
+    private void update_listview () {
+        foreach (var item in list_view.get_children ()) {
+            item.destroy ();
+        }
+
         var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
 
         foreach (var file_name in recent_files) {
@@ -247,10 +266,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         	}
         }
 
-        var recent_files_box = new Box (Orientation.VERTICAL, 0);
-        recent_files_box.pack_start (title);
-        recent_files_box.pack_start (list_view);
-        return recent_files_box;
+        list_view.show_all ();
     }
 
     private Grid toolbar () {
@@ -426,6 +442,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
+        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+        recents += file.file_path;
+        Spreadsheet.App.settings.set_strv ("recent-files", recents);
+        update_listview ();
     }
 
     public void save_as_sheet () {
