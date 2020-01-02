@@ -482,17 +482,24 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void update_recents (string recent_file_path) {
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+
+        const int max_file_count = 10;
         
-        /* Create a new array, store all of the previous recent files except the
-           most recent one, and then append the most recent one at the start. */
+        /* Create a new array, append the most recent one at the start, and 
+           then store all of the previous recent files except the most 
+           recent one. */
         var new_recents = new Array<string> ();
+        new_recents.insert_val (0, recent_file_path);
+
         foreach (var recent in recents) {
+            if (new_recents.length >= max_file_count) {
+                break;
+            }
             if (recent != recent_file_path) {
                 new_recents.append_val (recent);
             }
         }
 
-        new_recents.insert_val (0, recent_file_path);
         Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
         update_listview ();
     }
