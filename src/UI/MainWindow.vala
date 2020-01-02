@@ -191,20 +191,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         debug ("Error: " + err.message);
                     }
 
-                    var recents = Spreadsheet.App.settings.get_strv ("recent-files");
-                    bool has_added = false;
-                    foreach (var recent in recents) {
-                        if (recent == file.file_path) {
-                            has_added = true;
-                            break;
-                        }
-                    }
-
-                    if (!has_added) {
-                        recents += file.file_path;
-                        Spreadsheet.App.settings.set_strv ("recent-files", recents);
-                        update_listview ();
-                    }
+                    update_recents (file.file_path);
                 } else {
                     chooser.close ();
                     return;
@@ -452,16 +439,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
-        foreach (var recent in recents) {
-            if (recent == file.file_path) {
-                return;
-            }
-        }
-
-        recents += file.file_path;
-        Spreadsheet.App.settings.set_strv ("recent-files", recents);
-        update_listview ();
+        update_recents(file.file_path);
     }
 
     public void save_as_sheet () {
@@ -492,12 +470,31 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.close ();
         new CSVWriter (active_sheet.page).write_to_file (path);
 
+        update_recents (path);
+
         // Open the saved file
         try {
             file = new CSVParser.from_file (path).parse ();
         } catch (ParserError err) {
             debug ("Error: " + err.message);
         }
+    }
+
+    private void update_recents (string recent_file_path) {
+        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+        
+        /* Create a new array, store all of the previous recent files except the
+           most recent one, and then append the most recent one at the start. */
+        var new_recents = new Array<string> ();
+        foreach (var recent in recents) {
+            if (recent != recent_file_path) {
+                new_recents.append_val (recent);
+            }
+        }
+
+        new_recents.insert_val (0, recent_file_path);
+        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
+        update_listview ();
     }
 
     public void undo_sheet () {
