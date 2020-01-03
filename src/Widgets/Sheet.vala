@@ -240,7 +240,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         // draw the cells
         foreach (var cell in page.cells) {
             Gdk.RGBA bg = cell.cell_style.background;
-            Gdk.RGBA bg_default = { 255, 255, 255, 0 };
+            Gdk.RGBA bg_default = { 1, 1, 1, 1 };
             if (bg != bg_default) {
                 cr.save ();
                 set_color (cr, bg);
@@ -250,7 +250,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             }
 
             Gdk.RGBA sr = cell.cell_style.stroke;
-            Gdk.RGBA sr_default = { 0, 0, 0, 0 };
+            Gdk.RGBA sr_default = { 0, 0, 0, 1 };
             double sr_w = cell.cell_style.stroke_width;
             cr.save ();
 
