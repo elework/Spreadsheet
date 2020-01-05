@@ -147,22 +147,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         return left_ext.width + BORDER;
     }
 
-    // I hope Vala will support extension methods one day...
-    private void set_color (Context cr, RGBA color) {
-        if (color.blue > 1.0) {
-            color.blue = color.blue / 256;
-        }
-        if (color.red > 1.0) {
-            color.red = color.red / 256;
-        }
-        if (color.green > 1.0) {
-            color.green = color.green / 256;
-        }
-        cr.set_source_rgba (color.red, color.green, color.blue, color.alpha);
-    }
-
     public override bool draw (Context cr) {
-        RGBA default_cell_stroke = { 77.0, 77.0, 77.0, 1 };
+        RGBA default_cell_stroke = { 0.3, 0.3, 0.3, 1 };
         RGBA default_font_color = { 0, 0, 0, 1 };
 
         var style = window.get_style_context ();
@@ -181,7 +167,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.fill ();
 
         // draw the letters and the numbers on the side
-        set_color (cr, normal);
+        Gdk.cairo_set_source_rgba (cr, normal);
         cr.set_line_width (BORDER);
 
         // numbers on the left side
@@ -194,9 +180,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 style.render_frame (cr, 0, HEIGHT + BORDER + i * HEIGHT, left_margin, HEIGHT);
                 cr.restore ();
 
-                set_color (cr, selected);
+                Gdk.cairo_set_source_rgba (cr, selected);
             } else {
-                set_color (cr, normal);
+                Gdk.cairo_set_source_rgba (cr, normal);
             }
 
             TextExtents extents;
@@ -221,9 +207,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 style.render_frame (cr, left_margin + BORDER + i * WIDTH, 0, WIDTH, HEIGHT);
                 cr.restore ();
 
-                set_color (cr, selected);
+                Gdk.cairo_set_source_rgba (cr, selected);
             } else {
-                set_color (cr, normal);
+                Gdk.cairo_set_source_rgba (cr, normal);
             }
 
             TextExtents extents;
@@ -243,7 +229,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             Gdk.RGBA bg_default = { 1, 1, 1, 1 };
             if (bg != bg_default) {
                 cr.save ();
-                set_color (cr, bg);
+                Gdk.cairo_set_source_rgba (cr, bg);
                 cr.rectangle (left_margin + BORDER + cell.column * WIDTH, HEIGHT + BORDER + cell.line * HEIGHT, WIDTH, HEIGHT);
                 cr.fill ();
                 cr.restore ();
@@ -261,9 +247,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             }
 
             if (sr != sr_default) {
-                set_color (cr, sr);
+                Gdk.cairo_set_source_rgba (cr, sr);
             } else {
-                set_color (cr, default_cell_stroke);
+                Gdk.cairo_set_source_rgba (cr, default_cell_stroke);
             }
 
             if (cell.selected) {
@@ -279,9 +265,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             Gdk.RGBA color_default = { 0, 0, 0, 1 };
             cr.save ();
             if (color != color_default) {
-                set_color (cr, color);
+                Gdk.cairo_set_source_rgba (cr, color);
             } else {
-                set_color (cr, default_font_color);
+                Gdk.cairo_set_source_rgba (cr, default_font_color);
             }
 
             TextExtents extents;
