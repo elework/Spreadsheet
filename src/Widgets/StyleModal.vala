@@ -92,7 +92,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         });
         // 3. user clicks the color_reset_button and resets a font color
         color_reset_button.clicked.connect (() => {
-            font_style.color_remove ();
+            font_style.reset_color ();
             color_reset_button.sensitive = check_color (color_button, font_default_color);
         });
 
@@ -153,11 +153,11 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         });
         // 3. user clicks bg_reset_button/sr_reset_button and resets background/stroke colors
         bg_reset_button.clicked.connect (() => {
-            cell_style.bg_remove ();
+            cell_style.reset_background_color ();
             bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         });
         sr_reset_button.clicked.connect (() => {
-            cell_style.sr_remove ();
+            cell_style.reset_stroke_color ();
             sr_width_spin.value = 1.0;
             sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
             sr_width_spin.sensitive = check_color (sr_button, sr_default_color);

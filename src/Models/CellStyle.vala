@@ -1,24 +1,18 @@
 public class Spreadsheet.CellStyle : Object {
-    public Gdk.RGBA background { get; construct set; }
-    public Gdk.RGBA stroke { get; construct set; }
-    public double stroke_width { get; construct set; }
+    public Gdk.RGBA background { get; set; }
+    public Gdk.RGBA stroke { get; set; }
+    public double stroke_width { get; set; default = 1.0; }
 
     public CellStyle () {
-        Gdk.RGBA bg = { 1, 1, 1, 1 };
-        Gdk.RGBA sr = { 0, 0, 0, 1 };
-        double sr_w = 1.0;
-        Object (
-            background: bg,
-            stroke: sr,
-            stroke_width: sr_w
-        );
+        reset_background_color ();
+        reset_stroke_color ();
     }
 
-    public void bg_remove () {
+    public void reset_background_color () {
         background = { 1, 1, 1, 1 };
     }
 
-    public void sr_remove () {
+    public void reset_stroke_color () {
         stroke = { 0, 0, 0, 1 };
     }
 }
