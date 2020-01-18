@@ -217,17 +217,22 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return box;
     }
 
-    private Box recent_files () {
+    private Widget recent_files () {
         var title = new Label (_("Recent files"));
 
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
         update_listview ();
 
+        var scrolledWindow = new ScrolledWindow (null, null);
+        scrolledWindow.hscrollbar_policy = PolicyType.NEVER;
+
         var recent_files_box = new Box (Orientation.VERTICAL, 0);
         recent_files_box.pack_start (title);
         recent_files_box.pack_start (list_view);
-        return recent_files_box;
+        
+        scrolledWindow.add (recent_files_box);
+        return scrolledWindow;
     }
 
     private void update_listview () {
