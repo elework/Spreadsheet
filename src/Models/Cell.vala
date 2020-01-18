@@ -1,4 +1,3 @@
-using Gee;
 using Spreadsheet.Services.Formula;
 using Spreadsheet.Services.Parsing;
 
