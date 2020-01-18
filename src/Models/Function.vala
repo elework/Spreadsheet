@@ -1,14 +1,15 @@
 public class Spreadsheet.Models.Function : Object {
-
-    public Function (string name, owned ApplyFunc func, string doc = "No documentation") {
-        Object (name: name, apply: (owned) func, doc: doc);
-    }
-
     public string name { get; set; }
-
+    public ApplyFunc apply { get; set; }
     public string doc { get; set; }
 
-    public ApplyFunc apply { get; set; }
+    public Function (string name, owned ApplyFunc func, string doc = (_("No documentation")) {
+        Object (
+            name: name,
+            apply: (owned) func,
+            doc: doc
+        );
+    }
 }
 
 [CCode (has_target = false)]
