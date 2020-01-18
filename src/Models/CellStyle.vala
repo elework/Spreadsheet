@@ -4,8 +4,8 @@ public class Spreadsheet.CellStyle : Object {
     public double stroke_width { get; construct set; }
 
     public CellStyle () {
-        Gdk.RGBA bg = { 255, 255, 255, 0 };
-        Gdk.RGBA sr = { 0, 0, 0, 0 };
+        Gdk.RGBA bg = { 1, 1, 1, 1 };
+        Gdk.RGBA sr = { 0, 0, 0, 1 };
         double sr_w = 1.0;
         Object (
             background: bg,
@@ -15,10 +15,10 @@ public class Spreadsheet.CellStyle : Object {
     }
 
     public void bg_remove () {
-        background = { 255, 255, 255, 0 };
+        background = { 1, 1, 1, 1 };
     }
 
     public void sr_remove () {
-        stroke = { 0, 0, 0, 0 };
+        stroke = { 0, 0, 0, 1 };
     }
 }

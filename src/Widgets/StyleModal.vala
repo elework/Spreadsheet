@@ -138,8 +138,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
         // Set the sensitivities of the br_remove_button, sr_reset_button and sr_width_spin by whether they have already reset background/stroke colors to the default ones or not when…
         // 1. widgets are created
-        Gdk.RGBA bg_default_color = { 255, 255, 255, 0 };
-        Gdk.RGBA sr_default_color = { 0, 0, 0, 0 };
+        Gdk.RGBA bg_default_color = { 1, 1, 1, 1 };
+        Gdk.RGBA sr_default_color = { 0, 0, 0, 1 };
         bg_reset_button.sensitive = check_color (bg_button, bg_default_color);
         sr_reset_button.sensitive = check_color (sr_button, sr_default_color);
         sr_width_spin.sensitive = check_color (sr_button, sr_default_color);
