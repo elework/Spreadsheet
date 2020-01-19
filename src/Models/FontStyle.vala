@@ -6,10 +6,10 @@ public class Spreadsheet.FontStyle : Object {
     public bool is_strikethrough { get; set; }
 
     public FontStyle () {
-        fontcolor = { 0, 0, 0, 1 };
+        reset_color ();
     }
 
-    public void color_remove () {
+    public void reset_color () {
         fontcolor = { 0, 0, 0, 1 };
     }
 }
