@@ -1,6 +1,3 @@
-using Gee;
-using Gtk;
-
 public class Spreadsheet.Models.StateChange<G> : Object {
     public G before;
     public G after;
