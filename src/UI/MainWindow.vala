@@ -327,10 +327,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             path = File.new_for_path ("%s/%s%s".printf (documents, file_name, suffix));
         } while (path.query_exists ());
 
+        var page = new Page.empty ();
+        page.title = _("Sheet 1");
+
         var file = new SpreadSheet ();
         file.title = file_name;
         file.file_path = path.get_path ();
-        file.add_page (new Page.empty () { title = _("Sheet 1") });
+        file.add_page (page);
         this.file = file;
 
         show_all ();
