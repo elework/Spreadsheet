@@ -152,7 +152,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return base.configure_event (event);
     }
 
-    private Box welcome () {
+    private Gtk.Box welcome () {
         var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
         welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
         welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
@@ -193,28 +193,24 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         welcome_box = new Box (Orientation.HORIZONTAL, 0);
-
-        // This is so that the background becomes white - there may be a better way
         welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
-
         welcome_box.pack_start (welcome);
 
         return welcome_box;
     }
 
     private Gtk.ScrolledWindow recent_files () {
-        var title = new Label (_("Recent files"));
-
+        var title = new Gtk.Label (_("Recent files"));
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        recent_files_scrolled = new ScrolledWindow (null, null);
-        recent_files_scrolled.hscrollbar_policy = PolicyType.NEVER;
-
-        var recent_files_box = new Box (Orientation.VERTICAL, 0);
+        var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         recent_files_box.pack_start (title);
         recent_files_box.pack_start (list_view);
         
+        recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
+        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
         recent_files_scrolled.add (recent_files_box);
+
         return recent_files_scrolled;
     }
 
@@ -232,8 +228,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         	    var basename = file.get_basename ();
             	var path = file.get_path ();
                 // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-                var spreadsheet_icon = new Image.from_icon_name ("x-office-spreadsheet",
-                    IconSize.DIALOG);
+                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet",
+                    Gtk.IconSize.DIALOG);
                 var list_item = new WelcomeButton (spreadsheet_icon, basename, path);
                 list_item.clicked.connect (() => {
                     try {
@@ -438,7 +434,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        update_recents(file.file_path);
+        update_recents (file.file_path);
     }
 
     public void save_as_sheet () {
@@ -494,6 +490,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             if (new_recents.length >= max_file_count) {
                 break;
             }
+
             if (recent != recent_file_path) {
                 new_recents.append_val (recent);
             }
