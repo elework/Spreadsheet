@@ -108,6 +108,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     ToolButton undo_button { get; set; }
     ToolButton redo_button { get; set; }
 
+    private Gtk.Box welcome_box;
+    private Gtk.ScrolledWindow recent_files_scrolled;
     private Button function_list_bt;
     public Entry expression;
     private ToggleButton style_toggle;
@@ -204,35 +206,30 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
         });
 
-        var box = new Box (Orientation.HORIZONTAL, 0);
+        welcome_box = new Box (Orientation.HORIZONTAL, 0);
 
         // This is so that the background becomes white - there may be a better way
-        box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
+        welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
 
-        var recent_files_box = recent_files ();
+        welcome_box.pack_start (welcome);
 
-        box.pack_start (welcome);
-        box.pack_start (new Separator (Orientation.VERTICAL));
-        box.pack_start (recent_files_box);
-        return box;
+        return welcome_box;
     }
 
-    private Widget recent_files () {
+    private Gtk.ScrolledWindow recent_files () {
         var title = new Label (_("Recent files"));
 
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        update_listview ();
-
-        var scrolledWindow = new ScrolledWindow (null, null);
-        scrolledWindow.hscrollbar_policy = PolicyType.NEVER;
+        recent_files_scrolled = new ScrolledWindow (null, null);
+        recent_files_scrolled.hscrollbar_policy = PolicyType.NEVER;
 
         var recent_files_box = new Box (Orientation.VERTICAL, 0);
         recent_files_box.pack_start (title);
         recent_files_box.pack_start (list_view);
         
-        scrolledWindow.add (recent_files_box);
-        return scrolledWindow;
+        recent_files_scrolled.add (recent_files_box);
+        return recent_files_scrolled;
     }
 
     private void update_listview () {
@@ -241,6 +238,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
+        string[]? new_recent_files = null;
 
         foreach (var file_name in recent_files) {
         	var file = File.new_for_path (file_name);
@@ -261,13 +259,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         debug ("Error: " + err.message);
                     }
                 });
+                new_recent_files += file_name;
                 list_view.add (list_item);
         	} else {
         	    /* In case the file doesn't exist, display a list item, but
-        	       mark the file as missing? */
+                   mark the file as missing? */
         	}
         }
 
+        Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
         list_view.show_all ();
     }
 
@@ -524,6 +524,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         header.title = _("Spreadsheet");
         header.subtitle = null;
         expression.text = "";
+
+        update_listview ();
+
+        if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
+            recent_files_scrolled = recent_files ();
+            welcome_box.pack_start (new Separator (Orientation.VERTICAL));
+            welcome_box.pack_start (recent_files_scrolled);
+        } else if (recent_files_scrolled != null) {
+            foreach (var widget in recent_files_scrolled.get_children ()) {
+                widget.destroy ();
+            }
+        }
 
         app_stack.set_visible_child_name ("welcome");
     }
