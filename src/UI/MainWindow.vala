@@ -1,23 +1,29 @@
 using Spreadsheet.Widgets;
 using Spreadsheet.Models;
 using Spreadsheet.Services;
-using Spreadsheet.Services.Formula;
 using Spreadsheet.Services.CSV;
 using Spreadsheet.Services.Parsing;
 using Granite.Widgets;
 using Gtk;
 using Gdk;
-using Gee;
 
 public class Spreadsheet.UI.MainWindow : ApplicationWindow {
+    public App app { get; construct; }
+    public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
+    private uint configure_id;
 
-    public HeaderBar header {
-        get;
-        set;
-        default = new HeaderBar () { show_close_button = true };
-    }
+    private HeaderBar header;
+    private ToolButton undo_button;
+    private ToolButton redo_button;
 
-    public Stack app_stack { get; set; default = new Stack (); }
+    public Stack app_stack { get; private set; }
+    private Button function_list_bt;
+    public Entry expression;
+    private ToggleButton style_toggle;
+    private Popover style_popup;
+    private Gtk.ListBox list_view = new ListBox ();
+    private Gtk.Box welcome_box;
+    private Gtk.ScrolledWindow recent_files_scrolled;
 
     public DynamicNotebook tabs {
         get;
@@ -33,6 +39,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 
+    private SpreadSheet _file;
     public SpreadSheet file {
         get {
             return _file;
@@ -100,31 +107,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             last_sheet.grab_focus ();
         }
     }
-    private SpreadSheet _file;
-
-    ToolButton file_button { get; set; }
-    ToolButton open_button { get; set; }
-    ToolButton save_as_button { get; set; }
-    ToolButton undo_button { get; set; }
-    ToolButton redo_button { get; set; }
-
-    private Gtk.Box welcome_box;
-    private Gtk.ScrolledWindow recent_files_scrolled;
-    private Button function_list_bt;
-    public Entry expression;
-    private ToggleButton style_toggle;
-    Popover style_popup;
-
-    private Gtk.ListBox list_view = new ListBox ();
-
-    public App app { get; construct; }
-    public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
-    private uint configure_id;
-
-    private void update_header () {
-        undo_button.sensitive = history_manager.can_undo ();
-        redo_button.sensitive = history_manager.can_redo ();
-    }
 
     public MainWindow (App app) {
         Object (
@@ -134,8 +116,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     construct {
+        app_stack = new Stack ();
         app_stack.add_named (welcome (), "welcome");
         app_stack.add_named (sheet (), "app");
+
+        header = new HeaderBar ();
+        header.show_close_button = true;
         set_titlebar (header);
 
         add (app_stack);
@@ -272,30 +258,33 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Grid toolbar () {
-        var toolbar = new Grid () {
-            border_width = 10,
-            column_spacing = 10
-        };
+        var toolbar = new Grid ();
+        toolbar.border_width = 10;
+        toolbar.column_spacing = 10;
+
         function_list_bt = new Button.with_label ("f (x)");
         function_list_bt.tooltip_text = _("Insert functions to a selected cell");
-        expression = new Entry () { hexpand = true };
+
+        expression = new Entry ();
+        expression.hexpand = true;
         expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
 
-        var popup = new Popover (function_list_bt) {
-            width_request = 320,
-            height_request = 600,
-            modal = true,
-            position = PositionType.BOTTOM,
-            border_width = 10
-        };
+        var popup = new Popover (function_list_bt);
+        popup.width_request = 320;
+        popup.height_request = 600;
+        popup.modal = true;
+        popup.position = PositionType.BOTTOM;
+        popup.border_width = 10;
 
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
         foreach (var func in App.functions) {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
-            var row = new ListBoxRow () { selectable = false };
-            row.margin_top = row.margin_bottom = 3;
+            var row = new ListBoxRow ();
+            row.selectable = false;
+            row.margin_top = 3;
+            row.margin_bottom = 3;
             row.add (new FunctionPresenter (func));
             row.realize.connect (() => {
                 row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
@@ -357,11 +346,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             cr.fill ();
             return false;
         });
-        style_popup = new Popover (style_toggle) {
-            modal = true,
-            position = PositionType.BOTTOM,
-            border_width = 10
-        };
+
+        style_popup = new Popover (style_toggle);
+        style_popup.modal = true;
+        style_popup.position = PositionType.BOTTOM;
+        style_popup.border_width = 10;
+
         style_toggle.toggled.connect (() => {
             if (style_toggle.active) {
                 style_popup.show_all ();
@@ -378,7 +368,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Box sheet () {
-        var layout = new Box (Orientation.VERTICAL, 0) { homogeneous = false };
+        var layout = new Box (Orientation.VERTICAL, 0);
+        layout.homogeneous = false;
         layout.pack_start (toolbar (), false);
         layout.pack_start (tabs);
         return layout;
@@ -401,12 +392,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             path = File.new_for_path ("%s/%s%s".printf (documents, file_name, suffix));
         } while (path.query_exists ());
 
-        var file = new SpreadSheet () {
-            title = file_name,
-            file_path = path.get_path ()
-        };
-        file.add_page (new Page.empty () { title = _("Sheet 1") });
+        var page = new Page.empty ();
+        page.title = _("Sheet 1");
+
+        var file = new SpreadSheet ();
+        file.title = file_name;
+        file.file_path = path.get_path ();
+        file.add_page (page);
         this.file = file;
+
         show_all ();
         save_sheet ();
 
@@ -609,31 +603,31 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public void init_header () {
         clear_header ();
 
-        Image file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
-        file_button = new ToolButton (file_ico, null);
+        var file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
+        var file_button = new ToolButton (file_ico, null);
         file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Open another window"));
         file_button.clicked.connect (() => {
             app.new_window ();
         });
         header.pack_start (file_button);
 
-        Image open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
-        ToolButton open_button = new ToolButton (open_ico, null);
+        var open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
+        var open_button = new ToolButton (open_ico, null);
         open_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>O"}, _("Open a file"));
         open_button.clicked.connect (() => {
             open_sheet ();
         });
         header.pack_start (open_button);
 
-        Image save_as_ico = new Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
-        save_as_button = new ToolButton (save_as_ico, null);
+        var save_as_ico = new Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
+        var save_as_button = new ToolButton (save_as_ico, null);
         save_as_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>S"}, _("Save this file with a different name"));
         save_as_button.clicked.connect (() => {
             save_as_sheet ();
         });
         header.pack_start (save_as_button);
 
-        Image redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
+        var redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
         redo_button = new ToolButton (redo_ico, null);
         redo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>Z"}, _("Redo"));
         redo_button.clicked.connect (() => {
@@ -641,7 +635,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
         header.pack_end (redo_button);
 
-        Image undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
+        var undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
         undo_button = new ToolButton (undo_ico, null);
         undo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>Z"}, _("Undo"));
         undo_button.clicked.connect (() => {
@@ -652,9 +646,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         update_header ();
     }
 
-    void clear_header () {
+    private void clear_header () {
         foreach (var button in header.get_children ()) {
             button.destroy ();
         }
+    }
+
+    private void update_header () {
+        undo_button.sensitive = history_manager.can_undo ();
+        redo_button.sensitive = history_manager.can_redo ();
     }
 }
