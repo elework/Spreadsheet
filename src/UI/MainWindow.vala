@@ -479,7 +479,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
 
         const int max_file_count = 10;
-        
+
         /* Create a new array, append the most recent one at the start, and 
            then store all of the previous recent files except the most 
            recent one. */
