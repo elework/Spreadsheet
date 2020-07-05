@@ -199,7 +199,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return welcome_box;
     }
 
-    private Gtk.ScrolledWindow recent_files () {
+    private Gtk.Box create_recents_view () {
         var title = new Gtk.Label (_("Recent files"));
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
@@ -211,7 +211,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
         recent_files_scrolled.add (recent_files_box);
 
-        return recent_files_scrolled;
+        var recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        recent_widgets_box.pack_start (new Separator (Orientation.VERTICAL));
+        recent_widgets_box.pack_start (recent_files_scrolled);
+
+        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
+        privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
+
+        return recent_widgets_box;
     }
 
     private void update_listview () {
@@ -516,19 +523,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         header.subtitle = null;
         expression.text = "";
 
-        update_listview ();
+        app_stack.set_visible_child_name ("welcome");
 
         if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
-            recent_files_scrolled = recent_files ();
-            welcome_box.pack_start (new Separator (Orientation.VERTICAL));
-            welcome_box.pack_start (recent_files_scrolled);
+            welcome_box.pack_start (create_recents_view ());
         } else if (recent_files_scrolled != null) {
             foreach (var widget in recent_files_scrolled.get_children ()) {
                 widget.destroy ();
             }
         }
 
-        app_stack.set_visible_child_name ("welcome");
+        update_listview ();
+
     }
 
     private void update_formula () {
