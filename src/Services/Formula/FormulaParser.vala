@@ -3,9 +3,6 @@ using Spreadsheet.Services.Formula.AST;
 using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
-
-    public Expression root { get; private set; }
-
     public FormulaParser (ArrayList<Token> tokens) {
         base (tokens);
     }
