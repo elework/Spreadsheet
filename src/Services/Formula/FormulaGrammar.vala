@@ -9,6 +9,7 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
         return new Gee.ArrayList<Evaluator>.wrap ({
             new Evaluator (/[ \t]/, token ("[[ignore]]")),
             new Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
+            new Evaluator (/=/, token ("equal")),
             new Evaluator (/[A-Za-z][\w]*/, token ("identifier")),
             new Evaluator (/\(/, token ("left-parenthese")),
             new Evaluator (/\)/, token ("right-parenthese")),
@@ -20,8 +21,7 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
             new Evaluator (/-/, token ("dash")),
             new Evaluator (/\//, token ("slash")),
             new Evaluator (/%/, token ("percent")),
-            new Evaluator (/\^/, token ("carat")),
-            new Evaluator (/=/, token ("equal"))
+            new Evaluator (/\^/, token ("carat"))
         });
     }
 }
