@@ -20,7 +20,8 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
             new Evaluator (/-/, token ("dash")),
             new Evaluator (/\//, token ("slash")),
             new Evaluator (/%/, token ("percent")),
-            new Evaluator (/\^/, token ("carat"))
+            new Evaluator (/\^/, token ("carat")),
+            new Evaluator (/=/, token ("equal"))
         });
     }
 }

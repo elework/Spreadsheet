@@ -34,7 +34,10 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     }
 
     private Expression parse_primary_expression () throws ParserError {
-        if (current.kind == "identifier") {
+        if (current.kind == "equal") {
+            accept ("equal");
+            return parse_expression ();
+        } else if (current.kind == "identifier") {
             return parse_call_expression ();
         } else if (current.kind == "number") {
             return parse_number ();
