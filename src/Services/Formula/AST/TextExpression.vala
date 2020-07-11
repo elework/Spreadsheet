@@ -5,8 +5,7 @@ public class Spreadsheet.Services.Formula.AST.TextExpression : Expression {
 
     public TextExpression (string value) {
         Object (
-            text: value,
-            expression_type: ExpressionType.STRING
+            text: value
         );
     }
 
