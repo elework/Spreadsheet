@@ -36,17 +36,25 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     private Expression parse_primary_expression () throws ParserError {
         if (current.kind == "equal") {
             accept ("equal");
-            return parse_expression ();
-        } else if (current.kind == "identifier") {
-            return parse_call_expression ();
+
+            if (current.kind == "identifier") {
+                return parse_call_expression ();
+            } else if (current.kind == "number") {
+                return parse_number ();
+            } else if (accept ("left-parenthese")) {
+                var res = parse_expression ();
+                expect ("right-parenthese");
+                return res;
+            } else if (current.kind == "cell-name") {
+                return parse_cell_name ();
+            } else {
+                // Parse as a plain text
+                return parse_text ();
+            }
         } else if (current.kind == "number") {
             return parse_number ();
-        } else if (accept ("left-parenthese")) {
-            var res = parse_expression ();
-            expect ("right-parenthese");
-            return res;
-        } else if (current.kind == "cell-name") {
-            return parse_cell_name ();
+        } else if (current.kind == "text") {
+            return parse_text ();
         } else {
             unexpected ();
             return new NumberExpression (0.0);
@@ -135,6 +143,12 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             res = new NumberExpression (double.parse (current.lexeme + ".0"));
         }
         eat ();
+        return res;
+    }
+
+    private TextExpression parse_text () throws ParserError {
+        TextExpression res = new TextExpression (current.lexeme);
+        expect ("text");
         return res;
     }
 

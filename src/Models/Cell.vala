@@ -22,7 +22,12 @@ public class Spreadsheet.Models.Cell : Object {
             try {
                 var parser = new FormulaParser (new Lexer (new FormulaGrammar ()).tokenize (value));
                 var expression = parser.parse ();
-                display_content = ((double)expression.eval (page)).to_string ();
+
+                if (expression.expression_type == AST.Expression.ExpressionType.NUMBER) {
+                    display_content = ((double)expression.eval (page)).to_string ();
+                } else {
+                    display_content = (string)expression.eval (page);
+                }
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
                 display_content = "Error";
