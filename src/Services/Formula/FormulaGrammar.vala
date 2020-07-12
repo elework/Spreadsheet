@@ -11,14 +11,14 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
         if (func_name_regex != "") {
             return func_name_regex;
         }
- 
-        for (int i = 0; i < App.functions.size; i++) {
-            func_name_regex += "%s|%s".printf (App.functions[i].name, App.functions[i].name.ascii_up ());
 
-            if (i + 1 != App.functions.size) {
-                func_name_regex += "|";
-            }
+        string[] func_names = { "" };
+        foreach (var function in App.functions) {
+            func_names += function.name;
+            func_names += function.name.ascii_up ();
         }
+
+        func_name_regex = string.joinv ("|", func_names);
 
         return func_name_regex;
     }
