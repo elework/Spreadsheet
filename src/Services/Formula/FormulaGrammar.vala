@@ -12,7 +12,7 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
             return func_name_regex;
         }
 
-        string[] func_names = { "" };
+        string[]? func_names = null;
         foreach (var function in App.functions) {
             func_names += function.name;
             func_names += function.name.ascii_up ();
