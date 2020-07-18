@@ -20,8 +20,6 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             last = parse_expression ();
             if (current.kind == delimiter) {
                 break;
-            } else {
-                expect ("semi-colon");
             }
         }
 
@@ -53,11 +51,8 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             }
         } else if (current.kind == "number") {
             return parse_number ();
-        } else if (current.kind == "text") {
-            return parse_text ();
         } else {
-            unexpected ();
-            return new NumberExpression (0.0);
+            return parse_text ();
         }
     }
 
@@ -147,9 +142,18 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     }
 
     private TextExpression parse_text () throws ParserError {
-        TextExpression res = new TextExpression (current.lexeme);
-        expect ("text");
-        return res;
+        string val = "";
+
+        while (true) {
+            if (current.kind == "eof") {
+                break;
+            }
+
+            val += current.lexeme;
+            eat ();
+        }
+
+        return new TextExpression (val);
     }
 
     private CellReference parse_cell_name () throws ParserError {
