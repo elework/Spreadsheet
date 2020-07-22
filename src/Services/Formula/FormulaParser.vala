@@ -144,11 +144,7 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     private TextExpression parse_text () throws ParserError {
         string val = "";
 
-        while (true) {
-            if (current.kind == "eof") {
-                break;
-            }
-
+        while (current.kind != "eof") {
             val += current.lexeme;
             eat ();
         }
