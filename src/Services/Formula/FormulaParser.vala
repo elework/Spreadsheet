@@ -46,8 +46,8 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             } else if (current.kind == "cell-name") {
                 return parse_cell_name ();
             } else {
-                // Parse as a plain text
-                return parse_text ();
+                unexpected ();
+                return new NumberExpression (0.0);
             }
         } else if (current.kind == "number") {
             return parse_number ();
