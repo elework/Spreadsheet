@@ -8,17 +8,15 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
     }
 
     private string get_func_name_regex () {
-        if (func_name_regex != "") {
-            return func_name_regex;
-        }
+        if (func_name_regex == "") {
+            string[]? func_names = null;
+            foreach (var function in App.functions) {
+                func_names += function.name;
+                func_names += function.name.ascii_up ();
+            }
 
-        string[]? func_names = null;
-        foreach (var function in App.functions) {
-            func_names += function.name;
-            func_names += function.name.ascii_up ();
+            func_name_regex = string.joinv ("|", func_names);
         }
-
-        func_name_regex = string.joinv ("|", func_names);
 
         return func_name_regex;
     }
@@ -28,7 +26,7 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
             new Evaluator (/[ \t]/, token ("[[ignore]]")),
             new Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
             new Evaluator (/=/, token ("equal")),
-            new Evaluator (new GLib.Regex (get_func_name_regex ()), token ("identifier")),
+            new Evaluator (get_func_name_regex (), token ("identifier")),
             new Evaluator (/\(/, token ("left-parenthese")),
             new Evaluator (/\)/, token ("right-parenthese")),
             new Evaluator (/,/, token ("comma")),
