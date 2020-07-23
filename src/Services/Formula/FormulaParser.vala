@@ -3,9 +3,6 @@ using Spreadsheet.Services.Formula.AST;
 using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
-
-    public Expression root { get; private set; }
-
     public FormulaParser (ArrayList<Token> tokens) {
         base (tokens);
     }
@@ -23,8 +20,6 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             last = parse_expression ();
             if (current.kind == delimiter) {
                 break;
-            } else {
-                expect ("semi-colon");
             }
         }
 
@@ -37,19 +32,27 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     }
 
     private Expression parse_primary_expression () throws ParserError {
-        if (current.kind == "identifier") {
-            return parse_call_expression ();
+        if (current.kind == "equal") {
+            accept ("equal");
+
+            if (current.kind == "identifier") {
+                return parse_call_expression ();
+            } else if (current.kind == "number") {
+                return parse_number ();
+            } else if (accept ("left-parenthese")) {
+                var res = parse_expression ();
+                expect ("right-parenthese");
+                return res;
+            } else if (current.kind == "cell-name") {
+                return parse_cell_name ();
+            } else {
+                unexpected ();
+                return new NumberExpression (0.0);
+            }
         } else if (current.kind == "number") {
             return parse_number ();
-        } else if (accept ("left-parenthese")) {
-            var res = parse_expression ();
-            expect ("right-parenthese");
-            return res;
-        } else if (current.kind == "cell-name") {
-            return parse_cell_name ();
         } else {
-            unexpected ();
-            return new NumberExpression (0.0);
+            return parse_text ();
         }
     }
 
@@ -136,6 +139,17 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
         }
         eat ();
         return res;
+    }
+
+    private TextExpression parse_text () throws ParserError {
+        string val = "";
+
+        while (current.kind != "eof") {
+            val += current.lexeme;
+            eat ();
+        }
+
+        return new TextExpression (val);
     }
 
     private CellReference parse_cell_name () throws ParserError {

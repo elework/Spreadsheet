@@ -22,7 +22,13 @@ public class Spreadsheet.Models.Cell : Object {
             try {
                 var parser = new FormulaParser (new Lexer (new FormulaGrammar ()).tokenize (value));
                 var expression = parser.parse ();
-                display_content = ((double)expression.eval (page)).to_string ();
+
+                var eval = expression.eval (page);
+                if (eval.type () == typeof (double)) {
+                    display_content = ((double)eval).to_string ();
+                } else if (eval.type () == typeof (string)) {
+                    display_content = (string)eval;
+                }
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
                 display_content = "Error";
