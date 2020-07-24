@@ -247,6 +247,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         init_header ();
                         show_all ();
                         app_stack.set_visible_child_name ("app");
+                        update_recents (path);
                     } catch (ParserError err) {
                         debug ("Error: " + err.message);
                     }
