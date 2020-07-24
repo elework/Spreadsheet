@@ -23,6 +23,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Popover style_popup;
     private Gtk.ListBox list_view = new ListBox ();
     private Gtk.Box welcome_box;
+    private Gtk.Box recent_widgets_box;
     private Gtk.ScrolledWindow recent_files_scrolled;
 
     public DynamicNotebook tabs {
@@ -200,23 +201,25 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Gtk.Box create_recents_view () {
-        var title = new Gtk.Label (_("Recent files"));
-        title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+        if (recent_widgets_box == null) {
+            var title = new Gtk.Label (_("Recent files"));
+            title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        recent_files_box.pack_start (title);
-        recent_files_box.pack_start (list_view);
-        
-        recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
-        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        recent_files_scrolled.add (recent_files_box);
+            var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+            recent_files_box.pack_start (title);
+            recent_files_box.pack_start (list_view);
+            
+            recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
+            recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
+            recent_files_scrolled.add (recent_files_box);
 
-        var recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Separator (Orientation.VERTICAL));
-        recent_widgets_box.pack_start (recent_files_scrolled);
+            recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            recent_widgets_box.pack_start (new Separator (Orientation.VERTICAL));
+            recent_widgets_box.pack_start (recent_files_scrolled);
 
-        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
-        privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
+            var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
+            privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
+        }
 
         return recent_widgets_box;
     }
@@ -527,10 +530,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
             welcome_box.pack_start (create_recents_view ());
-        } else if (recent_files_scrolled != null) {
-            foreach (var widget in recent_files_scrolled.get_children ()) {
-                widget.destroy ();
-            }
         }
 
         update_listview ();
