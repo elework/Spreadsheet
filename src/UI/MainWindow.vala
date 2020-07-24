@@ -534,7 +534,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         update_listview ();
-
     }
 
     private void update_formula () {
