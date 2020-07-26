@@ -24,7 +24,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.ListBox list_view = new ListBox ();
     private Gtk.Box welcome_box;
     private Gtk.Box recent_widgets_box;
-    private Gtk.ScrolledWindow recent_files_scrolled;
 
     public DynamicNotebook tabs {
         get;
@@ -207,8 +206,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         recent_files_box.pack_start (title);
         recent_files_box.pack_start (list_view);
-        
-        recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
+
+        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
         recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
         recent_files_scrolled.add (recent_files_box);
 
@@ -231,10 +230,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string[]? new_recent_files = null;
 
         foreach (var file_name in recent_files) {
-        	var file = File.new_for_path (file_name);
-        	if (file.query_exists ()) {
-        	    var basename = file.get_basename ();
-            	var path = file.get_path ();
+            var file = File.new_for_path (file_name);
+            if (file.query_exists ()) {
+                var basename = file.get_basename ();
+                var path = file.get_path ();
                 // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
                 var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet",
                     Gtk.IconSize.DIALOG);
@@ -252,10 +251,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 });
                 new_recent_files += file_name;
                 list_view.add (list_item);
-        	} else {
-        	    /* In case the file doesn't exist, display a list item, but
+            } else {
+                /* In case the file doesn't exist, display a list item, but
                    mark the file as missing? */
-        	}
+            }
         }
 
         Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
@@ -487,7 +486,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private void update_recents (string recent_file_path) {
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
 
-        const int max_file_count = 10;
+        const int MAX_FILE_COUNT = 10;
 
         /* Create a new array, append the most recent one at the start, and 
            then store all of the previous recent files except the most 
@@ -496,7 +495,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         new_recents.insert_val (0, recent_file_path);
 
         foreach (var recent in recents) {
-            if (new_recents.length >= max_file_count) {
+            if (new_recents.length >= MAX_FILE_COUNT) {
                 break;
             }
 
