@@ -237,8 +237,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 var basename = file.get_basename ();
                 var path = file.get_path ();
                 // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet",
-                    Gtk.IconSize.DIALOG);
+                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
+
                 var list_item = new WelcomeButton (spreadsheet_icon, basename, path);
                 list_item.clicked.connect (() => {
                     try {
