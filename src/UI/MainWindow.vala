@@ -179,7 +179,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         debug ("Error: " + err.message);
                     }
 
-                    update_recents (file.file_path);
+                    add_recents (file.file_path);
                 } else {
                     chooser.close ();
                     return;
@@ -244,7 +244,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         init_header ();
                         show_all ();
                         app_stack.set_visible_child_name ("app");
-                        update_recents (path);
+                        add_recents (path);
                     } catch (ParserError err) {
                         debug ("Error: " + err.message);
                     }
@@ -442,7 +442,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        update_recents (file.file_path);
+        add_recents (file.file_path);
     }
 
     public void save_as_sheet () {
@@ -473,7 +473,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.close ();
         new CSVWriter (active_sheet.page).write_to_file (path);
 
-        update_recents (path);
+        add_recents (path);
 
         // Open the saved file
         try {
@@ -483,7 +483,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 
-    private void update_recents (string recent_file_path) {
+    private void add_recents (string recent_file_path) {
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
 
         const int MAX_FILE_COUNT = 10;
