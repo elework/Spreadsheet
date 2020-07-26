@@ -21,7 +21,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
-    private Gtk.ListBox list_view = new ListBox ();
+    private Gtk.ListBox list_view;
     private Gtk.Box welcome_box;
     private Gtk.Box recent_widgets_box;
 
@@ -202,6 +202,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.Box create_recents_view () {
         var title = new Gtk.Label (_("Recent files"));
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+
+        list_view = new ListBox ();
 
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         recent_files_box.pack_start (title);
