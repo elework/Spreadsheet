@@ -192,7 +192,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
         });
 
-        welcome_box = new Box (Orientation.HORIZONTAL, 0);
+        welcome_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
         welcome_box.pack_start (welcome);
 
@@ -220,7 +220,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
                 var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
 
-                var list_item = new WelcomeButton (spreadsheet_icon, basename, display_path);
+                var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
                 list_item.clicked.connect (() => {
                     try {
                         this.file = new CSVParser.from_file (path).parse ();
@@ -520,7 +520,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var title = new Gtk.Label (_("Recent files"));
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        list_view = new ListBox ();
+        list_view = new Gtk.ListBox ();
 
         var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
         recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
