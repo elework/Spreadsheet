@@ -522,18 +522,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         list_view = new ListBox ();
 
+        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
+        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
+        recent_files_scrolled.add (list_view);
+
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         recent_files_box.margin = 12;
         recent_files_box.pack_start (title);
-        recent_files_box.pack_start (list_view);
-
-        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
-        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        recent_files_scrolled.add (recent_files_box);
+        recent_files_box.pack_start (recent_files_scrolled);
 
         recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
-        recent_widgets_box.pack_start (recent_files_scrolled);
+        recent_widgets_box.pack_start (recent_files_box);
 
         var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
         privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
