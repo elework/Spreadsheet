@@ -531,7 +531,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recent_files_scrolled.add (recent_files_box);
 
         recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Separator (Orientation.VERTICAL));
+        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL));
         recent_widgets_box.pack_start (recent_files_scrolled);
 
         var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
