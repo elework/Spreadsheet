@@ -469,7 +469,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private void add_recents (string recent_file_path) {
         var recents = Spreadsheet.App.settings.get_strv ("recent-files");
 
-        const int MAX_FILE_COUNT = 10;
+        const int MAX_FILE_COUNT = 20;
 
         /* Create a new array, append the most recent one at the start, and 
            then store all of the previous recent files except the most 
@@ -518,6 +518,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private Gtk.Box create_recents_view () {
         var title = new Gtk.Label (_("Recent files"));
+        title.halign = Gtk.Align.CENTER;
+        title.margin = 24;
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
         list_view = new Gtk.ListBox ();
@@ -528,7 +530,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         recent_files_box.margin = 12;
-        recent_files_box.pack_start (title);
+        recent_files_box.pack_start (title, false, false);
         recent_files_box.pack_start (recent_files_scrolled);
 
         recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
