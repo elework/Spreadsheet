@@ -509,11 +509,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         app_stack.set_visible_child_name ("welcome");
 
-        if (recent_widgets_box == null && Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
-            welcome_box.pack_start (create_recents_view ());
-        }
+        if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
+            if (recent_widgets_box == null) {
+                welcome_box.pack_start (create_recents_view ());
+            }
 
-        update_listview ();
+            update_listview ();
+        }
     }
 
     private Gtk.Box create_recents_view () {
