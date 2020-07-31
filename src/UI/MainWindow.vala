@@ -21,7 +21,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
-    private Gtk.ListBox list_view;
+    private Gtk.ListBox list_view = new Gtk.ListBox ();
     private Gtk.Box welcome_box;
     private Gtk.Box recent_widgets_box;
 
@@ -241,7 +241,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
-        list_view.show_all ();
+        show_all ();
     }
 
     private Grid toolbar () {
@@ -523,8 +523,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         title.halign = Gtk.Align.CENTER;
         title.margin = 24;
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
-
-        list_view = new Gtk.ListBox ();
 
         var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
         recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
