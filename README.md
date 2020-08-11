@@ -30,10 +30,10 @@ Then clone the project and go to its root directory. Run `meson build` to config
     cd build
     ninja
 
-To install, use `ninja install`, then execute with `com.github.ryonakano.spreadsheet`
+To install, use `ninja install`, then execute with `com.github.elework.spreadsheet`
 
     sudo ninja install
-    com.github.ryonakano.spreadsheet
+    com.github.elework.spreadsheet
 
 ## Contributing
 
@@ -41,7 +41,7 @@ There are many ways you can contribute, even if you don't know how to code.
 
 ### Reporting Bugs or Suggesting Improvements
 
-Simply [create a new issue](https://github.com/ryonakano/Spreadsheet/issues/new) describing your problem and how to reproduce or your suggestion. If you are not used to do, [this section](https://elementary.io/ja/docs/code/reference#reporting-bugs) is for you.
+Simply [create a new issue](https://github.com/elework/Spreadsheet/issues/new) describing your problem and how to reproduce or your suggestion. If you are not used to do, [this section](https://elementary.io/ja/docs/code/reference#reporting-bugs) is for you.
 
 ### Writing Some Code
 

@@ -15,11 +15,11 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     static construct {
-        settings = new Settings ("com.github.ryonakano.spreadsheet");
+        settings = new Settings ("com.github.elework.spreadsheet");
     }
 
     construct {
-        application_id = "com.github.ryonakano.spreadsheet";
+        application_id = "com.github.elework.spreadsheet";
         flags = ApplicationFlags.HANDLES_OPEN;
         functions.add (new Function ("sum", Functions.sum, _("Add numbers")));
         functions.add (new Function ("mul", Functions.mul, _("Multiply numbers")));
