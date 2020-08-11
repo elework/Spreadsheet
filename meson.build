@@ -1,4 +1,4 @@
-project('com.github.ryonakano.spreadsheet', 'vala', 'c')
+project('com.github.elework.spreadsheet', 'vala', 'c')
 
 gnome = import('gnome')
 
@@ -55,10 +55,5 @@ executable(meson.project_name(),
 
 subdir('data')
 subdir('po')
-
-install_data(
-    'data/' + meson.project_name() + '.gschema.xml',
-    install_dir: join_paths(get_option('datadir'), 'glib-2.0', 'schemas')
-)
 
 meson.add_install_script('meson/post_install.py')

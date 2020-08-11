@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- (C) 2018 Spreadsheet Developers -->
 <component type="desktop">
-  <id>com.github.ryonakano.spreadsheet</id>
+  <id>com.github.elework.spreadsheet</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>Spreadsheet</name>
@@ -18,7 +18,7 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/ryonakano/Spreadsheet/master/screen.png</image>
+      <image>https://raw.githubusercontent.com/elework/Spreadsheet/master/screen.png</image>
     </screenshot>
   </screenshots>
 
@@ -53,9 +53,9 @@
   </content_rating>
 
   <developer_name>Spreadsheet Developers</developer_name>
-  <url type="homepage">https://github.com/ryonakano/Spreadsheet</url>
-  <url type="bugtracker">https://github.com/ryonakano/Spreadsheet/issues</url>
-  <url type="help">https://github.com/ryonakano/Spreadsheet/issues</url>
+  <url type="homepage">https://github.com/elework/Spreadsheet</url>
+  <url type="bugtracker">https://github.com/elework/Spreadsheet/issues</url>
+  <url type="help">https://github.com/elework/Spreadsheet/issues</url>
   
   <custom>
     <value key="x-appcenter-color-primary">#206b00</value>

@@ -17,49 +17,49 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/com.github.ryonakano.spreadsheet.desktop.in:3
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:7
+#: data/com.github.elework.spreadsheet.desktop.in:3
+#: data/com.github.elework.spreadsheet.appdata.xml.in:7
 msgid "Spreadsheet"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.desktop.in:4
+#: data/com.github.elework.spreadsheet.desktop.in:4
 msgid "Spreadsheet App"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.desktop.in:5
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:8
+#: data/com.github.elework.spreadsheet.desktop.in:5
+#: data/com.github.elework.spreadsheet.appdata.xml.in:8
 msgid "Create simple and beautiful spreadsheets"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.desktop.in:8
-msgid "com.github.ryonakano.spreadsheet"
+#: data/com.github.elework.spreadsheet.desktop.in:8
+msgid "com.github.elework.spreadsheet"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.desktop.in:11
+#: data/com.github.elework.spreadsheet.desktop.in:11
 msgid "Office;Book;"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:10
+#: data/com.github.elework.spreadsheet.appdata.xml.in:10
 msgid ""
 "A spreadsheet app that lets you create simple and beautiful spreadsheets."
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:13
+#: data/com.github.elework.spreadsheet.appdata.xml.in:13
 msgid "Features include:"
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:15
+#: data/com.github.elework.spreadsheet.appdata.xml.in:15
 msgid ""
 "Keyboard shortcuts for better experience. You can use your accustomed "
 "keyboard shortcuts e.g. Ctrl + Z to undo, Ctrl + Shift + Z to redo, etc."
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:16
+#: data/com.github.elework.spreadsheet.appdata.xml.in:16
 msgid ""
 "Save your works automatically. Your sheets are saved automatically when "
 "created or changed."
 msgstr ""
 
-#: data/com.github.ryonakano.spreadsheet.appdata.xml.in:55
+#: data/com.github.elework.spreadsheet.appdata.xml.in:55
 msgid "Spreadsheet Developers"
 msgstr ""
