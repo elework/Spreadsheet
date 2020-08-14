@@ -526,6 +526,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
         recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
+        recent_files_scrolled.halign = Gtk.Align.CENTER;
         recent_files_scrolled.add (list_view);
 
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
