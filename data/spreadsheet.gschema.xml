@@ -16,5 +16,10 @@
       <summary>Open window maximized</summary>
       <description>If true, window opens maximized</description>
     </key>
+    <key name="recent-files" type="as">
+      <default>[]</default>
+      <summary>Recent files</summary>
+      <description>Files that are most recently opened or saved</description>
+    </key>
   </schema>
 </schemalist>

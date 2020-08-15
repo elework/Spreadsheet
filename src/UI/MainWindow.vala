@@ -21,6 +21,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
+    private Gtk.ListBox list_view = new Gtk.ListBox ();
+    private Gtk.Box welcome_box;
+    private Gtk.Box recent_widgets_box;
 
     public DynamicNotebook tabs {
         get;
@@ -149,13 +152,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return base.configure_event (event);
     }
 
-    private Welcome welcome () {
+    private Gtk.Box welcome () {
         var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
         welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
         welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        //  TODO: Uncomment when we support opening recent files in welcome screen
-        //  See https://github.com/ryonakano/Spreadsheet/issues/56
-        //  welcome.append ("x-office-spreadsheet", _("Open Last File"), _("Continue working on foo.xlsx"));
         welcome.activated.connect ((index) => {
             if (index == 0) {
                 new_sheet ();
@@ -178,6 +178,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     } catch (ParserError err) {
                         debug ("Error: " + err.message);
                     }
+
+                    add_recents (file.file_path);
                 } else {
                     chooser.close ();
                     return;
@@ -189,7 +191,57 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 app_stack.set_visible_child_name ("app");
             }
         });
-        return welcome;
+
+        welcome_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
+        welcome_box.pack_start (welcome);
+
+        return welcome_box;
+    }
+
+    private void update_listview () {
+        foreach (var item in list_view.get_children ()) {
+            item.destroy ();
+        }
+
+        var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
+        string[]? new_recent_files = null;
+
+        foreach (var file_name in recent_files) {
+            var file = File.new_for_path (file_name);
+            if (file.query_exists ()) {
+                var basename = file.get_basename ();
+                var path = file.get_path ();
+                string display_path = path;
+                if (GLib.Environment.get_home_dir () in path) {
+                    display_path = path.replace (GLib.Environment.get_home_dir (), "~");
+                }
+
+                // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
+                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
+
+                var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
+                list_item.clicked.connect (() => {
+                    try {
+                        this.file = new CSVParser.from_file (path).parse ();
+                        init_header ();
+                        show_all ();
+                        app_stack.set_visible_child_name ("app");
+                        add_recents (path);
+                    } catch (ParserError err) {
+                        debug ("Error: " + err.message);
+                    }
+                });
+                new_recent_files += file_name;
+                list_view.add (list_item);
+            } else {
+                /* In case the file doesn't exist, display a list item, but
+                   mark the file as missing? */
+            }
+        }
+
+        Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
+        show_all ();
     }
 
     private Grid toolbar () {
@@ -373,6 +425,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
+        add_recents (file.file_path);
     }
 
     public void save_as_sheet () {
@@ -403,12 +456,39 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.close ();
         new CSVWriter (active_sheet.page).write_to_file (path);
 
+        add_recents (path);
+
         // Open the saved file
         try {
             file = new CSVParser.from_file (path).parse ();
         } catch (ParserError err) {
             debug ("Error: " + err.message);
         }
+    }
+
+    private void add_recents (string recent_file_path) {
+        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+
+        const int MAX_FILE_COUNT = 20;
+
+        /* Create a new array, append the most recent one at the start, and 
+           then store all of the previous recent files except the most 
+           recent one. */
+        var new_recents = new Array<string> ();
+        new_recents.insert_val (0, recent_file_path);
+
+        foreach (var recent in recents) {
+            if (new_recents.length >= MAX_FILE_COUNT) {
+                break;
+            }
+
+            if (recent != recent_file_path) {
+                new_recents.append_val (recent);
+            }
+        }
+
+        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
+        update_listview ();
     }
 
     public void undo_sheet () {
@@ -428,6 +508,40 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         expression.text = "";
 
         app_stack.set_visible_child_name ("welcome");
+
+        if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
+            if (recent_widgets_box == null) {
+                welcome_box.pack_start (create_recents_view ());
+            }
+
+            update_listview ();
+        }
+    }
+
+    private Gtk.Box create_recents_view () {
+        var title = new Gtk.Label (_("Recent files"));
+        title.halign = Gtk.Align.CENTER;
+        title.margin = 24;
+        title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+
+        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
+        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
+        recent_files_scrolled.halign = Gtk.Align.CENTER;
+        recent_files_scrolled.add (list_view);
+
+        var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+        recent_files_box.margin = 12;
+        recent_files_box.pack_start (title, false, false);
+        recent_files_box.pack_start (recent_files_scrolled);
+
+        recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
+        recent_widgets_box.pack_start (recent_files_box);
+
+        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
+        privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
+
+        return recent_widgets_box;
     }
 
     private void update_formula () {
