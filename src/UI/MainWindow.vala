@@ -12,9 +12,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private uint configure_id;
 
-    private HeaderBar header;
-    private ToolButton undo_button;
-    private ToolButton redo_button;
+    public TitleBar header { get; private set; }
 
     public Stack app_stack { get; private set; }
     private Button function_list_bt;
@@ -46,8 +44,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         set {
             _file = value;
-            header.title = value.title;
-            header.subtitle = value.file_path == null ? _("Not saved yet") : value.file_path;
+            header.set_titles (value.title, value.file_path == null ? _("Not saved yet") : value.file_path);
 
             while (tabs.n_tabs > 0) {
                 tabs.remove_tab (tabs.get_tab_by_index (0));
@@ -120,8 +117,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app_stack.add_named (welcome (), "welcome");
         app_stack.add_named (sheet (), "app");
 
-        header = new HeaderBar ();
-        header.show_close_button = true;
+        header = new TitleBar (this);
         set_titlebar (header);
 
         add (app_stack);
@@ -186,7 +182,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
 
                 chooser.close ();
-                init_header ();
+                header.init_header ();
                 show_all ();
                 app_stack.set_visible_child_name ("app");
             }
@@ -224,7 +220,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 list_item.clicked.connect (() => {
                     try {
                         this.file = new CSVParser.from_file (path).parse ();
-                        init_header ();
+                        header.init_header ();
                         show_all ();
                         app_stack.set_visible_child_name ("app");
                         add_recents (path);
@@ -369,7 +365,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string documents = "";
         File? path = null;
 
-        init_header ();
+        header.init_header ();
 
         do {
             file_name = _("Untitled Spreadsheet %i").printf (id++);
@@ -493,18 +489,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void undo_sheet () {
         history_manager.undo ();
-        update_header ();
+        header.update_header ();
     }
 
     public void redo_sheet () {
         history_manager.redo ();
-        update_header ();
+        header.update_header ();
     }
 
     public void show_welcome () {
-        clear_header ();
-        header.title = _("Spreadsheet");
-        header.subtitle = null;
+        header.clear_header ();
+        header.set_titles (_("Spreadsheet"), null);
         expression.text = "";
 
         app_stack.set_visible_child_name ("welcome");
@@ -568,7 +563,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
-        update_header ();
+        header.update_header ();
         active_sheet.move_bottom ();
         active_sheet.grab_focus ();
     }
@@ -594,7 +589,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
-        update_header ();
+        header.update_header ();
         active_sheet.grab_focus ();
     }
 
@@ -608,62 +603,5 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         ctx.arc (x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
         ctx.arc (x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
         ctx.close_path ();
-    }
-
-    public void init_header () {
-        clear_header ();
-
-        var file_ico = new Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
-        var file_button = new ToolButton (file_ico, null);
-        file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Open another window"));
-        file_button.clicked.connect (() => {
-            app.new_window ();
-        });
-        header.pack_start (file_button);
-
-        var open_ico = new Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
-        var open_button = new ToolButton (open_ico, null);
-        open_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>O"}, _("Open a file"));
-        open_button.clicked.connect (() => {
-            open_sheet ();
-        });
-        header.pack_start (open_button);
-
-        var save_as_ico = new Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
-        var save_as_button = new ToolButton (save_as_ico, null);
-        save_as_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>S"}, _("Save this file with a different name"));
-        save_as_button.clicked.connect (() => {
-            save_as_sheet ();
-        });
-        header.pack_start (save_as_button);
-
-        var redo_ico = new Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
-        redo_button = new ToolButton (redo_ico, null);
-        redo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl><Shift>Z"}, _("Redo"));
-        redo_button.clicked.connect (() => {
-            redo_sheet ();
-        });
-        header.pack_end (redo_button);
-
-        var undo_ico = new Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
-        undo_button = new ToolButton (undo_ico, null);
-        undo_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>Z"}, _("Undo"));
-        undo_button.clicked.connect (() => {
-            undo_sheet ();
-        });
-        header.pack_end (undo_button);
-
-        update_header ();
-    }
-
-    private void clear_header () {
-        foreach (var button in header.get_children ()) {
-            button.destroy ();
-        }
-    }
-
-    private void update_header () {
-        undo_button.sensitive = history_manager.can_undo ();
-        redo_button.sensitive = history_manager.can_redo ();
     }
 }
