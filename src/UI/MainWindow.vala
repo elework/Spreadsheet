@@ -182,7 +182,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
 
                 chooser.close ();
-                header.init_header ();
+                header.set_buttons_visibility (true);
                 show_all ();
                 app_stack.set_visible_child_name ("app");
             }
@@ -220,7 +220,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 list_item.clicked.connect (() => {
                     try {
                         this.file = new CSVParser.from_file (path).parse ();
-                        header.init_header ();
+                        header.set_buttons_visibility (true);
                         show_all ();
                         app_stack.set_visible_child_name ("app");
                         add_recents (path);
@@ -365,7 +365,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string documents = "";
         File? path = null;
 
-        header.init_header ();
+        header.set_buttons_visibility (true);
 
         do {
             file_name = _("Untitled Spreadsheet %i").printf (id++);
@@ -498,7 +498,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public void show_welcome () {
-        header.clear_header ();
+        header.set_buttons_visibility (false);
         header.set_titles (_("Spreadsheet"), null);
         expression.text = "";
 
