@@ -9,15 +9,16 @@ using Spreadsheet.UI;
 public class Spreadsheet.Widgets.Sheet : EventBox {
 
     // Cell dimensions
-    const int DEFAULT_WIDTH = 70;
-    const int DEFAULT_HEIGHT = 25;
-    const int DEFAULT_PADDING = 5;
+    const double DEFAULT_WIDTH = 70;
+    const double DEFAULT_HEIGHT = 25;
+    const double DEFAULT_PADDING = 5;
     const double DEFAULT_BORDER = 0.5;
 
-    int width;
-    int height;
-    int padding;
+    double width;
+    double height;
+    double padding;
     double border;
+    double initial_left_margin;
 
     public Page page { get; set; }
 
@@ -176,13 +177,21 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         return left_ext.width + border;
     }
 
+    private double get_initial_left_margin () {
+        if (initial_left_margin == 0) {
+            initial_left_margin = get_left_margin ();
+        }
+
+        return initial_left_margin;
+    }
+
     private void update_zoom_level () {
         double zoom_level = window.action_bar.zoom_level * 0.01;
 
-        set_size_request ((int) get_left_margin () + width * page.columns, height * page.lines);
-        width = (int) (DEFAULT_WIDTH * zoom_level);
-        height = (int) (DEFAULT_HEIGHT * zoom_level);
-        padding = (int) (DEFAULT_PADDING * zoom_level);
+        set_size_request ((int) ((get_initial_left_margin () + DEFAULT_WIDTH * page.columns) * zoom_level), (int) (DEFAULT_HEIGHT * page.lines * zoom_level));
+        width = DEFAULT_WIDTH * zoom_level;
+        height = DEFAULT_HEIGHT * zoom_level;
+        padding = DEFAULT_PADDING * zoom_level;
         border = DEFAULT_BORDER * zoom_level;
 
         queue_draw ();
