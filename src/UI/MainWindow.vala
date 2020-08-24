@@ -13,6 +13,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private uint configure_id;
 
     public TitleBar header { get; private set; }
+    public Widgets.ActionBar action_bar { get; private set; }
 
     public Stack app_stack { get; private set; }
     private Button function_list_bt;
@@ -351,10 +352,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Box sheet () {
+        action_bar = new Widgets.ActionBar ();
+
         var layout = new Box (Orientation.VERTICAL, 0);
         layout.homogeneous = false;
         layout.pack_start (toolbar (), false);
         layout.pack_start (tabs);
+        layout.pack_end (action_bar, false);
         return layout;
     }
 
