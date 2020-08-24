@@ -23,22 +23,26 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
     construct {
         zoom_scale_adj = new Gtk.Adjustment (100, 10, 400, 10, 10, 0);
         var zoom_scale = new Gtk.Scale (Gtk.Orientation.HORIZONTAL, zoom_scale_adj);
+        zoom_scale.tooltip_text = (_("Zoom in/out the sheet"));
         zoom_scale.set_size_request (100, 0);
         zoom_scale.draw_value = false;
+        zoom_scale.margin = 3;
+        zoom_scale.margin_end = 12;
 
-        var zoom_level_label = new Gtk.Label (zoom_level_text);
+        var zoom_level_button = new Gtk.Button.with_label (zoom_level_text);
+        zoom_level_button.tooltip_text = (_("Reset to the default zoom level"));
+        zoom_level_button.margin_end = 12;
 
-        pack_end (zoom_level_label);
+        pack_end (zoom_level_button);
         pack_end (zoom_scale);
 
-        foreach (var widget in get_children ()) {
-            widget.margin = 3;
-            widget.margin_end = 12;
-        }
-
         zoom_scale_adj.value_changed.connect (() => {
-            zoom_level_label.label = zoom_level_text;
+            zoom_level_button.label = zoom_level_text;
             zoom_level_changed ();
+        });
+
+        zoom_level_button.clicked.connect ((event) => {
+            zoom_level = 100;
         });
     }
 }
