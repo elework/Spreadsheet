@@ -96,6 +96,25 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             focus_expression_entry (key.str);
             return true;
         });
+
+        add_events (Gdk.EventMask.SCROLL_MASK);
+    }
+
+    protected override bool scroll_event (Gdk.EventScroll event) {
+        if (Gdk.ModifierType.CONTROL_MASK in event.state) {
+            switch (event.direction) {
+                case Gdk.ScrollDirection.UP:
+                    window.action_bar.zoom_level += 10;
+                    break;
+                case Gdk.ScrollDirection.DOWN:
+                    window.action_bar.zoom_level -= 10;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return base.scroll_event (event);
     }
 
     private void select (int line, int col) {

@@ -6,6 +6,9 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
         get {
             return (int) zoom_scale_adj.value;
         }
+        set {
+            zoom_scale_adj.value = value;
+        }
     }
 
     public string zoom_level_text {
