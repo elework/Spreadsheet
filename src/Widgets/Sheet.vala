@@ -18,7 +18,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     double height;
     double padding;
     double border;
-    double initial_left_margin;
+    double? initial_left_margin = null;
 
     public Page page { get; set; }
 
@@ -178,8 +178,13 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     private double get_initial_left_margin () {
-        if (initial_left_margin == 0) {
-            initial_left_margin = get_left_margin ();
+        if (initial_left_margin == null) {
+            Context cr = new Context (new ImageSurface (Format.ARGB32, 0, 0));
+            cr.set_font_size (DEFAULT_HEIGHT - DEFAULT_PADDING * 2);
+            cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
+            TextExtents left_ext;
+            cr.text_extents (page.lines.to_string (), out left_ext);
+            initial_left_margin = left_ext.width + DEFAULT_BORDER;
         }
 
         return initial_left_margin;
