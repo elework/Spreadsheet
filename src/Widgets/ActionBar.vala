@@ -2,12 +2,14 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
     public signal void zoom_level_changed ();
 
     private Gtk.Adjustment zoom_scale_adj;
+
     public int zoom_level {
         get {
-            return (int) zoom_scale_adj.value;
+            return App.settings.get_int ("zoom-level");
         }
         set {
             zoom_scale_adj.value = value;
+            App.settings.set_int ("zoom-level", value);
         }
     }
 
@@ -21,7 +23,8 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
     }
 
     construct {
-        zoom_scale_adj = new Gtk.Adjustment (100, 10, 400, 10, 10, 0);
+        zoom_scale_adj = new Gtk.Adjustment (zoom_level, 10, 400, 10, 10, 0);
+
         var zoom_scale = new Gtk.Scale (Gtk.Orientation.HORIZONTAL, zoom_scale_adj);
         zoom_scale.tooltip_text = (_("Zoom in/out the sheet"));
         zoom_scale.set_size_request (100, 0);
@@ -37,6 +40,7 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
         pack_end (zoom_scale);
 
         zoom_scale_adj.value_changed.connect (() => {
+            zoom_level = (int) zoom_scale_adj.value;
             zoom_level_button.label = zoom_level_text;
             zoom_level_changed ();
         });

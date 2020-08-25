@@ -21,5 +21,10 @@
       <summary>Recent files</summary>
       <description>Files that are most recently opened or saved</description>
     </key>
+    <key name="zoom-level" type="i">
+      <default>100</default>
+      <summary>Zoom lebel</summary>
+      <description>Zoom level of the sheet</description>
+    </key>
   </schema>
 </schemalist>
