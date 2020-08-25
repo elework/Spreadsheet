@@ -1,6 +1,6 @@
 project('com.github.elework.spreadsheet', 'vala', 'c')
 
-gnome = import('gnome')
+file_name = 'spreadsheet'
 
 i18n = import('i18n')
 add_global_arguments(
@@ -8,7 +8,16 @@ add_global_arguments(
     language:'c'
 )
 
+gnome = import('gnome')
+asresources = gnome.compile_resources(
+    'as-resources',
+    join_paths('data', file_name + '.gresource.xml'),
+    source_dir: 'data',
+    c_name: 'as'
+)
+
 executable(meson.project_name(),
+    asresources,
     'src/AlphabetGenerator.vala',
     'src/App.vala',
     'src/Functions/Basic.vala',
