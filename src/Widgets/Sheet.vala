@@ -71,6 +71,20 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 return true;
             }
 
+            if (Gdk.ModifierType.CONTROL_MASK in key.state) {
+                switch (key.keyval) {
+                    case Gdk.Key.plus:
+                        window.action_bar.zoom_level += 10;
+                        return true;
+                    case Gdk.Key.minus:
+                        window.action_bar.zoom_level -= 10;
+                        return true;
+                    case Gdk.Key.@0:
+                        window.action_bar.zoom_level = 100;
+                        return true;
+                }
+            }
+
             switch (key.keyval) {
                 case Gdk.Key.Tab:
                     move_right ();
