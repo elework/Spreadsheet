@@ -44,7 +44,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         set {
             _file = value;
-            header.set_titles (value.title, value.file_path == null ? _("Not saved yet") : value.file_path);
+
+            string? display_path = value.file_path;
+            if (GLib.Environment.get_home_dir () in display_path) {
+                display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
+            }
+
+            header.set_titles (value.title, display_path == null ? _("Not saved yet") : display_path);
 
             while (tabs.n_tabs > 0) {
                 tabs.remove_tab (tabs.get_tab_by_index (0));
