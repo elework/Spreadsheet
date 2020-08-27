@@ -19,9 +19,6 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
         }
     }
 
-    public ActionBar () {
-    }
-
     construct {
         zoom_scale_adj = new Gtk.Adjustment (zoom_level, 10, 400, 10, 10, 0);
 
