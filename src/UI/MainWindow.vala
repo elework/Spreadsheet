@@ -249,7 +249,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
-        show_all ();
     }
 
     private Grid toolbar () {
@@ -523,6 +522,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             update_listview ();
+            recent_widgets_box.show_all ();
         }
     }
 
