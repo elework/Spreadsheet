@@ -1,7 +1,5 @@
 icon_sizes = ['32', '48', '64', '128']
 
-file_name = 'spreadsheet'
-
 install_data(
     file_name + '.gschema.xml',
     rename: meson.project_name() + '.gschema.xml',
