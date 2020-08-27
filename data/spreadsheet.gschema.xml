@@ -23,7 +23,7 @@
     </key>
     <key name="zoom-level" type="i">
       <default>100</default>
-      <summary>Zoom lebel</summary>
+      <summary>Zoom level</summary>
       <description>Zoom level of the sheet</description>
     </key>
   </schema>
