@@ -119,6 +119,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     construct {
+        var cssprovider = new Gtk.CssProvider ();
+        cssprovider.load_from_resource ("/com/github/elework/spreadsheet/Application.css");
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (),
+                                                    cssprovider,
+                                                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
         app_stack = new Stack ();
         app_stack.add_named (welcome (), "welcome");
         app_stack.add_named (sheet (), "app");
@@ -315,6 +321,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         style_toggle = new ToggleButton.with_label ("Open Sans 14");
+        style_toggle.get_style_context ().add_class ("toggle-button");
         style_toggle.tooltip_text = _("Set colors to letters in a selected cell");
         bool resized = false;
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
