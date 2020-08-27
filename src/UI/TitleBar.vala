@@ -11,9 +11,7 @@ public class Spreadsheet.UI.TitleBar : Gtk.HeaderBar {
         );
     }
 
-    public void init_header () {
-        clear_header ();
-
+    construct {
         var file_ico = new Gtk.Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
         var file_button = new Gtk.ToolButton (file_ico, null);
         file_button.tooltip_markup = Granite.markup_accel_tooltip ({"<Ctrl>N"}, _("Open another window"));
@@ -54,12 +52,14 @@ public class Spreadsheet.UI.TitleBar : Gtk.HeaderBar {
         });
         pack_end (undo_button);
 
+        set_buttons_visibility (false);
         update_header ();
     }
 
-    public void clear_header () {
+    public void set_buttons_visibility (bool is_visible) {
         foreach (var button in get_children ()) {
-            button.destroy ();
+            button.visible = is_visible;
+            button.no_show_all = !is_visible;
         }
     }
 
