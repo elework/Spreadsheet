@@ -44,7 +44,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         set {
             _file = value;
-            header.set_titles (value.title, value.file_path == null ? _("Not saved yet") : value.file_path);
+
+            string? display_path = value.file_path;
+            if (GLib.Environment.get_home_dir () in display_path) {
+                display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
+            }
+
+            header.set_titles (value.title, display_path == null ? _("Not saved yet") : display_path);
 
             while (tabs.n_tabs > 0) {
                 tabs.remove_tab (tabs.get_tab_by_index (0));
@@ -188,7 +194,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
 
                 chooser.close ();
-                header.init_header ();
+                header.set_buttons_visibility (true);
                 show_all ();
                 app_stack.set_visible_child_name ("app");
             }
@@ -226,7 +232,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 list_item.clicked.connect (() => {
                     try {
                         this.file = new CSVParser.from_file (path).parse ();
-                        header.init_header ();
+                        header.set_buttons_visibility (true);
                         show_all ();
                         app_stack.set_visible_child_name ("app");
                         add_recents (path);
@@ -372,7 +378,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string documents = "";
         File? path = null;
 
-        header.init_header ();
+        header.set_buttons_visibility (true);
 
         do {
             file_name = _("Untitled Spreadsheet %i").printf (id++);
@@ -505,7 +511,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public void show_welcome () {
-        header.clear_header ();
+        header.set_buttons_visibility (false);
         header.set_titles (_("Spreadsheet"), null);
         expression.text = "";
 

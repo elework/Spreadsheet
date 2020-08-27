@@ -56,7 +56,7 @@ public class Spreadsheet.App : Gtk.Application {
             try {
                 var file = new Spreadsheet.Services.CSV.CSVParser.from_file (csv_file.get_path ()).parse ();
                 window.file = file;
-                window.header.init_header ();
+                window.header.set_buttons_visibility (true);
                 window.show_all ();
                 window.app_stack.set_visible_child_name ("app");
             } catch (Spreadsheet.Services.Parsing.ParserError err) {
