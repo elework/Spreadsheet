@@ -1,5 +1,6 @@
 src/Models/Function.vala
 src/UI/MainWindow.vala
 src/UI/TitleBar.vala
+src/Widgets/ActionBar.vala
 src/Widgets/StyleModal.vala
 src/App.vala
