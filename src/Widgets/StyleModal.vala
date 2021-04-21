@@ -1,12 +1,4 @@
 public class Spreadsheet.StyleModal : Gtk.Grid {
-    private Gtk.ColorButton color_button;
-    private Gtk.Button color_reset_button;
-    private Gtk.ColorButton bg_button;
-    private Gtk.Button bg_reset_button;
-    private Gtk.ColorButton sr_button;
-    private Gtk.SpinButton sr_width_spin;
-    private Gtk.Button sr_reset_button;
-
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();
         style_stack.add_titled (create_fonts_grid (font_style), "fonts-grid", _("Font"));
@@ -61,13 +53,13 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_box.pack_start (underline_button);
         style_box.pack_start (strikethrough_button);
 
-        color_button = new Gtk.ColorButton () {
+        var color_button = new Gtk.ColorButton () {
             halign = Gtk.Align.START,
             tooltip_text = _("Set font color of a selected cell")
         };
         font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-        color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
             halign = Gtk.Align.START,
             tooltip_text = _("Reset font color of a selected cell to black")
         };
@@ -104,27 +96,27 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
     }
 
     private Gtk.Grid create_cells_grid (CellStyle cell_style) {
-        bg_button = new Gtk.ColorButton () {
+        var bg_button = new Gtk.ColorButton () {
             halign = Gtk.Align.START,
             tooltip_text = _("Set fill color of a selected cell")
         };
 
-        bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
             halign = Gtk.Align.START,
             tooltip_text = _("Remove fill color of a selected cell")
         };
 
-        sr_button = new Gtk.ColorButton () {
+        var sr_button = new Gtk.ColorButton () {
             halign = Gtk.Align.START,
             tooltip_text = _("Set stroke color of a selected cell")
         };
 
-        sr_width_spin = new Gtk.SpinButton.with_range (0.1, 3, 0.1) {
+        var sr_width_spin = new Gtk.SpinButton.with_range (0.1, 3, 0.1) {
             halign = Gtk.Align.START,
             tooltip_text = _("Set the border width of a selected cell")
         };
 
-        sr_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var sr_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
             halign = Gtk.Align.START,
             tooltip_text = _("Remove stroke color of a selected cell")
         };
