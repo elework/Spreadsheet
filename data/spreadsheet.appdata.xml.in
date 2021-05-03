@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- (C) 2018 Spreadsheet Developers -->
+<!-- Copyright 2018-2021 Spreadsheet Developers -->
 <component type="desktop">
   <id>com.github.elework.spreadsheet</id>
+  <launchable type="desktop-id">com.github.elework.spreadsheet.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>Spreadsheet</name>
@@ -55,7 +56,7 @@
   <developer_name>Spreadsheet Developers</developer_name>
   <url type="homepage">https://github.com/elework/Spreadsheet</url>
   <url type="bugtracker">https://github.com/elework/Spreadsheet/issues</url>
-  <url type="help">https://github.com/elework/Spreadsheet/issues</url>
+  <url type="help">https://github.com/elework/Spreadsheet/discussions</url>
   
   <custom>
     <value key="x-appcenter-color-primary">#206b00</value>
