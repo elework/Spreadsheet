@@ -57,7 +57,7 @@ executable(meson.project_name(),
         dependency('gobject-2.0'),
         dependency('gee-0.8'),
         dependency('gtk+-3.0', version: '>=3.22'),
-        dependency('granite', version: '>=5.2.0'),
+        dependency('granite', version: '>=5.4.0'),
         dependency('pango')
     ],
     install: true,
