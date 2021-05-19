@@ -1,0 +1,18 @@
+app-id: com.github.elework.spreadsheet
+runtime: io.elementary.Platform
+runtime-version: 'daily'
+sdk: io.elementary.Sdk
+command: com.github.elework.spreadsheet
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --filesystem=xdg-documents
+  # needed for perfers-color-scheme
+  - --system-talk-name=org.freedesktop.Accounts
+modules:
+  - name: spreadsheet
+    buildsystem: meson
+    sources:
+      - type: dir
+        path: .
