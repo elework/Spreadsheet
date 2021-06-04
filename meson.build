@@ -8,6 +8,15 @@ add_global_arguments(
     language:'c'
 )
 
+config_data = configuration_data()
+config_data.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
+config_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+config_file = configure_file(
+    input: join_paths('src', 'Config.vala.in'),
+    output: '@BASENAME@',
+    configuration: config_data
+)
+
 gnome = import('gnome')
 asresources = gnome.compile_resources(
     'as-resources',
@@ -18,6 +27,7 @@ asresources = gnome.compile_resources(
 
 executable(meson.project_name(),
     asresources,
+    config_file,
     'src/AlphabetGenerator.vala',
     'src/App.vala',
     'src/Functions/Basic.vala',
