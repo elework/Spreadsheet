@@ -1,4 +1,9 @@
-project('com.github.elework.spreadsheet', 'vala', 'c')
+project(
+    'com.github.elework.spreadsheet',
+    'vala', 'c',
+    version: '0.1.0',
+    meson_version: '>=0.49.0'
+)
 
 file_name = 'spreadsheet'
 
@@ -9,10 +14,10 @@ add_global_arguments(
 )
 
 config_data = configuration_data()
-config_data.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
+config_data.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
 config_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 config_file = configure_file(
-    input: join_paths('src', 'Config.vala.in'),
+    input: 'src' / 'Config.vala.in',
     output: '@BASENAME@',
     configuration: config_data
 )
@@ -20,50 +25,54 @@ config_file = configure_file(
 gnome = import('gnome')
 asresources = gnome.compile_resources(
     'as-resources',
-    join_paths('data', file_name + '.gresource.xml'),
+    'data' / file_name + '.gresource.xml',
     source_dir: 'data',
     c_name: 'as'
+)
+
+sources = files(
+    'src' / 'AlphabetGenerator.vala',
+    'src' / 'App.vala',
+    'src' / 'Functions' / 'Basic.vala',
+    'src' / 'Functions' / 'Geometry.vala',
+    'src' / 'Models' / 'Cell.vala',
+    'src' / 'Models' / 'CellStyle.vala',
+    'src' / 'Models' / 'FontStyle.vala',
+    'src' / 'Models' / 'Function.vala',
+    'src' / 'Models' / 'HistoryAction.vala',
+    'src' / 'Models' / 'Page.vala',
+    'src' / 'Models' / 'Spreadsheet.vala',
+    'src' / 'Services' / 'CSV' / 'CSVGrammar.vala',
+    'src' / 'Services' / 'CSV' / 'CSVParser.vala',
+    'src' / 'Services' / 'CSV' / 'CSVWriter.vala',
+    'src' / 'Services' / 'Formula' / 'AST' / 'CallExpression.vala',
+    'src' / 'Services' / 'Formula' / 'AST' / 'CellReference.vala',
+    'src' / 'Services' / 'Formula' / 'AST' / 'Expression.vala',
+    'src' / 'Services' / 'Formula' / 'AST' / 'NumberExpression.vala',
+    'src' / 'Services' / 'Formula' / 'AST' / 'TextExpression.vala',
+    'src' / 'Services' / 'Formula' / 'FormulaGrammar.vala',
+    'src' / 'Services' / 'Formula' / 'FormulaParser.vala',
+    'src' / 'Services' / 'Parsing' / 'Evaluator.vala',
+    'src' / 'Services' / 'Parsing' / 'Grammar.vala',
+    'src' / 'Services' / 'Parsing' / 'Lexer.vala',
+    'src' / 'Services' / 'Parsing' / 'Parser.vala',
+    'src' / 'Services' / 'Parsing' / 'Token.vala',
+    'src' / 'Services' / 'FuncSearchList.vala',
+    'src' / 'Services' / 'HistoryManager.vala',
+    'src' / 'UI' / 'MainWindow.vala',
+    'src' / 'UI' / 'TitleBar.vala',
+    'src' / 'Widgets' / 'ActionBar.vala',
+    'src' / 'Widgets' / 'FunctionPresenter.vala',
+    'src' / 'Widgets' / 'Sheet.vala',
+    'src' / 'Widgets' / 'StyleModal.vala'
 )
 
 executable(meson.project_name(),
     asresources,
     config_file,
-    'src/AlphabetGenerator.vala',
-    'src/App.vala',
-    'src/Functions/Basic.vala',
-    'src/Functions/Geometry.vala',
-    'src/Models/Cell.vala',
-    'src/Models/CellStyle.vala',
-    'src/Models/FontStyle.vala',
-    'src/Models/Function.vala',
-    'src/Models/HistoryAction.vala',
-    'src/Models/Page.vala',
-    'src/Models/Spreadsheet.vala',
-    'src/Services/CSV/CSVGrammar.vala',
-    'src/Services/CSV/CSVParser.vala',
-    'src/Services/CSV/CSVWriter.vala',
-    'src/Services/Formula/AST/CallExpression.vala',
-    'src/Services/Formula/AST/CellReference.vala',
-    'src/Services/Formula/AST/Expression.vala',
-    'src/Services/Formula/AST/NumberExpression.vala',
-    'src/Services/Formula/AST/TextExpression.vala',
-    'src/Services/Formula/FormulaGrammar.vala',
-    'src/Services/Formula/FormulaParser.vala',
-    'src/Services/Parsing/Evaluator.vala',
-    'src/Services/Parsing/Grammar.vala',
-    'src/Services/Parsing/Lexer.vala',
-    'src/Services/Parsing/Parser.vala',
-    'src/Services/Parsing/Token.vala',
-    'src/Services/FuncSearchList.vala',
-    'src/Services/HistoryManager.vala',
-    'src/UI/MainWindow.vala',
-    'src/UI/TitleBar.vala',
-    'src/Widgets/ActionBar.vala',
-    'src/Widgets/FunctionPresenter.vala',
-    'src/Widgets/Sheet.vala',
-    'src/Widgets/StyleModal.vala',
+    sources,
     dependencies: [
-        dependency('glib-2.0', version: '>=2.38'),
+        dependency('glib-2.0'),
         dependency('gobject-2.0'),
         dependency('gee-0.8'),
         dependency('gtk+-3.0', version: '>=3.22'),
@@ -77,4 +86,4 @@ executable(meson.project_name(),
 subdir('data')
 subdir('po')
 
-meson.add_install_script('meson/post_install.py')
+meson.add_install_script('meson' / 'post_install.py')
