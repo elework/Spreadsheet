@@ -1,6 +1,6 @@
 app-id: com.github.elework.spreadsheet
 runtime: io.elementary.Platform
-runtime-version: 'daily'
+runtime-version: '6'
 sdk: io.elementary.Sdk
 command: com.github.elework.spreadsheet
 finish-args:
