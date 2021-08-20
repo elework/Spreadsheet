@@ -27,11 +27,11 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
             new Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
             new Evaluator (/=/, token ("equal")),
             new Evaluator (get_func_name_regex (), token ("identifier")),
-            new Evaluator (/\(/, token ("left-parenthese")),
+            new Evaluator (/\(/, token ("left-parenthese")), // vala-lint=space-before-paren
             new Evaluator (/\)/, token ("right-parenthese")),
             new Evaluator (/,/, token ("comma")),
             new Evaluator (/:/, token ("colon")),
-            new Evaluator (/\d+(\.\d+)?/, token ("number")),
+            new Evaluator (/\d+(\.\d+)?/, token ("number")), // vala-lint=space-before-paren
             new Evaluator (/\+/, token ("plus")),
             new Evaluator (/\*/, token ("star")),
             new Evaluator (/-/, token ("dash")),
