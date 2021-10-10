@@ -158,6 +158,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     private void move (int line_add, int col_add) {
+        // Ignore key press to the outside of the sheet
+        if (selected_cell.line + line_add < 0 || selected_cell.column + col_add < 0) {
+            return;
+        }
+
         if (selected_cell != null) {
             select (selected_cell.line + line_add, selected_cell.column + col_add);
         } else {
