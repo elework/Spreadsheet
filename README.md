@@ -1,14 +1,14 @@
 # Spreadsheet
 
-Spreadsheet is a spreadsheet app built with Vala and GTK+, and especially for elementary OS.
+Spreadsheet is a spreadsheet app built with Vala and GTK, and especially for elementary OS.
 
 ![Screenshot](screen.png)
 
-It was originally developed by [Ana Gelez](https://github.com/AnaGelez), who wrote:
+It was originally developed by [Gelez](https://github.com/elegaanz), who wrote:
 
 > One day I was lost on the Internet, I found this great [mockup](https://www.deviantart.com/bassultra/art/Spreadsheet-363147552) of a spreadsheet app, and I decided to make it real.
 
-The goal of this project is to build a spreadsheet app that perfectly fits in elementary OS. However, this app may have been built and made available elsewhere by community members. These builds may have modifications or changes and are not provided or supported by us.
+The goal of this project is to build a spreadsheet app that perfectly fits in elementary OS. Only CSV files are supported at this moment.
 
 ## Building and Installation
 
