@@ -134,14 +134,21 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     }
 
     private void select (int line, int col) {
+        // Do nothing if the new selected cell are the same with the currently selected
+        if (line == selected_cell.line && col == selected_cell.column) {
+            return;
+        }
+
         foreach (var cell in page.cells) {
             if (cell.selected) {
                 cell.selected = false;
-                if (cell == selected_cell) { // unselect it if it was selected
+                // Unselect the cell if it was previously selected cell
+                if (cell == selected_cell) {
                     selected_cell = null;
                     selection_changed (null);
                 }
             } else if (cell.line == line && cell.column == col) {
+                // Select the new cell
                 cell.selected = true;
                 selected_cell = cell;
                 selection_changed (cell);
