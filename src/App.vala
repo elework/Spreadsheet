@@ -23,9 +23,9 @@ public class Spreadsheet.App : Gtk.Application {
         flags = ApplicationFlags.HANDLES_OPEN;
 
         Intl.setlocale (LocaleCategory.ALL, "");
-        GLib.Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-        GLib.Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-        GLib.Intl.textdomain (GETTEXT_PACKAGE);
+        Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+        Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+        Intl.textdomain (GETTEXT_PACKAGE);
 
         functions.add (new Function ("sum", Functions.sum, _("Add numbers")));
         functions.add (new Function ("mul", Functions.mul, _("Multiply numbers")));
