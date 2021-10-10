@@ -50,6 +50,10 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
                 return new NumberExpression (0.0);
             }
         } else if (current.kind == "number") {
+            if (next.kind == "text") {
+                return parse_text ();
+            }
+
             return parse_number ();
         } else {
             return parse_text ();
