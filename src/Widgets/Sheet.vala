@@ -82,6 +82,9 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     case Gdk.Key.@0:
                         window.action_bar.zoom_level = 100;
                         return true;
+                    case Gdk.Key.Home:
+                        select (0, 0);
+                        return true;
                 }
             }
 
