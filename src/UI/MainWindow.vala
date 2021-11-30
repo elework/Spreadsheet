@@ -179,35 +179,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             if (index == 0) {
                 new_sheet ();
             } else if (index == 1) {
-                var chooser = new FileChooserDialog (
-                    _("Open a file"), this, FileChooserAction.OPEN,
-                    _("_Cancel"),
-                    ResponseType.CANCEL,
-                    _("_Open"),
-                    ResponseType.ACCEPT);
-
-                Gtk.FileFilter filter = new Gtk.FileFilter ();
-                filter.add_pattern ("*.csv");
-                filter.set_filter_name (_("CSV files"));
-                chooser.add_filter (filter);
-
-                if (chooser.run () == ResponseType.ACCEPT) {
-                    try {
-                        file = new CSVParser.from_file (chooser.get_filename ()).parse ();
-                    } catch (ParserError err) {
-                        debug ("Error: " + err.message);
-                    }
-
-                    add_recents (file.file_path);
-                } else {
-                    chooser.close ();
-                    return;
-                }
-
-                chooser.close ();
-                header.set_buttons_visibility (true);
-                show_all ();
-                app_stack.set_visible_child_name ("app");
+                open_sheet ();
             }
         });
 
@@ -436,12 +408,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
             }
+
+            add_recents (file.file_path);
         } else {
             chooser.close ();
             return;
         }
 
         chooser.close ();
+        header.set_buttons_visibility (true);
+        app_stack.set_visible_child_name ("app");
+        show_all ();
     }
 
     // Triggered when an opened sheet is modified
