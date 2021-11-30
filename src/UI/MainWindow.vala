@@ -390,12 +390,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public void open_sheet () {
-        var chooser = new FileChooserDialog (
-            _("Open a file"), this, FileChooserAction.OPEN,
-            _("_Cancel"),
-            ResponseType.CANCEL,
-            _("_Open"),
-            ResponseType.ACCEPT);
+        var chooser = new FileChooserNative (
+            _("Open a file"), this, FileChooserAction.OPEN, _("_Cancel"), _("_Open")
+        );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
         filter.add_pattern ("*.csv");
@@ -410,15 +407,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             add_recents (file.file_path);
-        } else {
-            chooser.close ();
-            return;
+            header.set_buttons_visibility (true);
+            app_stack.set_visible_child_name ("app");
+            show_all ();
         }
 
-        chooser.close ();
-        header.set_buttons_visibility (true);
-        app_stack.set_visible_child_name ("app");
-        show_all ();
+        chooser.destroy ();
     }
 
     // Triggered when an opened sheet is modified
@@ -429,12 +423,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void save_as_sheet () {
         string path = "";
-        var chooser = new FileChooserDialog (
-            _("Save your work"), this, FileChooserAction.SAVE,
-            _("_Cancel"),
-            ResponseType.CANCEL,
-            _("_Save"),
-            ResponseType.ACCEPT);
+        var chooser = new FileChooserNative (
+            _("Save your work"), this, FileChooserAction.SAVE, _("_Cancel"), _("_Save")
+        );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
         filter.add_pattern ("*.csv");
@@ -447,22 +438,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             if (!path.has_suffix (".csv")) {
                 path += ".csv";
             }
-        } else {
-            chooser.close ();
-            return;
+
+            new CSVWriter (active_sheet.page).write_to_file (path);
+            add_recents (path);
+
+            // Open the saved file
+            try {
+                file = new CSVParser.from_file (path).parse ();
+            } catch (ParserError err) {
+                debug ("Error: " + err.message);
+            }
         }
 
-        chooser.close ();
-        new CSVWriter (active_sheet.page).write_to_file (path);
-
-        add_recents (path);
-
-        // Open the saved file
-        try {
-            file = new CSVParser.from_file (path).parse ();
-        } catch (ParserError err) {
-            debug ("Error: " + err.message);
-        }
+        chooser.destroy ();
     }
 
     private void add_recents (string recent_file_path) {
