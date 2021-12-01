@@ -391,7 +391,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void open_sheet () {
         var chooser = new FileChooserNative (
-            _("Open a file"), this, FileChooserAction.OPEN, _("_Cancel"), _("_Open")
+            _("Open a file"), this, FileChooserAction.OPEN, _("_Open"), _("_Cancel")
         );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
@@ -424,7 +424,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public void save_as_sheet () {
         string path = "";
         var chooser = new FileChooserNative (
-            _("Save your work"), this, FileChooserAction.SAVE, _("_Cancel"), _("_Save")
+            _("Save your work"), this, FileChooserAction.SAVE, _("_Save"), _("_Cancel")
         );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
