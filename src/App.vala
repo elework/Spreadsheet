@@ -10,7 +10,6 @@ public class Spreadsheet.App : Gtk.Application {
     public static ArrayList<Function> functions { get; set; default = new ArrayList<Function> (); }
 
     public static int main (string[] args) {
-        Gtk.init (ref args);
         return new App ().run (args);
     }
 
