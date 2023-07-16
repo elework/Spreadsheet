@@ -2,7 +2,7 @@ project(
     'com.github.elework.spreadsheet',
     'vala', 'c',
     version: '0.1.0',
-    meson_version: '>=0.49.0'
+    meson_version: '>=0.56.0'
 )
 
 file_name = 'spreadsheet'

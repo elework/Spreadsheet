@@ -17,7 +17,7 @@ You'll need the following dependencies:
 * libgee-0.8-dev
 * libgranite-dev (>= 5.4.0)
 * libgtk-3-dev (>= 3.22)
-* meson (>= 0.49.0)
+* meson (>= 0.56.0)
 * valac
 
 On elementary OS (or any distribution with `apt`), you can get them with the following command:
