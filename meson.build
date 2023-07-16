@@ -2,7 +2,7 @@ project(
     'com.github.elework.spreadsheet',
     'vala', 'c',
     version: '0.1.0',
-    meson_version: '>=0.56.0'
+    meson_version: '>=0.59.0'
 )
 
 file_name = 'spreadsheet'
@@ -32,6 +32,12 @@ asresources = gnome.compile_resources(
     'data' / file_name + '.gresource.xml',
     source_dir: 'data',
     c_name: 'as'
+)
+
+gnome.post_install(
+    glib_compile_schemas: true,
+    gtk_update_icon_cache: true,
+    update_desktop_database: true
 )
 
 sources = files(
@@ -89,5 +95,3 @@ executable(meson.project_name(),
 
 subdir('data')
 subdir('po')
-
-meson.add_install_script('meson' / 'post_install.py')
