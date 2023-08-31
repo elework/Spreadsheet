@@ -24,15 +24,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.Box welcome_box;
     private Gtk.Box recent_widgets_box;
 
-    public DynamicNotebook tabs {
-        get;
-        set;
-        default = new DynamicNotebook () { allow_restoring = false };
-    }
+    private Hdy.TabView tab_view = new Hdy.TabView ();
 
     public Sheet active_sheet {
         get {
-            ScrolledWindow scroll = (ScrolledWindow)tabs.current.page;
+            ScrolledWindow scroll = (ScrolledWindow)tab_view.selected_page.child;
             Viewport vp = (Viewport)scroll.get_child ();
             return (Sheet)vp.get_child ();
         }
@@ -53,15 +49,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
             header.set_titles (value.title, display_path == null ? _("Not saved yet") : display_path);
 
-            while (tabs.n_tabs > 0) {
-                tabs.remove_tab (tabs.get_tab_by_index (0));
+            while (tab_view.n_pages > 0) {
+                tab_view.close_page (tab_view.get_nth_page (0));
             }
 
             Sheet? last_sheet = null;
             foreach (var page in value.pages) {
                 var scrolled = new Gtk.ScrolledWindow (null, null);
                 var viewport = new Gtk.Viewport (null, null);
-                viewport.set_size_request (tabs.get_allocated_width (), tabs.get_allocated_height ());
+                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
                 scrolled.add (viewport);
 
                 var sheet = new Sheet (page, this);
@@ -106,7 +102,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 viewport.add (sheet);
                 last_sheet = sheet;
 
-                tabs.insert_tab (new Tab (page.title, null, scrolled), 0);
+                var tabpage = tab_view.append (scrolled);
+                tabpage.title = page.title;
             }
             last_sheet.grab_focus ();
         }
@@ -348,10 +345,20 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Box sheet () {
         action_bar = new Widgets.ActionBar ();
 
+        var new_tab_button = new Gtk.Button.from_icon_name ("list-add-symbolic");
+
+        var tab_bar = new Hdy.TabBar () {
+            view = tab_view,
+            autohide = false,
+            expand_tabs = false,
+            start_action_widget = new_tab_button
+        };
+
         var layout = new Box (Orientation.VERTICAL, 0);
         layout.homogeneous = false;
         layout.pack_start (toolbar (), false);
-        layout.pack_start (tabs);
+        layout.pack_start (tab_bar, false);
+        layout.pack_start (tab_view);
         layout.pack_end (action_bar, false);
         return layout;
     }

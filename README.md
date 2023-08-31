@@ -17,6 +17,7 @@ You'll need the following dependencies:
 * libgee-0.8-dev
 * libgranite-dev (>= 5.4.0)
 * libgtk-3-dev (>= 3.22)
+* libhandy-1-dev (>= 1.2.0)
 * meson (>= 0.59.0)
 * valac
 
