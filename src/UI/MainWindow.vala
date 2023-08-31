@@ -345,6 +345,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Box sheet () {
         action_bar = new Widgets.ActionBar ();
 
+        // TODO: Create new sheet on click
         var new_tab_button = new Gtk.Button.from_icon_name ("list-add-symbolic");
 
         var tab_bar = new Hdy.TabBar () {
