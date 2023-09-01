@@ -352,6 +352,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             view = tab_view,
             autohide = false,
             expand_tabs = false,
+            inverted = true,
             start_action_widget = new_tab_button
         };
 
