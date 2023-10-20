@@ -8,58 +8,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-21 17:59+0200\n"
+"POT-Creation-Date: 2023-10-20 12:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/com.github.elework.spreadsheet.desktop.in:3
-#: data/com.github.elework.spreadsheet.appdata.xml.in:7
+#: data/spreadsheet.desktop.in:3 data/spreadsheet.appdata.xml.in:8
 msgid "Spreadsheet"
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.desktop.in:4
+#: data/spreadsheet.desktop.in:4
 msgid "Spreadsheet App"
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.desktop.in:5
-#: data/com.github.elework.spreadsheet.appdata.xml.in:8
+#: data/spreadsheet.desktop.in:5 data/spreadsheet.appdata.xml.in:9
 msgid "Create simple and beautiful spreadsheets"
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.desktop.in:8
-msgid "com.github.elework.spreadsheet"
-msgstr ""
-
-#: data/com.github.elework.spreadsheet.desktop.in:11
+#: data/spreadsheet.desktop.in:11
 msgid "Office;Book;"
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:10
+#: data/spreadsheet.appdata.xml.in:11
 msgid ""
 "A spreadsheet app that lets you create simple and beautiful spreadsheets."
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:13
+#: data/spreadsheet.appdata.xml.in:14
 msgid "Features include:"
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:15
+#: data/spreadsheet.appdata.xml.in:16
 msgid ""
 "Keyboard shortcuts for better experience. You can use your accustomed "
 "keyboard shortcuts e.g. Ctrl + Z to undo, Ctrl + Shift + Z to redo, etc."
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:16
+#: data/spreadsheet.appdata.xml.in:17
 msgid ""
 "Save your works automatically. Your sheets are saved automatically when "
 "created or changed."
 msgstr ""
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:55
+#: data/spreadsheet.appdata.xml.in:56
 msgid "Spreadsheet Developers"
 msgstr ""
