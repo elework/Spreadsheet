@@ -1,4 +1,4 @@
-app-id: com.github.elework.spreadsheet
+id: com.github.elework.spreadsheet
 runtime: io.elementary.Platform
 runtime-version: '7.2'
 sdk: io.elementary.Sdk
