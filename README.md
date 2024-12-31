@@ -31,10 +31,10 @@ Then clone the project and go to its root directory. Run `meson build` to config
     cd build
     ninja
 
-To install, use `ninja install`, then execute with `com.github.elework.spreadsheet`
+To install, use `ninja install`, then execute with `io.github.elework.spreadsheet`
 
     sudo ninja install
-    com.github.elework.spreadsheet
+    io.github.elework.spreadsheet
 
 ## Contributing
 

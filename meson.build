@@ -1,5 +1,5 @@
 project(
-    'com.github.elework.spreadsheet',
+    'io.github.elework.spreadsheet',
     'vala', 'c',
     version: '0.1.0',
     meson_version: '>=0.59.0'

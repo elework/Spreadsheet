@@ -118,7 +118,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     construct {
         var cssprovider = new Gtk.CssProvider ();
-        cssprovider.load_from_resource ("/com/github/elework/spreadsheet/Application.css");
+        cssprovider.load_from_resource ("/io/github/elework/spreadsheet/Application.css");
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (),
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
