@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-22 16:07+0200\n"
+"POT-Creation-Date: 2024-12-31 17:40+0900\n"
 "PO-Revision-Date: 2019-06-22 16:01+0200\n"
 "Last-Translator: NathaBnm\n"
 "Language-Team: none\n"
@@ -17,40 +17,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: data/com.github.elework.spreadsheet.desktop.in:3
-#: data/com.github.elework.spreadsheet.appdata.xml.in:7
+#: data/spreadsheet.desktop.in:3 data/spreadsheet.appdata.xml.in:8
 msgid "Spreadsheet"
 msgstr "Spreadsheet"
 
-#: data/com.github.elework.spreadsheet.desktop.in:4
+#: data/spreadsheet.desktop.in:4
 msgid "Spreadsheet App"
 msgstr "Application Spreadsheet"
 
-#: data/com.github.elework.spreadsheet.desktop.in:5
-#: data/com.github.elework.spreadsheet.appdata.xml.in:8
+#: data/spreadsheet.desktop.in:5 data/spreadsheet.appdata.xml.in:9
 msgid "Create simple and beautiful spreadsheets"
 msgstr "Créez des feuilles de calcul simples et belles"
 
-#: data/com.github.elework.spreadsheet.desktop.in:8
-msgid "com.github.elework.spreadsheet"
-msgstr "com.github.elework.spreadsheet"
-
-#: data/com.github.elework.spreadsheet.desktop.in:11
+#: data/spreadsheet.desktop.in:11
 msgid "Office;Book;"
 msgstr "Bureautique;Livre;"
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:10
+#: data/spreadsheet.appdata.xml.in:11
 msgid ""
 "A spreadsheet app that lets you create simple and beautiful spreadsheets."
 msgstr ""
 "Une application tableur qui vous permet de créer des feuilles de calcul "
 "simples et belles."
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:13
+#: data/spreadsheet.appdata.xml.in:14
 msgid "Features include:"
 msgstr "Fonctionnalités incluses :"
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:15
+#: data/spreadsheet.appdata.xml.in:16
 msgid ""
 "Keyboard shortcuts for better experience. You can use your accustomed "
 "keyboard shortcuts e.g. Ctrl + Z to undo, Ctrl + Shift + Z to redo, etc."
@@ -59,7 +53,7 @@ msgstr ""
 "raccourcis clavier habituels comme par exemple CTRL + Z pour annuler, CTRL + "
 "Maj + Z pour rétablir etc."
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:16
+#: data/spreadsheet.appdata.xml.in:17
 msgid ""
 "Save your works automatically. Your sheets are saved automatically when "
 "created or changed."
@@ -67,6 +61,9 @@ msgstr ""
 "Enregistrement automatique de votre travail. Vos feuilles de calcul sont "
 "automatiquement enregistrées lors de leur création ou modification."
 
-#: data/com.github.elework.spreadsheet.appdata.xml.in:55
+#: data/spreadsheet.appdata.xml.in:56
 msgid "Spreadsheet Developers"
 msgstr "Les développeurs de Spreadsheet"
+
+#~ msgid "com.github.elework.spreadsheet"
+#~ msgstr "com.github.elework.spreadsheet"

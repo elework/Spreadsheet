@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the com.github.elework.spreadsheet package.
+# This file is distributed under the same license as the io.github.elework.spreadsheet package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: com.github.elework.spreadsheet\n"
+"Project-Id-Version: io.github.elework.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-09 09:37+0900\n"
+"POT-Creation-Date: 2024-12-31 17:40+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,238 +17,251 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/UI/MainWindow.vala:43
+#: src/App.vala:29
+msgid "Add numbers"
+msgstr ""
+
+#: src/App.vala:30
+msgid "Multiply numbers"
+msgstr ""
+
+#: src/App.vala:31
+msgid "Divide numbers"
+msgstr ""
+
+#: src/App.vala:32
+msgid "Subtract numbers"
+msgstr ""
+
+#: src/App.vala:33
+msgid "Gives the modulo of numbers"
+msgstr ""
+
+#: src/App.vala:35
+msgid "Elevate a number to the power of a second one"
+msgstr ""
+
+#: src/App.vala:36
+msgid "The square root of a number"
+msgstr ""
+
+#: src/App.vala:37
+msgid "Rounds a number to the nearest integer"
+msgstr ""
+
+#: src/App.vala:38
+msgid "Removes the decimal part of a number"
+msgstr ""
+
+#: src/App.vala:39
+msgid "Return the smallest value"
+msgstr ""
+
+#: src/App.vala:40
+msgid "Return the biggest value"
+msgstr ""
+
+#: src/App.vala:41
+msgid "Gives the mean of a list of numbers"
+msgstr ""
+
+#: src/App.vala:43
+msgid "Gives the cosine of a number (in radians)"
+msgstr ""
+
+#: src/App.vala:44
+msgid "Gives the sine of an angle (in radians)"
+msgstr ""
+
+#: src/App.vala:45
+msgid "Gives the tangent of a number (in radians)"
+msgstr ""
+
+#: src/App.vala:46
+msgid "Gives the arc cosine of a number"
+msgstr ""
+
+#: src/App.vala:47
+msgid "Gives the arc sine of a number"
+msgstr ""
+
+#: src/App.vala:48
+msgid "Gives the arc tangent of a number"
+msgstr ""
+
+#: src/Models/Function.vala:6
+msgid "No documentation"
+msgstr ""
+
+#: src/UI/MainWindow.vala:50
 msgid "Not saved yet"
 msgstr ""
 
-#: src/UI/MainWindow.vala:162 src/UI/MainWindow.vala:427
+#: src/UI/MainWindow.vala:172 src/UI/MainWindow.vala:502
 msgid "Spreadsheet"
 msgstr ""
 
-#: src/UI/MainWindow.vala:162
+#: src/UI/MainWindow.vala:172
 msgid "Start something new, or continue what you have been working on."
 msgstr ""
 
-#: src/UI/MainWindow.vala:163
+#: src/UI/MainWindow.vala:173
 msgid "New Sheet"
 msgstr ""
 
-#: src/UI/MainWindow.vala:163
+#: src/UI/MainWindow.vala:173
 msgid "Create an empty sheet"
 msgstr ""
 
-#: src/UI/MainWindow.vala:164
+#: src/UI/MainWindow.vala:174
 msgid "Open File"
 msgstr ""
 
-#: src/UI/MainWindow.vala:164
+#: src/UI/MainWindow.vala:174
 msgid "Choose a saved file"
 msgstr ""
 
-#: src/UI/MainWindow.vala:173 src/UI/MainWindow.vala:349
-#: src/UI/MainWindow.vala:512
-msgid "Open a file"
-msgstr ""
-
-#: src/UI/MainWindow.vala:174 src/UI/MainWindow.vala:350
-#: src/UI/MainWindow.vala:383
-msgid "_Cancel"
-msgstr ""
-
-#: src/UI/MainWindow.vala:176 src/UI/MainWindow.vala:352
-msgid "_Open"
-msgstr ""
-
-#: src/UI/MainWindow.vala:181 src/UI/MainWindow.vala:357
-#: src/UI/MainWindow.vala:390
-msgid "CSV files"
-msgstr ""
-
-#: src/UI/MainWindow.vala:210
+#: src/UI/MainWindow.vala:240
 msgid "Insert functions to a selected cell"
 msgstr ""
 
-#: src/UI/MainWindow.vala:212
+#: src/UI/MainWindow.vala:244
 msgid "Click to insert numbers or functions to a selected cell"
 msgstr ""
 
-#: src/UI/MainWindow.vala:243
+#: src/UI/MainWindow.vala:276
 msgid "Search functions"
 msgstr ""
 
-#: src/UI/MainWindow.vala:270
+#: src/UI/MainWindow.vala:304
 msgid "Set colors to letters in a selected cell"
 msgstr ""
 
-#: src/UI/MainWindow.vala:327
+#: src/UI/MainWindow.vala:378
 #, c-format
 msgid "Untitled Spreadsheet %i"
 msgstr ""
 
-#: src/UI/MainWindow.vala:338
+#: src/UI/MainWindow.vala:386
 msgid "Sheet 1"
 msgstr ""
 
-#: src/UI/MainWindow.vala:382
+#: src/UI/MainWindow.vala:403 src/UI/TitleBar.vala:25
+msgid "Open a file"
+msgstr ""
+
+#: src/UI/MainWindow.vala:403
+msgid "_Open"
+msgstr ""
+
+#: src/UI/MainWindow.vala:403 src/UI/MainWindow.vala:436
+msgid "_Cancel"
+msgstr ""
+
+#: src/UI/MainWindow.vala:408 src/UI/MainWindow.vala:441
+msgid "CSV files"
+msgstr ""
+
+#: src/UI/MainWindow.vala:436
 msgid "Save your work"
 msgstr ""
 
-#: src/UI/MainWindow.vala:385
+#: src/UI/MainWindow.vala:436
 msgid "_Save"
 msgstr ""
 
-#: src/UI/MainWindow.vala:504
+#: src/UI/MainWindow.vala:518
+msgid "Recent files"
+msgstr ""
+
+#: src/UI/TitleBar.vala:17
 msgid "Open another window"
 msgstr ""
 
-#: src/UI/MainWindow.vala:520
+#: src/UI/TitleBar.vala:33
 msgid "Save this file with a different name"
 msgstr ""
 
-#: src/UI/MainWindow.vala:528
+#: src/UI/TitleBar.vala:41
 msgid "Redo"
 msgstr ""
 
-#: src/UI/MainWindow.vala:536
+#: src/UI/TitleBar.vala:49
 msgid "Undo"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:12
+#: src/Widgets/ActionBar.vala:26
+msgid "Zoom in/out the sheet"
+msgstr ""
+
+#: src/Widgets/ActionBar.vala:33
+msgid "Reset to the default zoom level"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:4
 msgid "Font"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:13
+#: src/Widgets/StyleModal.vala:5
 msgid "Cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:27
-msgid "Style"
-msgstr ""
-
-#: src/Widgets/StyleModal.vala:33
+#: src/Widgets/StyleModal.vala:22
 msgid "Bold"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:39
+#: src/Widgets/StyleModal.vala:28
 msgid "Italic"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:45
+#: src/Widgets/StyleModal.vala:34
 msgid "Underline"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:51
+#: src/Widgets/StyleModal.vala:40
 msgid "Strikethrough"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:61
-msgid "Color"
-msgstr ""
-
-#: src/Widgets/StyleModal.vala:65
+#: src/Widgets/StyleModal.vala:58
 msgid "Set font color of a selected cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:69
+#: src/Widgets/StyleModal.vala:64
 msgid "Reset font color of a selected cell to black"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:107
-msgid "Fill"
+#: src/Widgets/StyleModal.vala:68
+msgid "Style"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:111
+#: src/Widgets/StyleModal.vala:70
+msgid "Color"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:101
 msgid "Set fill color of a selected cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:115
+#: src/Widgets/StyleModal.vala:106
 msgid "Remove fill color of a selected cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:117
-msgid "Stroke"
-msgstr ""
-
-#: src/Widgets/StyleModal.vala:121
+#: src/Widgets/StyleModal.vala:111
 msgid "Set stroke color of a selected cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:125
+#: src/Widgets/StyleModal.vala:116
 msgid "Set the border width of a selected cell"
 msgstr ""
 
-#: src/Widgets/StyleModal.vala:129
+#: src/Widgets/StyleModal.vala:121
 msgid "Remove stroke color of a selected cell"
 msgstr ""
 
-#: src/App.vala:24
-msgid "Add numbers"
+#: src/Widgets/StyleModal.vala:132
+msgid "Fill"
 msgstr ""
 
-#: src/App.vala:25
-msgid "Multiply numbers"
-msgstr ""
-
-#: src/App.vala:26
-msgid "Divide numbers"
-msgstr ""
-
-#: src/App.vala:27
-msgid "Subtract numbers"
-msgstr ""
-
-#: src/App.vala:28
-msgid "Gives the modulo of numbers"
-msgstr ""
-
-#: src/App.vala:30
-msgid "Elevate a number to the power of a second one"
-msgstr ""
-
-#: src/App.vala:31
-msgid "The square root of a number"
-msgstr ""
-
-#: src/App.vala:32
-msgid "Rounds a number to the nearest integer"
-msgstr ""
-
-#: src/App.vala:33
-msgid "Removes the decimal part of a number"
-msgstr ""
-
-#: src/App.vala:34
-msgid "Return the smallest value"
-msgstr ""
-
-#: src/App.vala:35
-msgid "Return the biggest value"
-msgstr ""
-
-#: src/App.vala:36
-msgid "Gives the mean of a list of numbers"
-msgstr ""
-
-#: src/App.vala:38
-msgid "Gives the cosine of a number (in radians)"
-msgstr ""
-
-#: src/App.vala:39
-msgid "Gives the sine of an angle (in radians)"
-msgstr ""
-
-#: src/App.vala:40
-msgid "Gives the tangent of a number (in radians)"
-msgstr ""
-
-#: src/App.vala:41
-msgid "Gives the arc cosine of a number"
-msgstr ""
-
-#: src/App.vala:42
-msgid "Gives the arc sine of a number"
-msgstr ""
-
-#: src/App.vala:43
-msgid "Gives the arc tangent of a number"
+#: src/Widgets/StyleModal.vala:135
+msgid "Stroke"
 msgstr ""

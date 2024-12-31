@@ -7,249 +7,263 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.elework.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-09 09:37+0900\n"
+"POT-Creation-Date: 2024-12-31 17:40+0900\n"
 "PO-Revision-Date: 2020-09-19 13:20+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: \n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4.1\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl\n"
 
-#: src/UI/MainWindow.vala:43
+#: src/App.vala:29
+msgid "Add numbers"
+msgstr "Getallen toevoegen"
+
+#: src/App.vala:30
+msgid "Multiply numbers"
+msgstr "Getallen vermenigvuldigen"
+
+#: src/App.vala:31
+msgid "Divide numbers"
+msgstr "Getallen delen"
+
+#: src/App.vala:32
+msgid "Subtract numbers"
+msgstr "Getallen aftrekken"
+
+#: src/App.vala:33
+msgid "Gives the modulo of numbers"
+msgstr "Toon de modulaire berekening"
+
+#: src/App.vala:35
+msgid "Elevate a number to the power of a second one"
+msgstr "Verhoog het getal van het ene met het andere"
+
+#: src/App.vala:36
+msgid "The square root of a number"
+msgstr "Toon de vierkantswortel van een getal"
+
+#: src/App.vala:37
+msgid "Rounds a number to the nearest integer"
+msgstr "Rond een getal af naar het hoogste gehele getal"
+
+#: src/App.vala:38
+msgid "Removes the decimal part of a number"
+msgstr "Verwijder het decimale gedeelte van een getal"
+
+#: src/App.vala:39
+msgid "Return the smallest value"
+msgstr "Bereken de laagste waarde"
+
+#: src/App.vala:40
+msgid "Return the biggest value"
+msgstr "Bereken de hoogste waarde"
+
+#: src/App.vala:41
+msgid "Gives the mean of a list of numbers"
+msgstr "Toon het totaal van een lijst met getallen"
+
+#: src/App.vala:43
+msgid "Gives the cosine of a number (in radians)"
+msgstr "Toon de cosinus van een getal (in straal)"
+
+#: src/App.vala:44
+msgid "Gives the sine of an angle (in radians)"
+msgstr "Toon de sinus van een hoek (in straal)"
+
+#: src/App.vala:45
+msgid "Gives the tangent of a number (in radians)"
+msgstr "Toon de tangent van een getal (in straal)"
+
+#: src/App.vala:46
+msgid "Gives the arc cosine of a number"
+msgstr "Toon de curvecosinus van een getal (in straal)"
+
+#: src/App.vala:47
+msgid "Gives the arc sine of a number"
+msgstr "Toon de curvesinus van een getal"
+
+#: src/App.vala:48
+msgid "Gives the arc tangent of a number"
+msgstr "Toon de curvetangent van een getal"
+
+#: src/Models/Function.vala:6
+msgid "No documentation"
+msgstr ""
+
+#: src/UI/MainWindow.vala:50
 msgid "Not saved yet"
 msgstr "Nog niet opgeslagen"
 
-#: src/UI/MainWindow.vala:162 src/UI/MainWindow.vala:427
+#: src/UI/MainWindow.vala:172 src/UI/MainWindow.vala:502
 msgid "Spreadsheet"
 msgstr "Rekenblad"
 
-#: src/UI/MainWindow.vala:162
+#: src/UI/MainWindow.vala:172
 msgid "Start something new, or continue what you have been working on."
 msgstr "Maak een nieuw werkblad of ga door met je vorige werk."
 
-#: src/UI/MainWindow.vala:163
+#: src/UI/MainWindow.vala:173
 msgid "New Sheet"
 msgstr "Nieuw blad"
 
-#: src/UI/MainWindow.vala:163
+#: src/UI/MainWindow.vala:173
 msgid "Create an empty sheet"
 msgstr "Voeg een blanco rekenblad toe"
 
-#: src/UI/MainWindow.vala:164
+#: src/UI/MainWindow.vala:174
 msgid "Open File"
 msgstr "Bestand openen"
 
-#: src/UI/MainWindow.vala:164
+#: src/UI/MainWindow.vala:174
 msgid "Choose a saved file"
 msgstr "Kies een opgeslagen bestand"
 
-#: src/UI/MainWindow.vala:173 src/UI/MainWindow.vala:349
-#: src/UI/MainWindow.vala:512
-msgid "Open a file"
-msgstr "Open een bestand"
-
-#: src/UI/MainWindow.vala:174 src/UI/MainWindow.vala:350
-#: src/UI/MainWindow.vala:383
-msgid "_Cancel"
-msgstr "Ann_uleren"
-
-#: src/UI/MainWindow.vala:176 src/UI/MainWindow.vala:352
-msgid "_Open"
-msgstr "_Openen"
-
-#: src/UI/MainWindow.vala:181 src/UI/MainWindow.vala:357
-#: src/UI/MainWindow.vala:390
-msgid "CSV files"
-msgstr "CSV-bestanden"
-
-#: src/UI/MainWindow.vala:210
+#: src/UI/MainWindow.vala:240
 msgid "Insert functions to a selected cell"
 msgstr "Functies invoegen in geselecteerde cel"
 
-#: src/UI/MainWindow.vala:212
+#: src/UI/MainWindow.vala:244
 msgid "Click to insert numbers or functions to a selected cell"
 msgstr "Klik om getallen of functies in te voegen in de geselecteerde cel"
 
-#: src/UI/MainWindow.vala:243
+#: src/UI/MainWindow.vala:276
 msgid "Search functions"
 msgstr "Functies zoeken"
 
-#: src/UI/MainWindow.vala:270
+#: src/UI/MainWindow.vala:304
 msgid "Set colors to letters in a selected cell"
 msgstr "Letters inkleuren in geselecteerde cel"
 
-#: src/UI/MainWindow.vala:327
+#: src/UI/MainWindow.vala:378
 #, c-format
 msgid "Untitled Spreadsheet %i"
 msgstr "Naamloos rekenblad %i"
 
-#: src/UI/MainWindow.vala:338
+#: src/UI/MainWindow.vala:386
 msgid "Sheet 1"
 msgstr "Rekenblad 1"
 
-#: src/UI/MainWindow.vala:382
+#: src/UI/MainWindow.vala:403 src/UI/TitleBar.vala:25
+msgid "Open a file"
+msgstr "Open een bestand"
+
+#: src/UI/MainWindow.vala:403
+msgid "_Open"
+msgstr "_Openen"
+
+#: src/UI/MainWindow.vala:403 src/UI/MainWindow.vala:436
+msgid "_Cancel"
+msgstr "Ann_uleren"
+
+#: src/UI/MainWindow.vala:408 src/UI/MainWindow.vala:441
+msgid "CSV files"
+msgstr "CSV-bestanden"
+
+#: src/UI/MainWindow.vala:436
 msgid "Save your work"
 msgstr "Sla je werk op"
 
-#: src/UI/MainWindow.vala:385
+#: src/UI/MainWindow.vala:436
 msgid "_Save"
 msgstr "Op_slaan"
 
-#: src/UI/MainWindow.vala:504
+#: src/UI/MainWindow.vala:518
+#, fuzzy
+msgid "Recent files"
+msgstr "Open een bestand"
+
+#: src/UI/TitleBar.vala:17
 msgid "Open another window"
 msgstr "Nieuw venster openen"
 
-#: src/UI/MainWindow.vala:520
+#: src/UI/TitleBar.vala:33
 msgid "Save this file with a different name"
 msgstr "Sla dit bestand op onder een andere naam"
 
-#: src/UI/MainWindow.vala:528
+#: src/UI/TitleBar.vala:41
 msgid "Redo"
 msgstr "Opnieuw uitvoeren"
 
-#: src/UI/MainWindow.vala:536
+#: src/UI/TitleBar.vala:49
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: src/Widgets/StyleModal.vala:12
+#: src/Widgets/ActionBar.vala:26
+msgid "Zoom in/out the sheet"
+msgstr ""
+
+#: src/Widgets/ActionBar.vala:33
+msgid "Reset to the default zoom level"
+msgstr ""
+
+#: src/Widgets/StyleModal.vala:4
 msgid "Font"
 msgstr "Lettertype"
 
-#: src/Widgets/StyleModal.vala:13
+#: src/Widgets/StyleModal.vala:5
 msgid "Cell"
 msgstr "Cel"
 
-#: src/Widgets/StyleModal.vala:27
-msgid "Style"
-msgstr "Stijl"
-
-#: src/Widgets/StyleModal.vala:33
+#: src/Widgets/StyleModal.vala:22
 msgid "Bold"
 msgstr "Vetgedrukt"
 
-#: src/Widgets/StyleModal.vala:39
+#: src/Widgets/StyleModal.vala:28
 msgid "Italic"
 msgstr "Cursief"
 
-#: src/Widgets/StyleModal.vala:45
+#: src/Widgets/StyleModal.vala:34
 msgid "Underline"
 msgstr "Onderstrepen"
 
-#: src/Widgets/StyleModal.vala:51
+#: src/Widgets/StyleModal.vala:40
 msgid "Strikethrough"
 msgstr "Doorhalen"
 
-#: src/Widgets/StyleModal.vala:61
-msgid "Color"
-msgstr "Kleur"
-
-#: src/Widgets/StyleModal.vala:65
+#: src/Widgets/StyleModal.vala:58
 msgid "Set font color of a selected cell"
 msgstr "Letterkleur instellen in geselecteerde cel"
 
-#: src/Widgets/StyleModal.vala:69
+#: src/Widgets/StyleModal.vala:64
 msgid "Reset font color of a selected cell to black"
 msgstr "Standaard letterkleur herstellen in geselecteerde cel"
 
-#: src/Widgets/StyleModal.vala:107
-msgid "Fill"
-msgstr "Opvullen"
+#: src/Widgets/StyleModal.vala:68
+msgid "Style"
+msgstr "Stijl"
 
-#: src/Widgets/StyleModal.vala:111
+#: src/Widgets/StyleModal.vala:70
+msgid "Color"
+msgstr "Kleur"
+
+#: src/Widgets/StyleModal.vala:101
 msgid "Set fill color of a selected cell"
 msgstr "Opvulkleur van de geselecteerde cel instellen"
 
-#: src/Widgets/StyleModal.vala:115
+#: src/Widgets/StyleModal.vala:106
 msgid "Remove fill color of a selected cell"
 msgstr "Opvulkleur van de geselecteerde cel wissen"
 
-#: src/Widgets/StyleModal.vala:117
-msgid "Stroke"
-msgstr "Penseelstreek"
-
-#: src/Widgets/StyleModal.vala:121
+#: src/Widgets/StyleModal.vala:111
 msgid "Set stroke color of a selected cell"
 msgstr "Penseelkleur van de geselecteerde cel instellen"
 
-#: src/Widgets/StyleModal.vala:125
+#: src/Widgets/StyleModal.vala:116
 msgid "Set the border width of a selected cell"
 msgstr "Randdikte van de geselecteerde cel instellen"
 
-#: src/Widgets/StyleModal.vala:129
+#: src/Widgets/StyleModal.vala:121
 msgid "Remove stroke color of a selected cell"
 msgstr "Penseelkleur van de geselecteerde cel wissen"
 
-#: src/App.vala:24
-msgid "Add numbers"
-msgstr "Getallen toevoegen"
+#: src/Widgets/StyleModal.vala:132
+msgid "Fill"
+msgstr "Opvullen"
 
-#: src/App.vala:25
-msgid "Multiply numbers"
-msgstr "Getallen vermenigvuldigen"
-
-#: src/App.vala:26
-msgid "Divide numbers"
-msgstr "Getallen delen"
-
-#: src/App.vala:27
-msgid "Subtract numbers"
-msgstr "Getallen aftrekken"
-
-#: src/App.vala:28
-msgid "Gives the modulo of numbers"
-msgstr "Toon de modulaire berekening"
-
-#: src/App.vala:30
-msgid "Elevate a number to the power of a second one"
-msgstr "Verhoog het getal van het ene met het andere"
-
-#: src/App.vala:31
-msgid "The square root of a number"
-msgstr "Toon de vierkantswortel van een getal"
-
-#: src/App.vala:32
-msgid "Rounds a number to the nearest integer"
-msgstr "Rond een getal af naar het hoogste gehele getal"
-
-#: src/App.vala:33
-msgid "Removes the decimal part of a number"
-msgstr "Verwijder het decimale gedeelte van een getal"
-
-#: src/App.vala:34
-msgid "Return the smallest value"
-msgstr "Bereken de laagste waarde"
-
-#: src/App.vala:35
-msgid "Return the biggest value"
-msgstr "Bereken de hoogste waarde"
-
-#: src/App.vala:36
-msgid "Gives the mean of a list of numbers"
-msgstr "Toon het totaal van een lijst met getallen"
-
-#: src/App.vala:38
-msgid "Gives the cosine of a number (in radians)"
-msgstr "Toon de cosinus van een getal (in straal)"
-
-#: src/App.vala:39
-msgid "Gives the sine of an angle (in radians)"
-msgstr "Toon de sinus van een hoek (in straal)"
-
-#: src/App.vala:40
-msgid "Gives the tangent of a number (in radians)"
-msgstr "Toon de tangent van een getal (in straal)"
-
-#: src/App.vala:41
-msgid "Gives the arc cosine of a number"
-msgstr "Toon de curvecosinus van een getal (in straal)"
-
-#: src/App.vala:42
-msgid "Gives the arc sine of a number"
-msgstr "Toon de curvesinus van een getal"
-
-#: src/App.vala:43
-msgid "Gives the arc tangent of a number"
-msgstr "Toon de curvetangent van een getal"
+#: src/Widgets/StyleModal.vala:135
+msgid "Stroke"
+msgstr "Penseelstreek"
