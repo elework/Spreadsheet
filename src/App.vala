@@ -14,11 +14,11 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     static construct {
-        settings = new Settings ("com.github.elework.spreadsheet");
+        settings = new Settings ("io.github.elework.spreadsheet");
     }
 
     construct {
-        application_id = "com.github.elework.spreadsheet";
+        application_id = "io.github.elework.spreadsheet";
         flags = ApplicationFlags.HANDLES_OPEN;
 
         Intl.setlocale (LocaleCategory.ALL, "");

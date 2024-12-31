@@ -1,8 +1,8 @@
-id: com.github.elework.spreadsheet
+id: io.github.elework.spreadsheet
 runtime: io.elementary.Platform
 runtime-version: '8'
 sdk: io.elementary.Sdk
-command: com.github.elework.spreadsheet
+command: io.github.elework.spreadsheet
 finish-args:
   - '--share=ipc'
   - '--socket=wayland'

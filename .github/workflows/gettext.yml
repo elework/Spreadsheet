@@ -30,4 +30,4 @@ jobs:
 
     - uses: elementary/actions/gettext-flatpak@main
       with:
-        manifest-path: 'com.github.elework.spreadsheet.yml'
+        manifest-path: 'io.github.elework.spreadsheet.yml'
