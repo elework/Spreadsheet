@@ -236,7 +236,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         toolbar.border_width = 10;
         toolbar.column_spacing = 10;
 
-        function_list_bt = new Button.with_label ("f (x)");
+        function_list_bt = new Button.with_label ("f(x)");
+        function_list_bt.get_style_context ().add_class ("func-list-button");
         function_list_bt.tooltip_text = _("Insert functions to a selected cell");
 
         expression = new Entry ();

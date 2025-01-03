@@ -1,5 +1,10 @@
 .toggle-button {
-	background: none;
+    background: none;
+}
+
+.func-list-button {
+    font-style: italic;
+    font-weight: bold;
 }
 
 label.h4 {
