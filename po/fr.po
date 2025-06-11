@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: com.github.elework.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-31 17:40+0900\n"
-"PO-Revision-Date: 2019-06-22 16:00+0200\n"
-"Last-Translator: NathanBnm\n"
+"PO-Revision-Date: 2025-06-11 16:00+0200\n"
+"Last-Translator: Teamcons - teamcons.carrd.co\n"
 "Language-Team: none\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,6 @@ msgid "Divide numbers"
 msgstr "Divise des nombres"
 
 #: src/App.vala:32
-#, fuzzy
 msgid "Subtract numbers"
 msgstr "Soustrait des nombres"
 
@@ -67,12 +66,10 @@ msgid "Gives the mean of a list of numbers"
 msgstr "Donne la moyenne d'une liste de nombres"
 
 #: src/App.vala:43
-#, fuzzy
 msgid "Gives the cosine of a number (in radians)"
 msgstr "Donne le cosinus d'un nombre (en radians)"
 
 #: src/App.vala:44
-#, fuzzy
 msgid "Gives the sine of an angle (in radians)"
 msgstr "Donne le sinus d'un angle (en radians)"
 
@@ -81,12 +78,10 @@ msgid "Gives the tangent of a number (in radians)"
 msgstr "Donne la tangente d'un nombre (en radians)"
 
 #: src/App.vala:46
-#, fuzzy
 msgid "Gives the arc cosine of a number"
 msgstr "Donne l'arc cosinus d'un nombre"
 
 #: src/App.vala:47
-#, fuzzy
 msgid "Gives the arc sine of a number"
 msgstr "Donne l'arc sinus d'un nombre"
 
@@ -97,7 +92,7 @@ msgstr "Donne l'arc tangente d'un nombre"
 
 #: src/Models/Function.vala:6
 msgid "No documentation"
-msgstr ""
+msgstr "Pas de documentation"
 
 #: src/UI/MainWindow.vala:50
 msgid "Not saved yet"
@@ -185,7 +180,7 @@ msgstr "Ouvrir un fichier"
 
 #: src/UI/TitleBar.vala:17
 msgid "Open another window"
-msgstr ""
+msgstr "Ouvrir une autre fenêtre"
 
 #: src/UI/TitleBar.vala:33
 msgid "Save this file with a different name"
@@ -201,11 +196,11 @@ msgstr "Annuler"
 
 #: src/Widgets/ActionBar.vala:26
 msgid "Zoom in/out the sheet"
-msgstr ""
+msgstr "Zoomer/Dézoomer le tableau"
 
 #: src/Widgets/ActionBar.vala:33
 msgid "Reset to the default zoom level"
-msgstr ""
+msgstr "Revenir au zoom par défaut"
 
 #: src/Widgets/StyleModal.vala:4
 msgid "Font"
@@ -217,19 +212,19 @@ msgstr "Cellule"
 
 #: src/Widgets/StyleModal.vala:22
 msgid "Bold"
-msgstr ""
+msgstr "Gras"
 
 #: src/Widgets/StyleModal.vala:28
 msgid "Italic"
-msgstr ""
+msgstr "Italique"
 
 #: src/Widgets/StyleModal.vala:34
 msgid "Underline"
-msgstr ""
+msgstr "Souligné"
 
 #: src/Widgets/StyleModal.vala:40
 msgid "Strikethrough"
-msgstr ""
+msgstr "Barré"
 
 #: src/Widgets/StyleModal.vala:58
 msgid "Set font color of a selected cell"
@@ -241,7 +236,7 @@ msgstr "Réinitialise la couleur de police de la cellule sélectionnée en noir"
 
 #: src/Widgets/StyleModal.vala:68
 msgid "Style"
-msgstr ""
+msgstr "Style"
 
 #: src/Widgets/StyleModal.vala:70
 msgid "Color"
