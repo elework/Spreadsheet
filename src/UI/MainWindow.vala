@@ -277,7 +277,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_search_entry.placeholder_text = _("Search functions");
 
         var function_list_scrolled = new ScrolledWindow (null, null);
-        function_list_scrolled.expand = true;
+        function_list_scrolled.vexpand = true;
+        function_list_scrolled.hexpand = true;
         function_list_scrolled.add (function_list);
 
         var function_list_grid = new Grid ();
@@ -518,7 +519,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.Box create_recents_view () {
         var title = new Gtk.Label (_("Recent files"));
         title.halign = Gtk.Align.CENTER;
-        title.margin = 24;
+        title.margin_top = 24;
+        title.margin_bottom = 24;
+        title.margin_start = 24;
+        title.margin_end = 24;
         title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
         var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
@@ -527,7 +531,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recent_files_scrolled.add (list_view);
 
         var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        recent_files_box.margin = 12;
+        recent_files_box.margin_top = 12;
+        recent_files_box.margin_bottom = 12;
+        recent_files_box.margin_start = 12;
+        recent_files_box.margin_end = 12;
         recent_files_box.pack_start (title, false, false);
         recent_files_box.pack_start (recent_files_scrolled);
 
