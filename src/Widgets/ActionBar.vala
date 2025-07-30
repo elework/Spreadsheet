@@ -26,7 +26,9 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
         zoom_scale.tooltip_text = (_("Zoom in/out the sheet"));
         zoom_scale.set_size_request (100, 0);
         zoom_scale.draw_value = false;
-        zoom_scale.margin = 3;
+        zoom_scale.margin_top = 3;
+        zoom_scale.margin_bottom = 3;
+        zoom_scale.margin_start = 3;
         zoom_scale.margin_end = 12;
 
         var zoom_level_button = new Gtk.Button.with_label (zoom_level_text);
