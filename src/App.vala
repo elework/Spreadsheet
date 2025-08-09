@@ -63,31 +63,11 @@ public class Spreadsheet.App : Gtk.Application {
     }
 
     private void setup_shortcuts () {
-        var back_action = new SimpleAction ("back", null);
-        add_action (back_action);
-        set_accels_for_action ("app.back", {"<Alt>Home"});
-        back_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                active_window.show_welcome ();
-            }
-        });
-
         var new_action = new SimpleAction ("new", null);
         add_action (new_action);
         set_accels_for_action ("app.new", {"<Control>n"});
         new_action.activate.connect (() => {
             new_window ();
-        });
-
-        var open_action = new SimpleAction ("open", null);
-        add_action (open_action);
-        set_accels_for_action ("app.open", {"<Control>o"});
-        open_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null) {
-                active_window.open_sheet ();
-            }
         });
 
         var quit_action = new SimpleAction ("quit", null);
@@ -97,67 +77,6 @@ public class Spreadsheet.App : Gtk.Application {
             var active_window = get_windows ().nth_data (0) as MainWindow;
             if (active_window != null) {
                 active_window.destroy ();
-            }
-        });
-
-        var save_action = new SimpleAction ("save", null);
-        add_action (save_action);
-        set_accels_for_action ("app.save", {"<Control>s"});
-        save_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                active_window.save_sheet ();
-            }
-        });
-
-        var save_as_action = new SimpleAction ("save_as", null);
-        add_action (save_as_action);
-        set_accels_for_action ("app.save_as", {"<Control><Shift>s"});
-        save_as_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                active_window.save_as_sheet ();
-            }
-        });
-
-        var undo_action = new SimpleAction ("undo", null);
-        add_action (undo_action);
-        set_accels_for_action ("app.undo", {"<Control>z"});
-        undo_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app" && active_window.history_manager.can_undo ()) {
-                active_window.undo_sheet ();
-            }
-        });
-
-        var redo_action = new SimpleAction ("redo", null);
-        add_action (redo_action);
-        set_accels_for_action ("app.redo", {"<Control><Shift>z"});
-        redo_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app" && active_window.history_manager.can_redo ()) {
-                active_window.redo_sheet ();
-            }
-        });
-
-        var focus_expression_action = new SimpleAction ("focus_expression", null);
-        add_action (focus_expression_action);
-        set_accels_for_action ("app.focus_expression", {"F2"});
-        focus_expression_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                active_window.expression.grab_focus ();
-            }
-        });
-
-        var back_focus_action = new SimpleAction ("back_focus", null);
-        add_action (back_focus_action);
-        set_accels_for_action ("app.back_focus", {"Escape"});
-        back_focus_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null && active_window.app_stack.visible_child_name == "app") {
-                active_window.active_sheet.grab_focus ();
-                active_window.expression.text = "";
             }
         });
     }

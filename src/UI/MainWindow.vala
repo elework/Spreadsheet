@@ -109,6 +109,28 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 
+    private const string ACTION_PREFIX = "win.";
+    private const string ACTION_NAME_BACK = "back";
+    private const string ACTION_NAME_NEW = "new";
+    private const string ACTION_NAME_OPEN = "open";
+    private const string ACTION_NAME_SAVE = "save";
+    private const string ACTION_NAME_SAVE_AS = "save_as";
+    private const string ACTION_NAME_UNDO = "undo";
+    private const string ACTION_NAME_REDO = "redo";
+    private const string ACTION_NAME_FOCUS_EXPRESSION = "focus_expression";
+    private const string ACTION_NAME_BACK_FOCUS = "back_focus";
+
+    private const GLib.ActionEntry[] ACTION_ENTRIES = {
+        { ACTION_NAME_BACK, on_back_activate },
+        { ACTION_NAME_OPEN, on_open_activate },
+        { ACTION_NAME_SAVE, on_save_activate },
+        { ACTION_NAME_SAVE_AS, on_save_as_activate },
+        { ACTION_NAME_UNDO, on_undo_activate },
+        { ACTION_NAME_REDO, on_redo_activate },
+        { ACTION_NAME_FOCUS_EXPRESSION, on_focus_expression_activate },
+        { ACTION_NAME_BACK_FOCUS, on_back_focus_activate },
+    };
+
     public MainWindow (App app) {
         Object (
             application: app,
@@ -131,6 +153,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         set_titlebar (header);
 
         add (app_stack);
+
+        add_action_entries (ACTION_ENTRIES, this);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_BACK, { "<Alt>Home" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_OPEN, { "<Control>o" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE, { "<Control>s" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE_AS, { "<Control><Shift>s" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNDO, { "<Control>z" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_REDO, { "<Control><Shift>z" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, { "F2" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_BACK_FOCUS, { "Escape" });
+
         show_welcome ();
     }
 
@@ -355,6 +388,75 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         layout.pack_start (tab_view);
         layout.pack_end (action_bar, false);
         return layout;
+    }
+
+    private void on_back_activate () {
+        if (app_stack.visible_child_name == "welcome") {
+            return;
+        }
+
+        show_welcome ();
+    }
+
+    private void on_open_activate () {
+        open_sheet ();
+    }
+
+    private void on_save_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        save_sheet ();
+    }
+
+    private void on_save_as_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        save_as_sheet ();
+    }
+
+    private void on_undo_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        if (!history_manager.can_undo ()) {
+            return;
+        }
+
+        undo_sheet ();
+    }
+
+    private void on_redo_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        if (!history_manager.can_redo ()) {
+            return;
+        }
+
+        redo_sheet ();
+    }
+
+    private void on_focus_expression_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        expression.grab_focus ();
+    }
+
+    private void on_back_focus_activate () {
+        if (app_stack.visible_child_name != "app") {
+            return;
+        }
+
+        active_sheet.grab_focus ();
+        expression.text = "";
     }
 
     private void new_sheet () {
