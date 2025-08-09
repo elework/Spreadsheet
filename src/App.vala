@@ -5,6 +5,15 @@ public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
     private MainWindow window;
 
+    private const string ACTION_PREFIX = "app.";
+    private const string ACTION_NAME_NEW = "new";
+    private const string ACTION_NAME_QUIT = "quit";
+
+    private const GLib.ActionEntry[] ACTION_ENTRIES = {
+        { ACTION_NAME_NEW, on_new_activate },
+        { ACTION_NAME_QUIT, on_quit_activate },
+    };
+
     public static int main (string[] args) {
         Intl.setlocale (LocaleCategory.ALL, "");
         Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -39,7 +48,9 @@ public class Spreadsheet.App : Gtk.Application {
             }
         );
 
-        setup_shortcuts ();
+        add_action_entries (ACTION_ENTRIES, this);
+        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_NEW, { "<Control>n" });
+        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_QUIT, { "<Control>q" });
     }
 
     protected override void open (File[] csv_files, string hint) {
@@ -62,23 +73,16 @@ public class Spreadsheet.App : Gtk.Application {
         new_window ();
     }
 
-    private void setup_shortcuts () {
-        var new_action = new SimpleAction ("new", null);
-        add_action (new_action);
-        set_accels_for_action ("app.new", {"<Control>n"});
-        new_action.activate.connect (() => {
-            new_window ();
-        });
+    private void on_new_activate () {
+        new_window ();
+    }
 
-        var quit_action = new SimpleAction ("quit", null);
-        add_action (quit_action);
-        set_accels_for_action ("app.quit", {"<Control>q"});
-        quit_action.activate.connect (() => {
-            var active_window = get_windows ().nth_data (0) as MainWindow;
-            if (active_window != null) {
-                active_window.destroy ();
-            }
-        });
+    private void on_quit_activate () {
+        if (active_window == null) {
+            return;
+        }
+
+        active_window.destroy ();
     }
 
     public void new_window () {
