@@ -266,11 +266,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.fill ();
 
         // draw the letters and the numbers on the side
-        Gdk.cairo_set_source_rgba (cr, normal);
         cr.set_line_width (border);
 
         // numbers on the left side
         for (int i = 0; i < page.lines; i++) {
+            Gdk.cairo_set_source_rgba (cr, normal);
             cr.rectangle (0, height + border + i * height, left_margin, height);
             cr.stroke ();
 
@@ -282,8 +282,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.restore ();
 
                 Gdk.cairo_set_source_rgba (cr, selected_font_color);
-            } else {
-                Gdk.cairo_set_source_rgba (cr, normal);
             }
 
             string rownum_str = "%d".printf (i + 1);
