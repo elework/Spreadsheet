@@ -8,6 +8,11 @@ using Spreadsheet.UI;
 
 public class Spreadsheet.Widgets.Sheet : EventBox {
 
+    // Brand colors by elementary. See https://elementary.io/brand
+    private const string BLUEBERRY_100 = "#8cd5ff";
+    private const string BLUEBERRY_500 = "#3689e6";
+    private const string BLACK_500 = "#333333";
+
     // Cell dimensions
     const double DEFAULT_WIDTH = 70;
     const double DEFAULT_HEIGHT = 25;
@@ -239,7 +244,16 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         var style = window.get_style_context ();
 
         RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
-        RGBA selected = style.get_color (Gtk.StateFlags.SELECTED);
+
+        // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
+        RGBA selected_fill = { 0 };
+        selected_fill.parse (BLUEBERRY_100);
+
+        RGBA selected_stroke = { 0 };
+        selected_stroke.parse (BLUEBERRY_500);
+
+        RGBA selected_font_color = { 0 };
+        selected_font_color.parse (BLACK_500);
 
         cr.set_font_size (height - padding * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
@@ -252,56 +266,55 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         cr.fill ();
 
         // draw the letters and the numbers on the side
-        Gdk.cairo_set_source_rgba (cr, normal);
         cr.set_line_width (border);
 
         // numbers on the left side
         for (int i = 0; i < page.lines; i++) {
+            Gdk.cairo_set_source_rgba (cr, normal);
             cr.rectangle (0, height + border + i * height, left_margin, height);
             cr.stroke ();
 
             if (selected_cell != null && selected_cell.line == i) {
                 cr.save ();
-                style.render_frame (cr, 0, height + border + i * height, left_margin, height);
+                Gdk.cairo_set_source_rgba (cr, selected_fill);
+                cr.rectangle (0, height + border + i * height, left_margin, height);
+                cr.fill ();
                 cr.restore ();
 
-                Gdk.cairo_set_source_rgba (cr, selected);
-            } else {
-                Gdk.cairo_set_source_rgba (cr, normal);
+                Gdk.cairo_set_source_rgba (cr, selected_font_color);
             }
 
+            string rownum_str = "%d".printf (i + 1);
             TextExtents extents;
-            cr.text_extents (i.to_string (), out extents);
+            cr.text_extents (rownum_str, out extents);
             double x = left_margin / 2 - extents.width / 2;
-            double y = border + height * i + height / 2 + extents.height / 2;
+            double y = height + border + height * i + height / 2 + extents.height / 2;
 
             cr.move_to (x, y);
-            if (i != 0) {
-                cr.show_text (i.to_string ());
-            }
+            cr.show_text (rownum_str);
         }
 
         // letters on the top
         int i = 0;
         foreach (string letter in new AlphabetGenerator (page.columns)) {
+            Gdk.cairo_set_source_rgba (cr, normal);
             cr.rectangle (left_margin + border + i * width, 0, width, height);
             cr.stroke ();
 
             if (selected_cell != null && selected_cell.column == i) {
                 cr.save ();
-                style.render_frame (cr, left_margin + border + i * width, 0, width, height);
+                Gdk.cairo_set_source_rgba (cr, selected_fill);
+                cr.rectangle (left_margin + border + i * width, 0, width, height);
+                cr.fill ();
                 cr.restore ();
 
-                Gdk.cairo_set_source_rgba (cr, selected);
-            } else {
-                Gdk.cairo_set_source_rgba (cr, normal);
+                Gdk.cairo_set_source_rgba (cr, selected_font_color);
             }
 
             TextExtents extents;
             cr.text_extents (letter, out extents);
             double x = left_margin + border + width * i + width / 2 - extents.width / 2;
-            double y = border + height / 2 + extents.height / 2;
-            cr.fill ();
+            double y = height / 2 + extents.height / 2;
             cr.move_to (x, y);
             cr.show_text (letter);
 
@@ -312,6 +325,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         foreach (var cell in page.cells) {
             Gdk.RGBA bg = cell.cell_style.background;
             Gdk.RGBA bg_default = { 1, 1, 1, 1 };
+
+            if (cell.selected) {
+                bg = selected_fill;
+            }
+
             if (bg != bg_default) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, bg);
@@ -331,14 +349,15 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.set_line_width (1.0);
             }
 
+            if (cell.selected) {
+                sr = selected_stroke;
+                cr.set_line_width (3.0);
+            }
+
             if (sr != sr_default) {
                 Gdk.cairo_set_source_rgba (cr, sr);
             } else {
                 Gdk.cairo_set_source_rgba (cr, default_cell_stroke);
-            }
-
-            if (cell.selected) {
-                cr.set_line_width (3.0);
             }
 
             cr.rectangle (left_margin + border + cell.column * width, height + border + cell.line * height, width, height);
@@ -349,6 +368,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             Gdk.RGBA color = cell.font_style.fontcolor;
             Gdk.RGBA color_default = { 0, 0, 0, 1 };
             cr.save ();
+
+            if (cell.selected) {
+                color = selected_font_color;
+            }
+
             if (color != color_default) {
                 Gdk.cairo_set_source_rgba (cr, color);
             } else {
