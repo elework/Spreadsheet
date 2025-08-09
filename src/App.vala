@@ -1,14 +1,18 @@
-using Gee;
 using Spreadsheet.Services;
 using Spreadsheet.UI;
-using Spreadsheet.Models;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
     private MainWindow window;
 
     public static int main (string[] args) {
-        return new App ().run (args);
+        Intl.setlocale (LocaleCategory.ALL, "");
+        Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+        Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+        Intl.textdomain (GETTEXT_PACKAGE);
+
+        var app = new App ();
+        return app.run (args);
     }
 
     static construct {
@@ -18,11 +22,6 @@ public class Spreadsheet.App : Gtk.Application {
     construct {
         application_id = "io.github.elework.spreadsheet";
         flags = ApplicationFlags.HANDLES_OPEN;
-
-        Intl.setlocale (LocaleCategory.ALL, "");
-        Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-        Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-        Intl.textdomain (GETTEXT_PACKAGE);
     }
 
     protected override void open (File[] csv_files, string hint) {
