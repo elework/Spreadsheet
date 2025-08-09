@@ -1,3 +1,4 @@
+using Spreadsheet.Models;
 using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
@@ -10,7 +11,7 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
     private string get_func_name_regex () {
         if (func_name_regex == "") {
             string[]? func_names = null;
-            foreach (var function in App.functions) {
+            foreach (var function in FunctionManager.get_default ().functions) {
                 func_names += function.name;
                 func_names += function.name.ascii_up ();
             }

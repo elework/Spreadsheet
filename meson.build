@@ -45,6 +45,7 @@ sources = files(
     'src' / 'Models' / 'CellStyle.vala',
     'src' / 'Models' / 'FontStyle.vala',
     'src' / 'Models' / 'Function.vala',
+    'src' / 'Models' / 'FunctionManager.vala',
     'src' / 'Models' / 'HistoryAction.vala',
     'src' / 'Models' / 'Page.vala',
     'src' / 'Models' / 'Spreadsheet.vala',

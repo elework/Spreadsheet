@@ -1,7 +1,7 @@
 public class Spreadsheet.Models.Function : Object {
-    public string name { get; set; }
-    public ApplyFunc apply { get; set; }
-    public string doc { get; set; }
+    public string name { get; construct; }
+    public ApplyFunc apply { get; construct; }
+    public string doc { get; construct; }
 
     public Function (string name, owned ApplyFunc func, string doc = _("No documentation")) {
         Object (
