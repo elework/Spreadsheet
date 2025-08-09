@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema path="/io/github/elework/spreadsheet/" id="io.github.elework.spreadsheet">
-    <key name="window-position" type="(ii)">
-      <default>(-1, -1)</default>
-      <summary>Window position</summary>
-      <description>Position of last closed window</description>
-    </key>
     <key name="window-size" type="(ii)">
       <default>(800, 700)</default>
       <summary>Window size</summary>
