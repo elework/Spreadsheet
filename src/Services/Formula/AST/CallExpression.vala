@@ -16,7 +16,7 @@ public class Spreadsheet.Services.Formula.AST.CallExpression : Expression {
             params += param.eval (sheet);
         }
 
-        foreach (var func in App.functions) {
+        foreach (var func in FunctionManager.get_default ().functions) {
             if (func.name == function) {
                 return func.apply (params);
             }

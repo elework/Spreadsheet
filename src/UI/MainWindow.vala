@@ -253,7 +253,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
-        foreach (var func in App.functions) {
+        foreach (var func in FunctionManager.get_default ().functions) {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
             var row = new ListBoxRow ();
