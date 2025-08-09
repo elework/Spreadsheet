@@ -12,29 +12,17 @@ The goal of this project is to build a spreadsheet app that perfectly fits in el
 
 ## Building and Installation
 
-You'll need the following dependencies:
+Run `flatpak-builder` to configure the build environment, download dependencies, build, and install
 
-* libgee-0.8-dev
-* libgranite-dev (>= 5.4.0)
-* libgtk-3-dev (>= 3.22)
-* libhandy-1-dev (>= 1.2.0)
-* meson (>= 0.59.0)
-* valac
+```bash
+flatpak-builder build io.github.elework.spreadsheet.yml --user --install --force-clean --install-deps-from=appcenter
+```
 
-On elementary OS (or any distribution with `apt`), you can get them with the following command:
+Then execute with
 
-    sudo apt install valac libgranite-dev meson
-
-Then clone the project and go to its root directory. Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
-
-    meson build --prefix=/usr
-    cd build
-    ninja
-
-To install, use `ninja install`, then execute with `io.github.elework.spreadsheet`
-
-    sudo ninja install
-    io.github.elework.spreadsheet
+```bash
+flatpak run io.github.elework.spreadsheet
+```
 
 ## Contributing
 
