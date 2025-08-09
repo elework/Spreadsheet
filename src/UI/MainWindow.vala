@@ -278,21 +278,16 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         foreach (var func in FunctionManager.get_default ().functions) {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
-            var row = new ListBoxRow ();
-            row.selectable = false;
-            row.margin_top = 3;
-            row.margin_bottom = 3;
-            row.add (new FunctionListRow (func));
-            row.realize.connect (() => {
-                row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
-            });
-            row.button_press_event.connect ((evt) => {
-                expression.text += ")";
-                expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
-                return true;
-            });
+            var row = new FunctionListRow (func);
             function_list.add (row);
         }
+
+        function_list.row_activated.connect ((row) => {
+            var func_row = row as FunctionListRow;
+
+            expression.text += ")";
+            expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
+        });
 
         var function_list_search_entry = new SearchEntry ();
         function_list_search_entry.margin_bottom = 6;
