@@ -3,7 +3,6 @@ using Spreadsheet.UI;
 
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings;
-    private MainWindow window;
 
     private const string ACTION_PREFIX = "app.";
     private const string ACTION_NAME_NEW = "new";
@@ -55,7 +54,7 @@ public class Spreadsheet.App : Gtk.Application {
 
     protected override void open (File[] csv_files, string hint) {
         foreach (var csv_file in csv_files) {
-            new_window ();
+            var window = new_window ();
 
             try {
                 var file = new Spreadsheet.Services.CSV.CSVParser.from_file (csv_file.get_path ()).parse ();
@@ -85,19 +84,21 @@ public class Spreadsheet.App : Gtk.Application {
         active_window.destroy ();
     }
 
-    public void new_window () {
-        int window_width;
-        int window_height;
-        settings.get ("window-size", "(ii)", out window_width, out window_height);
-        var is_maximized = settings.get_boolean ("is-maximized");
+    public MainWindow new_window () {
+        var window = new MainWindow (this);
 
-        window = new MainWindow (this);
-
+        bool is_maximized = settings.get_boolean ("is-maximized");
         if (is_maximized) {
             window.maximize ();
         }
 
+        int window_width;
+        int window_height;
+        settings.get ("window-size", "(ii)", out window_width, out window_height);
         window.set_default_size (window_width, window_height);
+
         window.show_all ();
+
+        return window;
     }
 }
