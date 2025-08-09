@@ -24,13 +24,13 @@ public class Spreadsheet.App : Gtk.Application {
         flags = ApplicationFlags.HANDLES_OPEN;
     }
 
-    protected override void open (File[] csv_files, string hint) {
-        if (csv_files.length == 0) {
-            return;
-        }
+    protected override void startup () {
+        base.startup ();
 
         setup_shortcuts ();
+    }
 
+    protected override void open (File[] csv_files, string hint) {
         foreach (var csv_file in csv_files) {
             new_window ();
 
@@ -48,7 +48,6 @@ public class Spreadsheet.App : Gtk.Application {
 
     protected override void activate () {
         new_window ();
-        setup_shortcuts ();
     }
 
     private void setup_shortcuts () {
