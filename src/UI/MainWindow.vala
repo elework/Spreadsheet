@@ -178,10 +178,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             Spreadsheet.App.settings.set_boolean ("is-maximized", is_maximized);
 
             if (!is_maximized) {
-                int x, y, w, h;
-                get_position (out x, out y);
+                int w;
+                int h;
                 get_size (out w, out h);
-                Spreadsheet.App.settings.set ("window-position", "(ii)", x, y);
                 Spreadsheet.App.settings.set ("window-size", "(ii)", w, h);
             }
 
