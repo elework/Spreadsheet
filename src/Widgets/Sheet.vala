@@ -286,13 +286,14 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 Gdk.cairo_set_source_rgba (cr, normal);
             }
 
+            string rownum_str = "%d".printf (i + 1);
             TextExtents extents;
-            cr.text_extents (i.to_string (), out extents);
+            cr.text_extents (rownum_str, out extents);
             double x = left_margin / 2 - extents.width / 2;
             double y = height + border + height * i + height / 2 + extents.height / 2;
 
             cr.move_to (x, y);
-            cr.show_text ("%d".printf (i + 1));
+            cr.show_text (rownum_str);
         }
 
         // letters on the top
