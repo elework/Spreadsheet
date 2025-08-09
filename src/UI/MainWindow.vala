@@ -282,7 +282,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             row.selectable = false;
             row.margin_top = 3;
             row.margin_bottom = 3;
-            row.add (new FunctionPresenter (func));
+            row.add (new FunctionListRow (func));
             row.realize.connect (() => {
                 row.get_window ().cursor = new Cursor.from_name (row.get_display (), "pointer");
             });

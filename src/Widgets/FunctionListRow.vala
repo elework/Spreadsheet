@@ -1,10 +1,10 @@
 using Gtk;
 using Spreadsheet.Models;
 
-public class Spreadsheet.Widgets.FunctionPresenter : EventBox {
+public class Spreadsheet.Widgets.FunctionListRow : EventBox {
     public Function function { get; set; }
 
-    public FunctionPresenter (Function func) {
+    public FunctionListRow (Function func) {
         var box = new Box (Orientation.VERTICAL, 0);
         function = func;
 

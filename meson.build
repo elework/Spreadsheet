@@ -69,7 +69,7 @@ sources = files(
     'src' / 'UI' / 'MainWindow.vala',
     'src' / 'UI' / 'TitleBar.vala',
     'src' / 'Widgets' / 'ActionBar.vala',
-    'src' / 'Widgets' / 'FunctionPresenter.vala',
+    'src' / 'Widgets' / 'FunctionListRow.vala',
     'src' / 'Widgets' / 'Sheet.vala',
     'src' / 'Widgets' / 'StyleModal.vala'
 )
