@@ -36,7 +36,7 @@ public class Spreadsheet.AlphabetGenerator : Object {
      * e.g. ABC
      * = (26^2 * (<index of A> + 1)) + (26^1 * (<index of B> + 1)) + (26^0 * <index of C>)
      * = (26^2 * 1) + (26^1 * 2) + (26^0 * 2)
-     * = 706
+     * = 730
      *
      * See the below comment for detail of "index + 1"
      */
