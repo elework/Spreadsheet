@@ -30,15 +30,49 @@ public class Spreadsheet.AlphabetGenerator : Object {
         return this;
     }
 
+    /*
+     * Regard the alphabets as base-26 numeral system that only use alphabets.
+     *
+     * e.g. ABC
+     * = (26^2 * (<index of A> + 1)) + (26^1 * (<index of B> + 1)) + (26^0 * <index of C>)
+     * = (26^2 * 1) + (26^1 * 2) + (26^0 * 2)
+     * = 730
+     *
+     * See the below comment for detail of "index + 1"
+     */
     public int index_of (string letters) {
         int res = 0;
-        int i = 0;
+        int i = 1;
+
         foreach (char letter in letters.to_utf8 ()) {
-            int power = letters.length - i;
+            int exponent = letters.length - i;
             int index_in_alphabet = new ArrayList<string>.wrap (ALPHABET).index_of (letter.to_string ());
-            res += (int)Math.pow (index_in_alphabet, power);
+
+            /*
+             * The base-26 numeral system that only use alphabets should be like this in theory:
+             *
+             *   A, B, ..., Z, BA, BB, ...
+             *   (A instead of 0, B instead of 1, and so on)
+             *
+             * However, we expect like this:
+             *
+             *   A, B, ..., Z, AA, AB, ..., AZ, BA, BB, ...
+             *                 ~~~~~~~~~~~~~~~
+             *
+             * This can be achieved by treating index_in_alphabet as count instead of index:
+             *
+             *   * 26^0 place: treat as index (A instead of 0, B instead of 1, and so on)
+             *   * 26^n place (n > 0): treat as count (A instead of 1, B instead of 2, and so on)
+             */
+            if (exponent > 0) {
+                index_in_alphabet = index_in_alphabet + 1;
+            }
+
+            int place_res = (int)Math.pow (ALPHABET.length, exponent) * index_in_alphabet;
+            res += place_res;
             i++;
         }
+
         return res;
     }
 
