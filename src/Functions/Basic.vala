@@ -1,53 +1,71 @@
 namespace Spreadsheet.Functions {
     private double number (Value num) {
-        var res = 0.0;
-        if (num.type () == typeof (int)) {
-            res = (double) num.get_int ();
-        } else if (num.type () == typeof (double)) {
-            res = (double) num;
-        } else if (num.type () == typeof (string)) {
-            res = double.parse ((string) num);
+        Type num_type = num.type ();
+
+        // Can't use switch-case because results of typeof() is not constant
+
+        if (num_type == typeof (int)) {
+            return (double) num.get_int ();
         }
-        return res;
+
+        if (num_type == typeof (double)) {
+            return (double) num;
+        }
+
+        if (num_type == typeof (string)) {
+            return double.parse ((string) num);
+        }
+
+        return 0.0;
     }
 
     public Value sum (Value[] args) {
         double res = number (args[0]);
+
         foreach (Value num in args[1:args.length]) {
             res += number (num);
         }
+
         return res;
     }
 
     public Value sub (Value[] args) {
         double res = number (args[0]);
+
         foreach (Value num in args[1:args.length]) {
             res -= number (num);
         }
+
         return res;
     }
 
     public Value mul (Value[] args) {
         double res = number (args[0]);
+
         foreach (Value num in args[1:args.length]) {
             res *= number (num);
         }
+
         return res;
     }
 
     public Value div (Value[] args) {
         double res = number (args[0]);
+
         foreach (Value num in args[1:args.length]) {
             res /= number (num);
         }
+
         return res;
     }
 
     public Value mod (Value[] args) {
         double res = number (args[0]);
+
         foreach (Value num in args[1:args.length]) {
             res %= number (num);
         }
+
         return res;
     }
 
@@ -69,21 +87,29 @@ namespace Spreadsheet.Functions {
 
     public Value min (Value[] args) {
         double min = number (args[0]);
+
         foreach (var arg in args) {
-            if (number (arg) < min) {
-                min = number (arg);
+            double num = number (arg);
+
+            if (num < min) {
+                min = num;
             }
         }
+
         return min;
     }
 
     public Value max (Value[] args) {
         double max = number (args[0]);
+
         foreach (var arg in args) {
-            if (number (arg) > max) {
-                max = number (arg);
+            double num = number (arg);
+
+            if (num > max) {
+                max = num;
             }
         }
+
         return max;
     }
 
