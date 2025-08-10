@@ -1,13 +1,14 @@
-using Spreadsheet;
 using Spreadsheet.Models;
 
 public class Spreadsheet.Services.Formula.AST.CallExpression : Expression {
+    public string function { get; construct; }
+    public Gee.ArrayList<Expression> parameters { get; construct; }
 
-    public string function { get; set; }
-    public Gee.ArrayList<Expression> parameters { get; set; }
-
-    public CallExpression (string func, Gee.ArrayList<Expression> params) {
-        Object (function: func, parameters: params);
+    public CallExpression (string function, Gee.ArrayList<Expression> parameters) {
+        Object (
+            function: function,
+            parameters: parameters
+        );
     }
 
     public override Value eval (Page sheet) {
@@ -21,6 +22,8 @@ public class Spreadsheet.Services.Formula.AST.CallExpression : Expression {
                 return func.apply (params);
             }
         }
-        return "Error: can't find any function named %s".printf (function);
+
+        warning ("Error: can't find any function named %s".printf (function));
+        return "Error";
     }
 }

@@ -1,11 +1,12 @@
 using Spreadsheet.Models;
 
 public class Spreadsheet.Services.Formula.AST.NumberExpression : Expression {
+    public double number { get; construct; }
 
-    private double number { get; set; }
-
-    public NumberExpression (double value) {
-        number = value;
+    public NumberExpression (double number) {
+        Object (
+            number: number
+        );
     }
 
     public override Value eval (Page sheet) {

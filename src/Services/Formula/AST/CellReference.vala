@@ -3,6 +3,9 @@ using Spreadsheet.Models;
 public class Spreadsheet.Services.Formula.AST.CellReference : Expression {
     public string cell_name { get; set; }
 
+    public CellReference () {
+    }
+
     public override Value eval (Page sheet) {
         string letters = cell_name;
         letters.canon ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", '?');
