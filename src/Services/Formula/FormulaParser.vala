@@ -55,6 +55,12 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             }
 
             return parse_number ();
+        } else if (current.kind == "cell-name" && index > 0) {
+            /*
+             * Do not consider as cell-name like other spreadsheet apps
+             * if cell-name appears as the first token.
+             */
+            return parse_cell_name ();
         } else {
             return parse_text ();
         }
