@@ -57,7 +57,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
             halign = Gtk.Align.START,
             tooltip_text = _("Set font color of a selected cell")
         };
-        font_style.bind_property ("fontcolor", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        font_style.bind_property ("font_color", color_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
             halign = Gtk.Align.START,
@@ -121,8 +121,8 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
             tooltip_text = _("Remove stroke color of a selected cell")
         };
 
-        cell_style.bind_property ("background", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-        cell_style.bind_property ("stroke", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        cell_style.bind_property ("bg_color", bg_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        cell_style.bind_property ("stroke_color", sr_button, "rgba", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         cell_style.bind_property ("stroke_width", sr_width_spin, "value", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var cells_grid = new Gtk.Grid () {
