@@ -323,7 +323,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
         // draw the cells
         foreach (var cell in page.cells) {
-            Gdk.RGBA bg = cell.cell_style.background;
+            Gdk.RGBA bg = cell.cell_style.bg_color;
             Gdk.RGBA bg_default = { 1, 1, 1, 1 };
 
             if (cell.selected) {
@@ -338,7 +338,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 cr.restore ();
             }
 
-            Gdk.RGBA sr = cell.cell_style.stroke;
+            Gdk.RGBA sr = cell.cell_style.stroke_color;
             Gdk.RGBA sr_default = { 0, 0, 0, 1 };
             double sr_w = cell.cell_style.stroke_width;
             cr.save ();
@@ -365,7 +365,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             cr.restore ();
 
             // display the text
-            Gdk.RGBA color = cell.font_style.fontcolor;
+            Gdk.RGBA color = cell.font_style.font_color;
             Gdk.RGBA color_default = { 0, 0, 0, 1 };
             cr.save ();
 

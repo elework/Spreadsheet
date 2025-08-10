@@ -1,5 +1,7 @@
 public class Spreadsheet.FontStyle : Object {
-    public Gdk.RGBA fontcolor { get; set; }
+    public const Gdk.RGBA FONT_COLOR_DEFAULT = { 0, 0, 0, 1 };
+
+    public Gdk.RGBA font_color { get; set; }
     public bool is_bold { get; set; }
     public bool is_italic { get; set; }
     public bool is_underline { get; set; }
@@ -10,6 +12,6 @@ public class Spreadsheet.FontStyle : Object {
     }
 
     public void reset_color () {
-        fontcolor = { 0, 0, 0, 1 };
+        font_color = FONT_COLOR_DEFAULT;
     }
 }
