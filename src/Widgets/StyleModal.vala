@@ -73,6 +73,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
             halign = Gtk.Align.START,
             tooltip_text = _("Set font color of a selected cell")
         };
+
         font_style.bind_property ("font_color",
                 color_button, "rgba",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
@@ -96,17 +97,17 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         };
         fonts_grid.attach (right_grid, 0, 0, 1, 1);
 
-        // Set the sensitivity of the color_reset_button by whether it has already reset font color to the default one or not when…
-        // 1. widgets are created
-        color_reset_button.sensitive = check_color (color_button, FontStyle.FONT_COLOR_DEFAULT);
-        // 2. user clicks the color_button and sets a new font color
-        color_button.color_set.connect (() =>{
-            color_reset_button.sensitive = check_color (color_button, FontStyle.FONT_COLOR_DEFAULT);
-        });
-        // 3. user clicks the color_reset_button and resets a font color
+        // Make the buttons sensitive only there are changes from the defaults
+        font_style.bind_property ("font_color",
+                color_reset_button, "sensitive",
+                BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
+                (binding, _font_color, ref _sensitive) => {
+                    _sensitive = !((Gdk.RGBA) _font_color).equal (FontStyle.FONT_COLOR_DEFAULT);
+                    return true;
+                });
+
         color_reset_button.clicked.connect (() => {
             font_style.reset_color ();
-            color_reset_button.sensitive = check_color (color_button, FontStyle.FONT_COLOR_DEFAULT);
         });
 
         return fonts_grid;
@@ -168,39 +169,37 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         cells_grid.attach (stroke_width_spin, 1, 3, 1, 1);
         cells_grid.attach (stroke_reset_button, 2, 3, 1, 1);
 
-        // Set the sensitivities of the br_remove_button, stroke_reset_button and stroke_width_spin by whether they have already reset background/stroke colors to the default ones or not when…
-        // 1. widgets are created
-        bg_reset_button.sensitive = check_color (bg_color_button, CellStyle.BG_COLOR_DEFAULT);
-        stroke_reset_button.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
-        stroke_width_spin.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
-        // 2. user clicks br_button/stroke_color_button and sets new background/stroke colors
-        bg_color_button.color_set.connect (() =>{
-            bg_reset_button.sensitive = check_color (bg_color_button, CellStyle.BG_COLOR_DEFAULT);
-        });
-        stroke_color_button.color_set.connect (() =>{
-            stroke_reset_button.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
-            stroke_width_spin.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
-        });
-        // 3. user clicks bg_reset_button/stroke_reset_button and resets background/stroke colors
+        // Make the buttons sensitive only there are changes from the defaults
+        cell_style.bind_property ("bg_color",
+                bg_reset_button, "sensitive",
+                BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
+                (binding, _bg_color, ref _sensitive) => {
+                    _sensitive = !((Gdk.RGBA) _bg_color).equal (CellStyle.BG_COLOR_DEFAULT);
+                    return true;
+                });
+        cell_style.bind_property ("stroke_color",
+                stroke_reset_button, "sensitive",
+                BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
+                (binding, _stroke_color, ref _sensitive) => {
+                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (CellStyle.STROKE_COLOR_DEFAULT);
+                    return true;
+                });
+        cell_style.bind_property ("stroke_color",
+                stroke_width_spin, "sensitive",
+                BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
+                (binding, _stroke_color, ref _sensitive) => {
+                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (CellStyle.STROKE_COLOR_DEFAULT);
+                    return true;
+                });
+
         bg_reset_button.clicked.connect (() => {
             cell_style.reset_background_color ();
-            bg_reset_button.sensitive = check_color (bg_color_button, CellStyle.BG_COLOR_DEFAULT);
         });
         stroke_reset_button.clicked.connect (() => {
             cell_style.reset_stroke_color ();
             cell_style.reset_stroke_width ();
-            stroke_reset_button.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
-            stroke_width_spin.sensitive = check_color (stroke_color_button, CellStyle.STROKE_COLOR_DEFAULT);
         });
 
         return cells_grid;
-    }
-
-    private bool check_color (Gtk.ColorButton color_button, Gdk.RGBA rgba) {
-        if (color_button.rgba == rgba) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }
