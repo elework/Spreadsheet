@@ -1,8 +1,8 @@
 public class Spreadsheet.UI.TitleBar : Gtk.HeaderBar {
     public MainWindow window { get; construct; }
 
-    private Gtk.ToolButton undo_button;
-    private Gtk.ToolButton redo_button;
+    private Gtk.Button undo_button;
+    private Gtk.Button redo_button;
 
     public TitleBar (MainWindow window) {
         Object (
@@ -12,32 +12,27 @@ public class Spreadsheet.UI.TitleBar : Gtk.HeaderBar {
     }
 
     construct {
-        var new_window_icon = new Gtk.Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
-        var new_window_button = new Gtk.ToolButton (new_window_icon, null) {
+        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.BUTTON) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>N" }, _("Open another window")),
             action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
         };
 
-        var open_icon = new Gtk.Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
-        var open_button = new Gtk.ToolButton (open_icon, null) {
+        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.BUTTON) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>O" }, _("Open a file")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
         };
 
-        var save_as_icon = new Gtk.Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
-        var save_as_button = new Gtk.ToolButton (save_as_icon, null) {
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.BUTTON) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl><Shift>S" }, _("Save this file with a different name")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
         };
 
-        var redo_icon = new Gtk.Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
-        redo_button = new Gtk.ToolButton (redo_icon, null) {
+        redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.BUTTON) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl><Shift>Z" }, _("Redo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
         };
 
-        var undo_icon = new Gtk.Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
-        undo_button = new Gtk.ToolButton (undo_icon, null) {
+        undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.BUTTON) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>Z" }, _("Undo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
         };
