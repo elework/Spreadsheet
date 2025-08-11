@@ -1,8 +1,9 @@
-using Spreadsheet.Services;
+using Spreadsheet.Services.CSV;
+using Spreadsheet.Services.Parsing;
 using Spreadsheet.UI;
 
 public class Spreadsheet.App : Gtk.Application {
-    public static GLib.Settings settings;
+    public static GLib.Settings settings { get; private set; }
 
     private const string ACTION_PREFIX = "app.";
     private const string ACTION_NAME_NEW = "new";
@@ -55,15 +56,16 @@ public class Spreadsheet.App : Gtk.Application {
     protected override void open (File[] csv_files, string hint) {
         foreach (var csv_file in csv_files) {
             var window = new_window ();
+            var path = csv_file.get_path ();
 
             try {
-                var file = new Spreadsheet.Services.CSV.CSVParser.from_file (csv_file.get_path ()).parse ();
+                var file = new CSVParser.from_file (path).parse ();
                 window.file = file;
                 window.header.set_buttons_visibility (true);
                 window.show_all ();
                 window.app_stack.set_visible_child_name ("app");
-            } catch (Spreadsheet.Services.Parsing.ParserError err) {
-                debug ("Error: " + err.message);
+            } catch (ParserError err) {
+                warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
             }
         }
     }
@@ -87,14 +89,14 @@ public class Spreadsheet.App : Gtk.Application {
     public MainWindow new_window () {
         var window = new MainWindow (this);
 
-        bool is_maximized = settings.get_boolean ("is-maximized");
+        bool is_maximized = App.settings.get_boolean ("is-maximized");
         if (is_maximized) {
             window.maximize ();
         }
 
         int window_width;
         int window_height;
-        settings.get ("window-size", "(ii)", out window_width, out window_height);
+        App.settings.get ("window-size", "(ii)", out window_width, out window_height);
         window.set_default_size (window_width, window_height);
 
         window.show_all ();
