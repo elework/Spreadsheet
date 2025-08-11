@@ -83,7 +83,8 @@ executable(meson.project_name(),
         dependency('glib-2.0'),
         dependency('gobject-2.0'),
         dependency('granite', version: '>=5.4.0'),
-        dependency('gtk+-3.0', version: '>=3.22'),
+        # Version limitation for Gtk.EventControllerKey
+        dependency('gtk+-3.0', version: '>=3.24'),
         dependency('libhandy-1', version: '>=1.2.0'),
         dependency('pango')
     ],
