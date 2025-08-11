@@ -109,14 +109,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
     }
 
-    private const string ACTION_PREFIX = "win.";
+    public const string ACTION_PREFIX = "win.";
+    public const string ACTION_NAME_NEW = "new";
+    public const string ACTION_NAME_OPEN = "open";
+    public const string ACTION_NAME_SAVE_AS = "save_as";
+    public const string ACTION_NAME_UNDO = "undo";
+    public const string ACTION_NAME_REDO = "redo";
     private const string ACTION_NAME_WELCOME = "welcome";
-    private const string ACTION_NAME_NEW = "new";
-    private const string ACTION_NAME_OPEN = "open";
     private const string ACTION_NAME_SAVE = "save";
-    private const string ACTION_NAME_SAVE_AS = "save_as";
-    private const string ACTION_NAME_UNDO = "undo";
-    private const string ACTION_NAME_REDO = "redo";
     private const string ACTION_NAME_FOCUS_EXPRESSION = "focus_expression";
     private const string ACTION_NAME_UNFOCUS_EXPRESSION = "unfocus_expression";
 
@@ -486,7 +486,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         id++;
     }
 
-    public void open_sheet () {
+    private void open_sheet () {
         var chooser = new FileChooserNative (
             _("Open a file"), this, FileChooserAction.OPEN, _("_Open"), _("_Cancel")
         );
@@ -518,7 +518,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         add_recents (file.file_path);
     }
 
-    public void save_as_sheet () {
+    private void save_as_sheet () {
         string path = "";
         var chooser = new FileChooserNative (
             _("Save your work"), this, FileChooserAction.SAVE, _("_Save"), _("_Cancel")
@@ -575,12 +575,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         update_listview ();
     }
 
-    public void undo_sheet () {
+    private void undo_sheet () {
         history_manager.undo ();
         header.update_header ();
     }
 
-    public void redo_sheet () {
+    private void redo_sheet () {
         history_manager.redo ();
         header.update_header ();
     }

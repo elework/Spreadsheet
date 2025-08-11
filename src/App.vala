@@ -5,8 +5,8 @@ using Spreadsheet.UI;
 public class Spreadsheet.App : Gtk.Application {
     public static GLib.Settings settings { get; private set; }
 
-    private const string ACTION_PREFIX = "app.";
-    private const string ACTION_NAME_NEW = "new";
+    public const string ACTION_PREFIX = "app.";
+    public const string ACTION_NAME_NEW = "new";
     private const string ACTION_NAME_QUIT = "quit";
 
     private const GLib.ActionEntry[] ACTION_ENTRIES = {
@@ -86,7 +86,7 @@ public class Spreadsheet.App : Gtk.Application {
         active_window.destroy ();
     }
 
-    public MainWindow new_window () {
+    private MainWindow new_window () {
         var window = new MainWindow (this);
 
         bool is_maximized = App.settings.get_boolean ("is-maximized");
