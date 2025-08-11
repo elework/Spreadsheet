@@ -38,6 +38,10 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     public delegate bool DoForwardFunc (Gtk.Widget widget);
     public signal bool forward_key_press (DoForwardFunc forward_func);
 
+    // Keep as a member variable instead of a local variable despite unnecessary in the view of scope
+    // to prevent from being freed and thus button press is not handled
+    private Gtk.GestureMultiPress button_press_controller;
+
     public Sheet (Page page, MainWindow window) {
         this.page = page;
         this.window = window;
@@ -62,7 +66,7 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         }
         can_focus = true;
 
-        var button_press_controller = new Gtk.GestureMultiPress (this) {
+        button_press_controller = new Gtk.GestureMultiPress (this) {
             button = Gdk.BUTTON_PRIMARY
         };
         button_press_controller.pressed.connect (on_click);
