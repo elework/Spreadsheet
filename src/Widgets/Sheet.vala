@@ -41,9 +41,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
     // Keep as a member variable instead of a local variable despite unnecessary in the view of scope
     // to prevent from being freed and thus button press is not handled
     private Gtk.GestureMultiPress button_press_controller;
-    private Gtk.EventControllerScroll scroll_controller;
-
-    private bool is_holding_control = false;
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -82,8 +79,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
         var key_press_controller = new Gtk.EventControllerKey (this);
         key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
-            is_holding_control = false;
-
             if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
                 switch (keyval) {
                     case Gdk.Key.plus:
@@ -124,10 +119,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 case Gdk.Key.Delete:
                     selection_cleared ();
                     return true;
-                case Gdk.Key.Control_L:
-                case Gdk.Key.Control_R:
-                    is_holding_control = true;
-                    return true;
                 default:
                     // Check if the keyval corresponds to a character key or modifier key that we don't handle
                     if (Gdk.keyval_to_unicode (keyval) == 0) {
@@ -145,28 +136,25 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 return key_press_controller.forward (widget);
             });
         });
-        key_press_controller.key_released.connect ((keyval, keycode, state) => {
-            is_holding_control = false;
-        });
 
-        scroll_controller = new Gtk.EventControllerScroll (this, Gtk.EventControllerScrollFlags.VERTICAL) {
-            propagation_phase = Gtk.PropagationPhase.TARGET
-        };
-        scroll_controller.scroll.connect (on_scroll);
+        add_events (Gdk.EventMask.SCROLL_MASK);
     }
 
-    private void on_scroll (double x_delta, double y_delta) {
-        if (!is_holding_control) {
-            return;
+    protected override bool scroll_event (Gdk.EventScroll event) {
+        if (Gdk.ModifierType.CONTROL_MASK in event.state) {
+            switch (event.direction) {
+                case Gdk.ScrollDirection.UP:
+                    window.action_bar.zoom_level += 10;
+                    break;
+                case Gdk.ScrollDirection.DOWN:
+                    window.action_bar.zoom_level -= 10;
+                    break;
+                default:
+                    break;
+            }
         }
 
-        if (y_delta > 0) {
-            window.action_bar.zoom_level -= 10;
-        }
-
-        if (y_delta < 0) {
-            window.action_bar.zoom_level += 10;
-        }
+        return base.scroll_event (event);
     }
 
     private void select (int line, int col) {
