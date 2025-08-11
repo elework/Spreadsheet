@@ -1,9 +1,8 @@
-using Gee;
 using Spreadsheet.Services.Formula.AST;
 using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
-    public FormulaParser (ArrayList<Token> tokens) {
+    public FormulaParser (Gee.ArrayList<Token> tokens) {
         base (tokens);
     }
 
@@ -14,10 +13,11 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
     private Expression parse_block () throws ParserError {
         bool root = !accept ("left-square-brace");
         var delimiter = root ? "eof" : "right-square-brace";
-        Expression last;
 
+        Expression last;
         while (true) {
             last = parse_expression ();
+
             if (current.kind == delimiter) {
                 break;
             }
@@ -37,86 +37,112 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
 
             if (current.kind == "identifier") {
                 return parse_call_expression ();
-            } else if (current.kind == "number") {
+            }
+
+            if (current.kind == "number") {
                 return parse_number ();
-            } else if (accept ("left-parenthese")) {
+            }
+
+            if (accept ("left-parenthese")) {
                 var res = parse_expression ();
                 expect ("right-parenthese");
                 return res;
-            } else if (current.kind == "cell-name") {
-                return parse_cell_name ();
-            } else {
-                unexpected ();
-                return new NumberExpression (0.0);
             }
-        } else if (current.kind == "number") {
+
+            if (current.kind == "cell-name") {
+                return parse_cell_name ();
+            }
+
+            unexpected ();
+            return new NumberExpression (0.0);
+        }
+
+        if (current.kind == "number") {
             if (next.kind == "text") {
                 return parse_text ();
             }
 
             return parse_number ();
-        } else if (current.kind == "cell-name" && index > 0) {
+        }
+
+        if (current.kind == "cell-name") {
+            if (index > 0) {
+                return parse_cell_name ();
+            }
+
             /*
              * Do not consider as cell-name like other spreadsheet apps
              * if cell-name appears as the first token.
              */
-            return parse_cell_name ();
-        } else {
             return parse_text ();
         }
+
+        return parse_text ();
     }
 
     private Expression parse_exponent () throws ParserError {
         var left = parse_primary_expression ();
+
         while (accept ("carat")) {
             var right = parse_primary_expression ();
-            left = new CallExpression ("pow", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("pow", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
     private Expression parse_multiplication () throws ParserError {
         var left = parse_exponent ();
+
         while (accept ("star")) {
             var right = parse_exponent ();
-            left = new CallExpression ("mul", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("mul", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
     private Expression parse_division () throws ParserError {
         var left = parse_multiplication ();
+
         while (accept ("slash")) {
             var right = parse_multiplication ();
-            left = new CallExpression ("div", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("div", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
     private Expression parse_modulo () throws ParserError {
         Expression left = parse_division ();
+
         while (accept ("percent")) {
             var right = parse_division ();
-            left = new CallExpression ("mod", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("mod", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
     private Expression parse_substraction () throws ParserError {
         var left = parse_addition ();
+
         while (accept ("dash")) {
             var right = parse_addition ();
-            left = new CallExpression ("sub", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("sub", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
     private Expression parse_addition () throws ParserError {
         var left = parse_modulo ();
+
         while (accept ("plus")) {
             var right = parse_modulo ();
-            left = new CallExpression ("sum", new ArrayList<Expression>.wrap ({ left, right }));
+            left = new CallExpression ("sum", new Gee.ArrayList<Expression>.wrap ({ left, right }));
         }
+
         return left;
     }
 
@@ -124,7 +150,8 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
         var func = current.lexeme;
         expect ("identifier");
         expect ("left-parenthese");
-        var params = new ArrayList<Expression> ();
+
+        var params = new Gee.ArrayList<Expression> ();
         while (true) {
             params.add (parse_expression ());
 
@@ -136,17 +163,20 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
                 throw new ParserError.UNEXPECTED ("Use a comma to separate parameters");
             }
         }
+
         return new CallExpression (func, params);
     }
 
     private NumberExpression parse_number () throws ParserError {
         want ("number");
+
         NumberExpression res;
         if ("." in current.lexeme) {
             res = new NumberExpression (double.parse (current.lexeme));
         } else {
             res = new NumberExpression (double.parse (current.lexeme + ".0"));
         }
+
         eat ();
         return res;
     }
