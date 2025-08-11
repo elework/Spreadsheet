@@ -154,16 +154,6 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         });
     }
 
-    private void on_scroll (double x_delta, double y_delta) {
-        if (y_delta > 0) {
-            window.action_bar.zoom_level -= 10;
-        }
-
-        if (y_delta < 0) {
-            window.action_bar.zoom_level += 10;
-        }
-    }
-
     private void select (int line, int col) {
         // Do nothing if the new selected cell are the same with the currently selected
         if (line == selected_cell.line && col == selected_cell.column) {
@@ -223,6 +213,16 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         var line = (int)((y - height) / (double)height);
         select (line, col);
         grab_focus ();
+    }
+
+    private void on_scroll (double x_delta, double y_delta) {
+        if (y_delta > 0) {
+            window.action_bar.zoom_level -= 10;
+        }
+
+        if (y_delta < 0) {
+            window.action_bar.zoom_level += 10;
+        }
     }
 
     private double get_left_margin () {
