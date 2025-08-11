@@ -77,6 +77,13 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             update_zoom_level ();
         });
 
+        var scroll_controller = new Gtk.EventControllerScroll (this, Gtk.EventControllerScrollFlags.VERTICAL) {
+            // Scroll event handler is not active in Sheet without Ctrl key press
+            // so that scrolling the viewport by Gtk.ScrolledWindow works
+            propagation_phase = Gtk.PropagationPhase.NONE
+        };
+        scroll_controller.scroll.connect (on_scroll);
+
         var key_press_controller = new Gtk.EventControllerKey (this);
         key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
             if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
@@ -119,6 +126,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 case Gdk.Key.Delete:
                     selection_cleared ();
                     return true;
+                case Gdk.Key.Control_L:
+                case Gdk.Key.Control_R:
+                    // Activate the scroll event handler
+                    scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
+                    return true;
                 default:
                     // Check if the keyval corresponds to a character key or modifier key that we don't handle
                     if (Gdk.keyval_to_unicode (keyval) == 0) {
@@ -136,25 +148,20 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 return key_press_controller.forward (widget);
             });
         });
-
-        add_events (Gdk.EventMask.SCROLL_MASK);
+        key_press_controller.key_released.connect ((keyval, keycode, state) => {
+            // Deactivate the scroll event handler
+            scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
+        });
     }
 
-    protected override bool scroll_event (Gdk.EventScroll event) {
-        if (Gdk.ModifierType.CONTROL_MASK in event.state) {
-            switch (event.direction) {
-                case Gdk.ScrollDirection.UP:
-                    window.action_bar.zoom_level += 10;
-                    break;
-                case Gdk.ScrollDirection.DOWN:
-                    window.action_bar.zoom_level -= 10;
-                    break;
-                default:
-                    break;
-            }
+    private void on_scroll (double x_delta, double y_delta) {
+        if (y_delta > 0) {
+            window.action_bar.zoom_level -= 10;
         }
 
-        return base.scroll_event (event);
+        if (y_delta < 0) {
+            window.action_bar.zoom_level += 10;
+        }
     }
 
     private void select (int line, int col) {
