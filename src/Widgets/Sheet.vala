@@ -35,7 +35,8 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_cleared ();
 
-    public signal void focus_expression_entry (string? input);
+    public delegate bool DoForwardFunc (Gtk.Widget widget);
+    public signal bool forward_key_press (DoForwardFunc forward_func);
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -60,7 +61,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             });
         }
         can_focus = true;
-        button_press_event.connect (on_click);
+
+        var button_press_controller = new Gtk.GestureMultiPress (this) {
+            button = Gdk.BUTTON_PRIMARY
+        };
+        button_press_controller.pressed.connect (on_click);
 
         update_zoom_level ();
 
@@ -68,16 +73,10 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             update_zoom_level ();
         });
 
-        key_press_event.connect ((key) => {
-            // This is true if the ONLY button pressed is a modifier. If a combination
-            // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
-            // instead be checked with the EventKey::state field.
-            if (key.is_modifier != 0) {
-                return true;
-            }
-
-            if (Gdk.ModifierType.CONTROL_MASK in key.state) {
-                switch (key.keyval) {
+        var key_press_controller = new Gtk.EventControllerKey (this);
+        key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
+            if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+                switch (keyval) {
                     case Gdk.Key.plus:
                         window.action_bar.zoom_level += 10;
                         return true;
@@ -90,10 +89,12 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     case Gdk.Key.Home:
                         select (0, 0);
                         return true;
+                    default:
+                        break;
                 }
             }
 
-            switch (key.keyval) {
+            switch (keyval) {
                 case Gdk.Key.Tab:
                     move_right ();
                     return true;
@@ -114,11 +115,22 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 case Gdk.Key.Delete:
                     selection_cleared ();
                     return true;
+                default:
+                    // Check if the keyval corresponds to a character key or modifier key that we don't handle
+                    if (Gdk.keyval_to_unicode (keyval) == 0) {
+                        // Do nothing if the button pressed is ONLY a modifier. If a combination
+                        // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
+                        // instead be checked with the state parameter before here.
+                        return true;
+                    }
+
+                    break;
             }
+
             // No special key is used, thus the intent is user input
-            // Switch focus to the expression entry
-            focus_expression_entry (key.str);
-            return true;
+            return forward_key_press ((widget) => {
+                return key_press_controller.forward (widget);
+            });
         });
 
         add_events (Gdk.EventMask.SCROLL_MASK);
@@ -194,13 +206,12 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         move (0, -1);
     }
 
-    public bool on_click (EventButton evt) {
+    private void on_click (int n_press, double x, double y) {
         var left_margin = get_left_margin ();
-        var col = (int)((evt.x - left_margin) / (double)width);
-        var line = (int)((evt.y - height) / (double)height);
+        var col = (int)((x - left_margin) / (double)width);
+        var line = (int)((y - height) / (double)height);
         select (line, col);
         grab_focus ();
-        return false;
     }
 
     private double get_left_margin () {
