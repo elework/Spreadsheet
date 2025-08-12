@@ -642,9 +642,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
         recent_widgets_box.pack_start (recent_files_box);
 
-        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
-        privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
-
         return recent_widgets_box;
     }
 
