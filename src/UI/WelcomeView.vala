@@ -3,7 +3,20 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void open_choose_activated ();
     public signal void open_activated (string path);
 
-    private Gtk.ListBox recent_list;
+    private const int RECENTS_NUM_MAX = 20;
+
+    private class StringObject : Object {
+        public string string { get; construct; }
+
+        public StringObject (string str) {
+            Object (
+                string: str
+            );
+        }
+    }
+
+    private ListStore recents_liststore;
+    private Gtk.ListBox recents_listbox;
 
     public WelcomeView () {
     }
@@ -35,13 +48,19 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         };
         recent_title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        recent_list = new Gtk.ListBox ();
+        // TODO: Replace with Gtk.StringList after porting to GTK 4
+        recents_liststore = new ListStore (typeof (StringObject));
+        recents_init (recents_liststore);
+        recents_sync (recents_liststore);
+
+        recents_listbox = new Gtk.ListBox ();
+        recents_listbox.bind_model (recents_liststore, create_recent_row);
 
         var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
             halign = Gtk.Align.CENTER
         };
-        recent_scrolled.add (recent_list);
+        recent_scrolled.add (recents_listbox);
 
         var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             margin_top = 12,
@@ -66,71 +85,95 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             (SettingsBindSetMappingShared) null,
             null, null);
 
-        update_listview ();
-
         get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
         pack_start (welcome);
         pack_start (recent_widgets_box);
     }
 
-    public void add_recents (string recent_file_path) {
-        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
+    private Gtk.Widget create_recent_row (Object item) {
+        var path_obj = (StringObject) item;
+        var path = path_obj.string;
 
-        const int MAX_FILE_COUNT = 20;
+        string basename = Path.get_basename (path);
+        string display_path = path;
+        if (GLib.Environment.get_home_dir () in path) {
+            display_path = path.replace (GLib.Environment.get_home_dir (), "~");
+        }
 
-        /* Create a new array, append the most recent one at the start, and
-           then store all of the previous recent files except the most
-           recent one. */
+        // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
+        var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
+
+        var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
+        list_item.clicked.connect (() => {
+            open_activated (path);
+        });
+
+        return list_item;
+    }
+
+    private void recents_init (ListStore recents) {
+        recents.remove_all ();
+
+        var recents_gsettings = Spreadsheet.App.settings.get_strv ("recent-files");
+
+        int recents_num = int.min (recents_gsettings.length, RECENTS_NUM_MAX);
+        for (int i_rev = (recents_num - 1); i_rev >= 0; i_rev--) {
+            add_recents_internal (recents, recents_gsettings[i_rev]);
+        }
+    }
+
+    private void recents_sync (ListStore recents) {
         var new_recents = new Array<string> ();
-        new_recents.insert_val (0, recent_file_path);
 
-        foreach (var recent in recents) {
-            if (new_recents.length >= MAX_FILE_COUNT) {
-                break;
-            }
-
-            if (recent != recent_file_path) {
-                new_recents.append_val (recent);
-            }
+        int recents_num = int.min (((int) recents.n_items), RECENTS_NUM_MAX);
+        for (int i = 0; i < recents_num; i++) {
+            var obj = ((StringObject) recents.get_item (i));
+            new_recents.append_val (obj.string);
         }
 
         Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
-        update_listview ();
     }
 
-    private void update_listview () {
-        foreach (var item in recent_list.get_children ()) {
-            item.destroy ();
+    private void recents_cut_off (ListStore recents, uint preserve_count) {
+        for (uint i = preserve_count; i < recents.n_items; i++) {
+            recents.remove (i);
+        }
+    }
+
+    private bool add_recents_internal (ListStore recents, string path) {
+        var file = File.new_for_path (path);
+        if (!file.query_exists ()) {
+            warning ("Invalid path. path=%s", path);
+            return false;
         }
 
-        var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
-        string[]? new_recent_files = null;
+        var path_obj = new StringObject (path);
 
-        foreach (var file_name in recent_files) {
-            var file = File.new_for_path (file_name);
-            if (file.query_exists ()) {
-                var basename = file.get_basename ();
-                var path = file.get_path ();
-                string display_path = path;
-                if (GLib.Environment.get_home_dir () in path) {
-                    display_path = path.replace (GLib.Environment.get_home_dir (), "~");
-                }
-
-                // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
-
-                var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-                list_item.clicked.connect (() => {
-                    open_activated (path);
-                });
-                new_recent_files += file_name;
-                recent_list.add (list_item);
-            } else {
-                /* In case the file doesn't exist, display a list item, but
-                   mark the file as missing? */
-            }
+        uint pos;
+        bool dup_exists = recents.find_with_equal_func (
+            path_obj,
+            ((a, b) => {
+                return ((StringObject) a).string == ((StringObject) b).string;
+            }),
+            out pos
+        );
+        if (dup_exists) {
+            recents.remove (pos);
         }
 
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
+        recents_cut_off (recents, (RECENTS_NUM_MAX - 1));
+
+        recents.insert (0, path_obj);
+
+        return true;
+    }
+
+    public void add_recents (string path) {
+        bool ret = add_recents_internal (recents_liststore, path);
+        if (!ret) {
+            return;
+        }
+
+        recents_sync (recents_liststore);
     }
 }
