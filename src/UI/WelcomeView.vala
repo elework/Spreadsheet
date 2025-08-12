@@ -103,12 +103,12 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
         var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
 
-        var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-        list_item.clicked.connect (() => {
+        var recent_row = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
+        recent_row.clicked.connect (() => {
             open_activated (path);
         });
 
-        return list_item;
+        return recent_row;
     }
 
     private void recents_init (ListStore recents) {
