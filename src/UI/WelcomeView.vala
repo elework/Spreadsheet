@@ -125,8 +125,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     private void recents_sync (ListStore recents) {
         var new_recents = new Array<string> ();
 
-        int recents_num = int.min (((int) recents.n_items), RECENTS_NUM_MAX);
-        for (int i = 0; i < recents_num; i++) {
+        uint recents_num = uint.min (recents.n_items, RECENTS_NUM_MAX);
+        for (uint i = 0; i < recents_num; i++) {
             var obj = ((StringObject) recents.get_item (i));
             new_recents.append_val (obj.string);
         }
