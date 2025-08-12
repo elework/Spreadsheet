@@ -1,5 +1,5 @@
 src/Models/Function.vala
-src/Models/FunctionManager.vala
+src/Services/FunctionManager.vala
 src/UI/MainWindow.vala
 src/UI/TitleBar.vala
 src/UI/WelcomeView.vala
