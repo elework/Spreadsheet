@@ -524,6 +524,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 debug ("Error: " + err.message);
             }
 
+            show_all ();
+
             chooser.destroy ();
         });
 
