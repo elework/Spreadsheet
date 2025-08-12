@@ -501,6 +501,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             file = new CSVParser.from_file (path).parse ();
         } catch (ParserError err) {
             warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
+
+            var error_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                _("Unable to Open File"),
+                _("Failed to parse file. The file may not be a valid CSV format."),
+                "dialog-warning",
+                Gtk.ButtonsType.CLOSE
+            ) {
+                transient_for = this,
+                modal = true
+            };
+            error_dialog.response.connect (error_dialog.destroy);
+            error_dialog.show_all ();
+
             return false;
         }
 
