@@ -45,7 +45,6 @@ sources = files(
     'src' / 'Models' / 'CellStyle.vala',
     'src' / 'Models' / 'FontStyle.vala',
     'src' / 'Models' / 'Function.vala',
-    'src' / 'Models' / 'FunctionManager.vala',
     'src' / 'Models' / 'HistoryAction.vala',
     'src' / 'Models' / 'Page.vala',
     'src' / 'Models' / 'Spreadsheet.vala',
@@ -66,15 +65,16 @@ sources = files(
     'src' / 'Services' / 'Parsing' / 'Parser.vala',
     'src' / 'Services' / 'Parsing' / 'Token.vala',
     'src' / 'Services' / 'FuncSearchList.vala',
+    'src' / 'Services' / 'FunctionManager.vala',
     'src' / 'Services' / 'HistoryManager.vala',
     'src' / 'Services' / 'RecentsManager.vala',
     'src' / 'UI' / 'MainWindow.vala',
-    'src' / 'UI' / 'TitleBar.vala',
     'src' / 'UI' / 'WelcomeView.vala',
     'src' / 'Widgets' / 'ActionBar.vala',
     'src' / 'Widgets' / 'FunctionListRow.vala',
     'src' / 'Widgets' / 'Sheet.vala',
-    'src' / 'Widgets' / 'StyleModal.vala'
+    'src' / 'Widgets' / 'StyleModal.vala',
+    'src' / 'Widgets' / 'TitleBar.vala',
 )
 
 executable(meson.project_name(),
