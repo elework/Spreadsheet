@@ -3,7 +3,6 @@ using Spreadsheet.Models;
 using Spreadsheet.Services;
 using Spreadsheet.Services.CSV;
 using Spreadsheet.Services.Parsing;
-using Granite.Widgets;
 using Gtk;
 using Gdk;
 
@@ -15,14 +14,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private TitleBar header;
     public Widgets.ActionBar action_bar { get; private set; }
 
+    private WelcomeView welcome_view;
     private Stack app_stack;
     private Button function_list_bt;
     private Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
-    private Gtk.ListBox list_view = new Gtk.ListBox ();
-    private Gtk.Box welcome_box;
-    private Gtk.Box recent_widgets_box;
 
     private Hdy.TabView tab_view = new Hdy.TabView ();
 
@@ -144,8 +141,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+        welcome_view = new WelcomeView ();
+
         app_stack = new Stack ();
-        app_stack.add_named (welcome (), "welcome");
+        app_stack.add_named (welcome_view, "welcome");
         app_stack.add_named (sheet (), "app");
 
         header = new TitleBar (this);
@@ -162,6 +161,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_REDO, { "<Control><Shift>z" });
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, { "F2" });
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, { "Escape" });
+
+        welcome_view.new_activated.connect (new_sheet);
+        welcome_view.open_choose_activated.connect (open_sheet_choose);
+        welcome_view.open_activated.connect ((path) => {
+            open_sheet (path);
+        });
 
         show_welcome ();
     }
@@ -187,61 +192,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         return base.configure_event (event);
-    }
-
-    private Gtk.Box welcome () {
-        var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
-        welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
-        welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.activated.connect ((index) => {
-            if (index == 0) {
-                new_sheet ();
-            } else if (index == 1) {
-                open_sheet_choose ();
-            }
-        });
-
-        welcome_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
-        welcome_box.pack_start (welcome);
-
-        return welcome_box;
-    }
-
-    private void update_listview () {
-        foreach (var item in list_view.get_children ()) {
-            item.destroy ();
-        }
-
-        var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
-        string[]? new_recent_files = null;
-
-        foreach (var file_name in recent_files) {
-            var file = File.new_for_path (file_name);
-            if (file.query_exists ()) {
-                var basename = file.get_basename ();
-                var path = file.get_path ();
-                string display_path = path;
-                if (GLib.Environment.get_home_dir () in path) {
-                    display_path = path.replace (GLib.Environment.get_home_dir (), "~");
-                }
-
-                // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
-
-                var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-                list_item.clicked.connect (() => {
-                    open_sheet (path);
-                });
-                new_recent_files += file_name;
-                list_view.add (list_item);
-            } else {
-                /* In case the file doesn't exist, display a list item, but
-                   mark the file as missing? */
-            }
-        }
-
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
     }
 
     private Grid toolbar () {
@@ -518,7 +468,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         this.file = file;
-        add_recents (file.file_path);
+        welcome_view.add_recents (file.file_path);
         header.set_buttons_visibility (true);
         app_stack.set_visible_child_name ("app");
         show_all ();
@@ -529,7 +479,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        add_recents (file.file_path);
+        welcome_view.add_recents (file.file_path);
     }
 
     private void save_as_sheet () {
@@ -551,7 +501,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             new CSVWriter (active_sheet.page).write_to_file (path);
-            add_recents (path);
+            welcome_view.add_recents (path);
 
             // Open the saved file
             try {
@@ -562,31 +512,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         chooser.destroy ();
-    }
-
-    private void add_recents (string recent_file_path) {
-        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
-
-        const int MAX_FILE_COUNT = 20;
-
-        /* Create a new array, append the most recent one at the start, and 
-           then store all of the previous recent files except the most 
-           recent one. */
-        var new_recents = new Array<string> ();
-        new_recents.insert_val (0, recent_file_path);
-
-        foreach (var recent in recents) {
-            if (new_recents.length >= MAX_FILE_COUNT) {
-                break;
-            }
-
-            if (recent != recent_file_path) {
-                new_recents.append_val (recent);
-            }
-        }
-
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
-        update_listview ();
     }
 
     private void undo_sheet () {
@@ -605,44 +530,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         expression.text = "";
 
         app_stack.set_visible_child_name ("welcome");
-
-        if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
-            if (recent_widgets_box == null) {
-                welcome_box.pack_start (create_recents_view ());
-            }
-
-            update_listview ();
-            recent_widgets_box.show_all ();
-        }
-    }
-
-    private Gtk.Box create_recents_view () {
-        var title = new Gtk.Label (_("Recent files"));
-        title.halign = Gtk.Align.CENTER;
-        title.margin_top = 24;
-        title.margin_bottom = 24;
-        title.margin_start = 24;
-        title.margin_end = 24;
-        title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
-
-        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
-        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        recent_files_scrolled.halign = Gtk.Align.CENTER;
-        recent_files_scrolled.add (list_view);
-
-        var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        recent_files_box.margin_top = 12;
-        recent_files_box.margin_bottom = 12;
-        recent_files_box.margin_start = 12;
-        recent_files_box.margin_end = 12;
-        recent_files_box.pack_start (title, false, false);
-        recent_files_box.pack_start (recent_files_scrolled);
-
-        recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
-        recent_widgets_box.pack_start (recent_files_box);
-
-        return recent_widgets_box;
     }
 
     private void update_formula () {
