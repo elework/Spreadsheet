@@ -39,25 +39,25 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
-            halign = Gtk.Align.CENTER,
-            vexpand = true
+            halign = Gtk.Align.CENTER
         };
         recent_scrolled.add (recent_list);
 
-        var recent_grid = new Gtk.Grid () {
+        var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             margin_top = 12,
             margin_bottom = 12,
             margin_start = 12,
-            margin_end = 12,
-            column_spacing = 0,
-            row_spacing = 0
+            margin_end = 12
         };
-        recent_grid.attach (new Gtk.Separator (Gtk.Orientation.VERTICAL), 0, 0, 1, 2);
-        recent_grid.attach (recent_title, 1, 0, 1, 1);
-        recent_grid.attach (recent_scrolled, 1, 1, 1, 1);
+        recent_box.pack_start (recent_title, false, false);
+        recent_box.pack_start (recent_scrolled);
+
+        var recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
+        recent_widgets_box.pack_start (recent_box);
 
         Spreadsheet.App.settings.bind_with_mapping ("recent-files",
-            recent_grid, "no_show_all",
+            recent_widgets_box, "no_show_all",
             SettingsBindFlags.GET,
             (_no_show_all, _recent_files, user_data) => {
                 _no_show_all = ((string[]) _recent_files).length <= 0;
@@ -70,7 +70,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
         pack_start (welcome);
-        pack_start (recent_grid);
+        pack_start (recent_widgets_box);
     }
 
     public void add_recents (string recent_file_path) {
@@ -78,8 +78,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         const int MAX_FILE_COUNT = 20;
 
-        /* Create a new array, append the most recent one at the start, and 
-           then store all of the previous recent files except the most 
+        /* Create a new array, append the most recent one at the start, and
+           then store all of the previous recent files except the most
            recent one. */
         var new_recents = new Array<string> ();
         new_recents.insert_val (0, recent_file_path);
