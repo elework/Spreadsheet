@@ -520,11 +520,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             // Open the saved file
             try {
                 file = new CSVParser.from_file (path).parse ();
+                show_all ();
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
             }
-
-            show_all ();
 
             chooser.destroy ();
         });
