@@ -12,12 +12,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private uint configure_id;
 
-    public TitleBar header { get; private set; }
+    private TitleBar header;
     public Widgets.ActionBar action_bar { get; private set; }
 
-    public Stack app_stack { get; private set; }
+    private Stack app_stack;
     private Button function_list_bt;
-    public Entry expression;
+    private Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
     private Gtk.ListBox list_view = new Gtk.ListBox ();
@@ -197,7 +197,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             if (index == 0) {
                 new_sheet ();
             } else if (index == 1) {
-                open_sheet ();
+                open_sheet_choose ();
             }
         });
 
@@ -231,15 +231,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
                 var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
                 list_item.clicked.connect (() => {
-                    try {
-                        this.file = new CSVParser.from_file (path).parse ();
-                        header.set_buttons_visibility (true);
-                        show_all ();
-                        app_stack.set_visible_child_name ("app");
-                        add_recents (path);
-                    } catch (ParserError err) {
-                        debug ("Error: " + err.message);
-                    }
+                    open_sheet (path);
                 });
                 new_recent_files += file_name;
                 list_view.add (list_item);
@@ -392,7 +384,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_open_activate () {
-        open_sheet ();
+        open_sheet_choose ();
     }
 
     private void on_save_activate () {
@@ -485,7 +477,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         id++;
     }
 
-    private void open_sheet () {
+    private void open_sheet_choose () {
         var chooser = new FileChooserNative (
             _("Open a file"), this, FileChooserAction.OPEN, _("_Open"), _("_Cancel")
         );
@@ -496,19 +488,29 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.add_filter (filter);
 
         if (chooser.run () == ResponseType.ACCEPT) {
-            try {
-                file = new CSVParser.from_file (chooser.get_filename ()).parse ();
-            } catch (ParserError err) {
-                debug ("Error: " + err.message);
-            }
-
-            add_recents (file.file_path);
-            header.set_buttons_visibility (true);
-            app_stack.set_visible_child_name ("app");
-            show_all ();
+            open_sheet (chooser.get_filename ());
         }
 
         chooser.destroy ();
+    }
+
+    public bool open_sheet (string path) {
+        SpreadSheet file;
+
+        try {
+            file = new CSVParser.from_file (path).parse ();
+        } catch (ParserError err) {
+            warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
+            return false;
+        }
+
+        this.file = file;
+        add_recents (file.file_path);
+        header.set_buttons_visibility (true);
+        app_stack.set_visible_child_name ("app");
+        show_all ();
+
+        return true;
     }
 
     // Triggered when an opened sheet is modified
