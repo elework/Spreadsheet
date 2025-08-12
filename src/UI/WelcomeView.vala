@@ -1,21 +1,11 @@
+using Spreadsheet.Models;
+using Spreadsheet.Services;
+
 public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void new_activated ();
     public signal void open_choose_activated ();
     public signal void open_activated (string path);
 
-    private const int RECENTS_NUM_MAX = 20;
-
-    private class StringObject : Object {
-        public string string { get; construct; }
-
-        public StringObject (string str) {
-            Object (
-                string: str
-            );
-        }
-    }
-
-    private ListStore recents_liststore;
     private Gtk.ListBox recents_listbox;
 
     public WelcomeView () {
@@ -48,13 +38,10 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         };
         recent_title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        // TODO: Replace with Gtk.StringList after porting to GTK 4
-        recents_liststore = new ListStore (typeof (StringObject));
-        recents_init (recents_liststore);
-        recents_sync (recents_liststore);
+        var recents_manager = RecentsManager.get_default ();
 
         recents_listbox = new Gtk.ListBox ();
-        recents_listbox.bind_model (recents_liststore, create_recent_row);
+        recents_listbox.bind_model (recents_manager.recents_liststore, create_recent_row);
 
         var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
@@ -109,71 +96,5 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         });
 
         return recent_row;
-    }
-
-    private void recents_init (ListStore recents) {
-        recents.remove_all ();
-
-        var recents_gsettings = Spreadsheet.App.settings.get_strv ("recent-files");
-
-        int recents_num = int.min (recents_gsettings.length, RECENTS_NUM_MAX);
-        for (int i_rev = (recents_num - 1); i_rev >= 0; i_rev--) {
-            add_recents_internal (recents, recents_gsettings[i_rev]);
-        }
-    }
-
-    private void recents_sync (ListStore recents) {
-        var new_recents = new Array<string> ();
-
-        uint recents_num = uint.min (recents.n_items, RECENTS_NUM_MAX);
-        for (uint i = 0; i < recents_num; i++) {
-            var obj = ((StringObject) recents.get_item (i));
-            new_recents.append_val (obj.string);
-        }
-
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
-    }
-
-    private void recents_cut_off (ListStore recents, uint preserve_count) {
-        for (uint i = preserve_count; i < recents.n_items; i++) {
-            recents.remove (i);
-        }
-    }
-
-    private bool add_recents_internal (ListStore recents, string path) {
-        var file = File.new_for_path (path);
-        if (!file.query_exists ()) {
-            warning ("Invalid path. path=%s", path);
-            return false;
-        }
-
-        var path_obj = new StringObject (path);
-
-        uint pos;
-        bool dup_exists = recents.find_with_equal_func (
-            path_obj,
-            ((a, b) => {
-                return ((StringObject) a).string == ((StringObject) b).string;
-            }),
-            out pos
-        );
-        if (dup_exists) {
-            recents.remove (pos);
-        }
-
-        recents_cut_off (recents, (RECENTS_NUM_MAX - 1));
-
-        recents.insert (0, path_obj);
-
-        return true;
-    }
-
-    public void add_recents (string path) {
-        bool ret = add_recents_internal (recents_liststore, path);
-        if (!ret) {
-            return;
-        }
-
-        recents_sync (recents_liststore);
     }
 }

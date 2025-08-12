@@ -9,6 +9,7 @@ using Gdk;
 public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
+    private RecentsManager recents_manager;
     private uint configure_id;
 
     private TitleBar header;
@@ -141,6 +142,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+        recents_manager = RecentsManager.get_default ();
         welcome_view = new WelcomeView ();
 
         app_stack = new Stack ();
@@ -475,7 +477,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         this.file = file;
-        welcome_view.add_recents (file.file_path);
+        recents_manager.add_recents (file.file_path);
         header.set_buttons_visibility (true);
         app_stack.set_visible_child_name ("app");
         show_all ();
@@ -486,7 +488,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        welcome_view.add_recents (file.file_path);
+        recents_manager.add_recents (file.file_path);
     }
 
     private void save_as_sheet () {
@@ -513,7 +515,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             new CSVWriter (active_sheet.page).write_to_file (path);
-            welcome_view.add_recents (path);
+            recents_manager.add_recents (path);
 
             // Open the saved file
             try {
