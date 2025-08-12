@@ -58,15 +58,7 @@ public class Spreadsheet.App : Gtk.Application {
             var window = new_window ();
             var path = csv_file.get_path ();
 
-            try {
-                var file = new CSVParser.from_file (path).parse ();
-                window.file = file;
-                window.header.set_buttons_visibility (true);
-                window.show_all ();
-                window.app_stack.set_visible_child_name ("app");
-            } catch (ParserError err) {
-                warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
-            }
+            window.open_sheet (path);
         }
     }
 
