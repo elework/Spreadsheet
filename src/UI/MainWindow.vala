@@ -437,11 +437,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         filter.set_filter_name (_("CSV files"));
         chooser.add_filter (filter);
 
-        if (chooser.run () == ResponseType.ACCEPT) {
-            open_sheet (chooser.get_filename ());
-        }
+        chooser.response.connect ((response_id) => {
+            if (response_id != ResponseType.ACCEPT) {
+                chooser.destroy ();
+                return;
+            }
 
-        chooser.destroy ();
+            open_sheet (chooser.get_filename ());
+
+            chooser.destroy ();
+        });
+
+        chooser.show ();
     }
 
     public bool open_sheet (string path) {
@@ -494,7 +501,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.add_filter (filter);
         chooser.do_overwrite_confirmation = true;
 
-        if (chooser.run () == ResponseType.ACCEPT) {
+        chooser.response.connect ((response_id) => {
+            if (response_id != ResponseType.ACCEPT) {
+                chooser.destroy ();
+                return;
+            }
+
             path = chooser.get_filename ();
             if (!path.has_suffix (".csv")) {
                 path += ".csv";
@@ -509,9 +521,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
             }
-        }
 
-        chooser.destroy ();
+            chooser.destroy ();
+        });
+
+        chooser.show ();
     }
 
     private void undo_sheet () {
