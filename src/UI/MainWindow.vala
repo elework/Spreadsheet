@@ -3,7 +3,6 @@ using Spreadsheet.Models;
 using Spreadsheet.Services;
 using Spreadsheet.Services.CSV;
 using Spreadsheet.Services.Parsing;
-using Granite.Widgets;
 using Gtk;
 using Gdk;
 
