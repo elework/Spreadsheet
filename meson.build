@@ -68,6 +68,7 @@ sources = files(
     'src' / 'Services' / 'HistoryManager.vala',
     'src' / 'UI' / 'MainWindow.vala',
     'src' / 'UI' / 'TitleBar.vala',
+    'src' / 'UI' / 'WelcomeView.vala',
     'src' / 'Widgets' / 'ActionBar.vala',
     'src' / 'Widgets' / 'FunctionListRow.vala',
     'src' / 'Widgets' / 'Sheet.vala',
