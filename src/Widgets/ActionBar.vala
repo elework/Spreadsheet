@@ -62,7 +62,7 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
         });
 
         zoom_level_button.clicked.connect ((event) => {
-            zoom_level = ZOOM_LEVEL_DEFAULT;
+            zoom_level = (int) ZOOM_LEVEL_DEFAULT;
         });
     }
 }
