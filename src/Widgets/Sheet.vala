@@ -6,7 +6,7 @@ using Spreadsheet.Models;
 using Spreadsheet.UI;
 
 
-public class Spreadsheet.Widgets.Sheet : EventBox {
+public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     // Brand colors by elementary. See https://elementary.io/brand
     private const string BLUEBERRY_100 = "#8cd5ff";
