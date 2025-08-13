@@ -39,6 +39,7 @@ gnome.post_install(
 sources = files(
     'src' / 'AlphabetGenerator.vala',
     'src' / 'App.vala',
+    'src' / 'Util.vala',
     'src' / 'Functions' / 'Basic.vala',
     'src' / 'Functions' / 'Geometry.vala',
     'src' / 'Models' / 'Cell.vala',

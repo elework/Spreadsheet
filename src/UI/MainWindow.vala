@@ -279,7 +279,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             cr.set_source_rgb (0, 0, 0);
-            draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
+            Util.draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
             cr.fill ();
             return false;
         });
@@ -601,17 +601,5 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         header.update_header ();
         active_sheet.grab_focus ();
-    }
-
-    // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
-    private void draw_rounded_path (Cairo.Context ctx, double x, double y, double width, double height, double radius) {
-        double degrees = Math.PI / 180.0;
-
-        ctx.new_sub_path ();
-        ctx.arc (x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
-        ctx.arc (x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
-        ctx.arc (x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
-        ctx.arc (x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
-        ctx.close_path ();
     }
 }
