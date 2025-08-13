@@ -1,4 +1,6 @@
-public class Spreadsheet.UI.TitleBar : Gtk.HeaderBar {
+using Spreadsheet.UI;
+
+public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     public MainWindow window { get; construct; }
 
     private Gtk.Button undo_button;

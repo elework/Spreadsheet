@@ -6,7 +6,7 @@ using Spreadsheet.Models;
 using Spreadsheet.UI;
 
 
-public class Spreadsheet.Widgets.Sheet : EventBox {
+public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     // Brand colors by elementary. See https://elementary.io/brand
     private const string BLUEBERRY_100 = "#8cd5ff";
@@ -35,7 +35,12 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
 
     public signal void selection_cleared ();
 
-    public signal void focus_expression_entry (string? input);
+    public delegate bool DoForwardFunc (Gtk.Widget widget);
+    public signal bool forward_key_press (DoForwardFunc forward_func);
+
+    // Keep as a member variable instead of a local variable despite unnecessary in the view of scope
+    // to prevent from being freed and thus button press is not handled
+    private Gtk.GestureMultiPress button_press_controller;
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -60,7 +65,11 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             });
         }
         can_focus = true;
-        button_press_event.connect (on_click);
+
+        button_press_controller = new Gtk.GestureMultiPress (this) {
+            button = Gdk.BUTTON_PRIMARY
+        };
+        button_press_controller.pressed.connect (on_click);
 
         update_zoom_level ();
 
@@ -68,16 +77,17 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
             update_zoom_level ();
         });
 
-        key_press_event.connect ((key) => {
-            // This is true if the ONLY button pressed is a modifier. If a combination
-            // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
-            // instead be checked with the EventKey::state field.
-            if (key.is_modifier != 0) {
-                return true;
-            }
+        var scroll_controller = new Gtk.EventControllerScroll (this, Gtk.EventControllerScrollFlags.VERTICAL) {
+            // Scroll event handler is not active in Sheet without Ctrl key press
+            // so that scrolling the viewport by Gtk.ScrolledWindow works
+            propagation_phase = Gtk.PropagationPhase.NONE
+        };
+        scroll_controller.scroll.connect (on_scroll);
 
-            if (Gdk.ModifierType.CONTROL_MASK in key.state) {
-                switch (key.keyval) {
+        var key_press_controller = new Gtk.EventControllerKey (this);
+        key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
+            if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+                switch (keyval) {
                     case Gdk.Key.plus:
                         window.action_bar.zoom_level += 10;
                         return true;
@@ -90,10 +100,12 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                     case Gdk.Key.Home:
                         select (0, 0);
                         return true;
+                    default:
+                        break;
                 }
             }
 
-            switch (key.keyval) {
+            switch (keyval) {
                 case Gdk.Key.Tab:
                     move_right ();
                     return true;
@@ -114,31 +126,32 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
                 case Gdk.Key.Delete:
                     selection_cleared ();
                     return true;
-            }
-            // No special key is used, thus the intent is user input
-            // Switch focus to the expression entry
-            focus_expression_entry (key.str);
-            return true;
-        });
-
-        add_events (Gdk.EventMask.SCROLL_MASK);
-    }
-
-    protected override bool scroll_event (Gdk.EventScroll event) {
-        if (Gdk.ModifierType.CONTROL_MASK in event.state) {
-            switch (event.direction) {
-                case Gdk.ScrollDirection.UP:
-                    window.action_bar.zoom_level += 10;
-                    break;
-                case Gdk.ScrollDirection.DOWN:
-                    window.action_bar.zoom_level -= 10;
-                    break;
+                case Gdk.Key.Control_L:
+                case Gdk.Key.Control_R:
+                    // Activate the scroll event handler
+                    scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
+                    return true;
                 default:
+                    // Check if the keyval corresponds to a character key or modifier key that we don't handle
+                    if (Gdk.keyval_to_unicode (keyval) == 0) {
+                        // Do nothing if the button pressed is ONLY a modifier. If a combination
+                        // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
+                        // instead be checked with the state parameter before here.
+                        return true;
+                    }
+
                     break;
             }
-        }
 
-        return base.scroll_event (event);
+            // No special key is used, thus the intent is user input
+            return forward_key_press ((widget) => {
+                return key_press_controller.forward (widget);
+            });
+        });
+        key_press_controller.key_released.connect ((keyval, keycode, state) => {
+            // Deactivate the scroll event handler
+            scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
+        });
     }
 
     private void select (int line, int col) {
@@ -194,13 +207,22 @@ public class Spreadsheet.Widgets.Sheet : EventBox {
         move (0, -1);
     }
 
-    public bool on_click (EventButton evt) {
+    private void on_click (int n_press, double x, double y) {
         var left_margin = get_left_margin ();
-        var col = (int)((evt.x - left_margin) / (double)width);
-        var line = (int)((evt.y - height) / (double)height);
+        var col = (int)((x - left_margin) / (double)width);
+        var line = (int)((y - height) / (double)height);
         select (line, col);
         grab_focus ();
-        return false;
+    }
+
+    private void on_scroll (double x_delta, double y_delta) {
+        if (y_delta > 0) {
+            window.action_bar.zoom_level -= 10;
+        }
+
+        if (y_delta < 0) {
+            window.action_bar.zoom_level += 10;
+        }
     }
 
     private double get_left_margin () {

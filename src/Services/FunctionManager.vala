@@ -1,4 +1,6 @@
-public class Spreadsheet.Models.FunctionManager : Object {
+using Spreadsheet.Models;
+
+public class Spreadsheet.Services.FunctionManager : Object {
     public Gee.ArrayList<Function> functions { get; private set; }
 
     public static unowned FunctionManager get_default () {

@@ -3,26 +3,25 @@ using Spreadsheet.Models;
 using Spreadsheet.Services;
 using Spreadsheet.Services.CSV;
 using Spreadsheet.Services.Parsing;
-using Granite.Widgets;
 using Gtk;
 using Gdk;
 
 public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
+    private RecentsManager recents_manager;
     private uint configure_id;
 
-    public TitleBar header { get; private set; }
+    private TitleBar header;
     public Widgets.ActionBar action_bar { get; private set; }
 
-    public Stack app_stack { get; private set; }
+    private WelcomeView welcome_view;
+    private Gtk.Box edit_view;
+    private Stack app_stack;
     private Button function_list_bt;
-    public Entry expression;
+    private Entry expression;
     private ToggleButton style_toggle;
     private Popover style_popup;
-    private Gtk.ListBox list_view = new Gtk.ListBox ();
-    private Gtk.Box welcome_box;
-    private Gtk.Box recent_widgets_box;
 
     private Hdy.TabView tab_view = new Hdy.TabView ();
 
@@ -87,12 +86,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_toggle.sensitive = false;
                     }
                 });
-                sheet.focus_expression_entry.connect ((input) => {
-                    if (input != null) {
-                        expression.text += input;
-                    }
+                sheet.forward_key_press.connect ((do_forward) => {
                     expression.grab_focus_without_selecting ();
                     expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
+
+                    return do_forward (expression);
                 });
 
                 sheet.selection_cleared.connect (() => {
@@ -145,9 +143,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+        recents_manager = RecentsManager.get_default ();
+        welcome_view = new WelcomeView ();
+
+        edit_view = sheet ();
+
         app_stack = new Stack ();
-        app_stack.add_named (welcome (), "welcome");
-        app_stack.add_named (sheet (), "app");
+        app_stack.add (welcome_view);
+        app_stack.add (edit_view);
 
         header = new TitleBar (this);
         set_titlebar (header);
@@ -163,6 +166,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_REDO, { "<Control><Shift>z" });
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, { "F2" });
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, { "Escape" });
+
+        welcome_view.new_activated.connect (new_sheet);
+        welcome_view.open_choose_activated.connect (open_sheet_choose);
+        welcome_view.open_activated.connect ((path) => {
+            open_sheet (path);
+        });
 
         show_welcome ();
     }
@@ -188,69 +197,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         return base.configure_event (event);
-    }
-
-    private Gtk.Box welcome () {
-        var welcome = new Welcome (_("Spreadsheet"), _("Start something new, or continue what you have been working on."));
-        welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
-        welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.activated.connect ((index) => {
-            if (index == 0) {
-                new_sheet ();
-            } else if (index == 1) {
-                open_sheet ();
-            }
-        });
-
-        welcome_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        welcome_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
-        welcome_box.pack_start (welcome);
-
-        return welcome_box;
-    }
-
-    private void update_listview () {
-        foreach (var item in list_view.get_children ()) {
-            item.destroy ();
-        }
-
-        var recent_files = Spreadsheet.App.settings.get_strv ("recent-files");
-        string[]? new_recent_files = null;
-
-        foreach (var file_name in recent_files) {
-            var file = File.new_for_path (file_name);
-            if (file.query_exists ()) {
-                var basename = file.get_basename ();
-                var path = file.get_path ();
-                string display_path = path;
-                if (GLib.Environment.get_home_dir () in path) {
-                    display_path = path.replace (GLib.Environment.get_home_dir (), "~");
-                }
-
-                // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-                var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
-
-                var list_item = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-                list_item.clicked.connect (() => {
-                    try {
-                        this.file = new CSVParser.from_file (path).parse ();
-                        header.set_buttons_visibility (true);
-                        show_all ();
-                        app_stack.set_visible_child_name ("app");
-                        add_recents (path);
-                    } catch (ParserError err) {
-                        debug ("Error: " + err.message);
-                    }
-                });
-                new_recent_files += file_name;
-                list_view.add (list_item);
-            } else {
-                /* In case the file doesn't exist, display a list item, but
-                   mark the file as missing? */
-            }
-        }
-
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recent_files);
     }
 
     private Grid toolbar () {
@@ -336,7 +282,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             cr.set_source_rgb (0, 0, 0);
-            draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
+            Util.draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
             cr.fill ();
             return false;
         });
@@ -385,7 +331,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_welcome_activate () {
-        if (app_stack.visible_child_name == "welcome") {
+        if (app_stack.visible_child == welcome_view) {
             return;
         }
 
@@ -393,11 +339,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_open_activate () {
-        open_sheet ();
+        open_sheet_choose ();
     }
 
     private void on_save_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -405,7 +351,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_save_as_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -413,7 +359,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_undo_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -425,7 +371,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_redo_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -437,7 +383,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_focus_expression_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -445,7 +391,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_unfocus_expression_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -482,11 +428,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_all ();
         save_sheet ();
 
-        app_stack.set_visible_child_name ("app");
+        app_stack.visible_child = edit_view;
         id++;
     }
 
-    private void open_sheet () {
+    private void open_sheet_choose () {
         var chooser = new FileChooserNative (
             _("Open a file"), this, FileChooserAction.OPEN, _("_Open"), _("_Cancel")
         );
@@ -496,26 +442,56 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         filter.set_filter_name (_("CSV files"));
         chooser.add_filter (filter);
 
-        if (chooser.run () == ResponseType.ACCEPT) {
-            try {
-                file = new CSVParser.from_file (chooser.get_filename ()).parse ();
-            } catch (ParserError err) {
-                debug ("Error: " + err.message);
+        chooser.response.connect ((response_id) => {
+            if (response_id != ResponseType.ACCEPT) {
+                chooser.destroy ();
+                return;
             }
 
-            add_recents (file.file_path);
-            header.set_buttons_visibility (true);
-            app_stack.set_visible_child_name ("app");
-            show_all ();
+            open_sheet (chooser.get_filename ());
+
+            chooser.destroy ();
+        });
+
+        chooser.show ();
+    }
+
+    public bool open_sheet (string path) {
+        SpreadSheet file;
+
+        try {
+            file = new CSVParser.from_file (path).parse ();
+        } catch (ParserError err) {
+            warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
+
+            var error_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                _("Unable to Open File"),
+                _("Failed to parse file. The file may not be a valid CSV format."),
+                "dialog-warning",
+                Gtk.ButtonsType.CLOSE
+            ) {
+                transient_for = this,
+                modal = true
+            };
+            error_dialog.response.connect (error_dialog.destroy);
+            error_dialog.show_all ();
+
+            return false;
         }
 
-        chooser.destroy ();
+        this.file = file;
+        recents_manager.add_recents (file.file_path);
+        header.set_buttons_visibility (true);
+        app_stack.visible_child = edit_view;
+        show_all ();
+
+        return true;
     }
 
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        add_recents (file.file_path);
+        recents_manager.add_recents (file.file_path);
     }
 
     private void save_as_sheet () {
@@ -530,49 +506,32 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.add_filter (filter);
         chooser.do_overwrite_confirmation = true;
 
-        if (chooser.run () == ResponseType.ACCEPT) {
+        chooser.response.connect ((response_id) => {
+            if (response_id != ResponseType.ACCEPT) {
+                chooser.destroy ();
+                return;
+            }
+
             path = chooser.get_filename ();
             if (!path.has_suffix (".csv")) {
                 path += ".csv";
             }
 
             new CSVWriter (active_sheet.page).write_to_file (path);
-            add_recents (path);
+            recents_manager.add_recents (path);
 
             // Open the saved file
             try {
                 file = new CSVParser.from_file (path).parse ();
+                show_all ();
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
             }
-        }
 
-        chooser.destroy ();
-    }
+            chooser.destroy ();
+        });
 
-    private void add_recents (string recent_file_path) {
-        var recents = Spreadsheet.App.settings.get_strv ("recent-files");
-
-        const int MAX_FILE_COUNT = 20;
-
-        /* Create a new array, append the most recent one at the start, and 
-           then store all of the previous recent files except the most 
-           recent one. */
-        var new_recents = new Array<string> ();
-        new_recents.insert_val (0, recent_file_path);
-
-        foreach (var recent in recents) {
-            if (new_recents.length >= MAX_FILE_COUNT) {
-                break;
-            }
-
-            if (recent != recent_file_path) {
-                new_recents.append_val (recent);
-            }
-        }
-
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
-        update_listview ();
+        chooser.show ();
     }
 
     private void undo_sheet () {
@@ -590,48 +549,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         header.set_titles (_("Spreadsheet"), null);
         expression.text = "";
 
-        app_stack.set_visible_child_name ("welcome");
-
-        if (Spreadsheet.App.settings.get_strv ("recent-files").length != 0) {
-            if (recent_widgets_box == null) {
-                welcome_box.pack_start (create_recents_view ());
-            }
-
-            update_listview ();
-            recent_widgets_box.show_all ();
-        }
-    }
-
-    private Gtk.Box create_recents_view () {
-        var title = new Gtk.Label (_("Recent files"));
-        title.halign = Gtk.Align.CENTER;
-        title.margin_top = 24;
-        title.margin_bottom = 24;
-        title.margin_start = 24;
-        title.margin_end = 24;
-        title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
-
-        var recent_files_scrolled = new Gtk.ScrolledWindow (null, null);
-        recent_files_scrolled.hscrollbar_policy = Gtk.PolicyType.NEVER;
-        recent_files_scrolled.halign = Gtk.Align.CENTER;
-        recent_files_scrolled.add (list_view);
-
-        var recent_files_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        recent_files_box.margin_top = 12;
-        recent_files_box.margin_bottom = 12;
-        recent_files_box.margin_start = 12;
-        recent_files_box.margin_end = 12;
-        recent_files_box.pack_start (title, false, false);
-        recent_files_box.pack_start (recent_files_scrolled);
-
-        recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
-        recent_widgets_box.pack_start (recent_files_box);
-
-        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
-        privacy_settings.bind ("remember-recent-files", recent_widgets_box, "visible", GLib.SettingsBindFlags.DEFAULT);
-
-        return recent_widgets_box;
+        app_stack.visible_child = welcome_view;
     }
 
     private void update_formula () {
@@ -686,17 +604,5 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
         header.update_header ();
         active_sheet.grab_focus ();
-    }
-
-    // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
-    private void draw_rounded_path (Cairo.Context ctx, double x, double y, double width, double height, double radius) {
-        double degrees = Math.PI / 180.0;
-
-        ctx.new_sub_path ();
-        ctx.arc (x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
-        ctx.arc (x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
-        ctx.arc (x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
-        ctx.arc (x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
-        ctx.close_path ();
     }
 }
