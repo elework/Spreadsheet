@@ -62,15 +62,13 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
         recent_widgets_box.pack_start (recent_box);
 
-        Spreadsheet.App.settings.bind_with_mapping ("recent-files",
+        recents_manager.recents_liststore.bind_property ("n_items",
             recent_widgets_box, "no_show_all",
-            SettingsBindFlags.GET,
-            (_no_show_all, _recent_files, user_data) => {
-                _no_show_all = ((string[]) _recent_files).length <= 0;
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
+            (binding, _n_items, ref _no_show_all) => {
+                _no_show_all = ((uint) _n_items) == 0;
                 return true;
-            },
-            (SettingsBindSetMappingShared) null,
-            null, null);
+            });
 
         get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
         pack_start (welcome);
