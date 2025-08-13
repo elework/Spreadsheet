@@ -16,6 +16,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public Widgets.ActionBar action_bar { get; private set; }
 
     private WelcomeView welcome_view;
+    private Gtk.Box edit_view;
     private Stack app_stack;
     private Button function_list_bt;
     private Entry expression;
@@ -145,9 +146,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recents_manager = RecentsManager.get_default ();
         welcome_view = new WelcomeView ();
 
+        edit_view = sheet ();
+
         app_stack = new Stack ();
-        app_stack.add_named (welcome_view, "welcome");
-        app_stack.add_named (sheet (), "app");
+        app_stack.add (welcome_view);
+        app_stack.add (edit_view);
 
         header = new TitleBar (this);
         set_titlebar (header);
@@ -328,7 +331,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_welcome_activate () {
-        if (app_stack.visible_child_name == "welcome") {
+        if (app_stack.visible_child == welcome_view) {
             return;
         }
 
@@ -340,7 +343,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_save_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -348,7 +351,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_save_as_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -356,7 +359,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_undo_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -368,7 +371,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_redo_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -380,7 +383,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_focus_expression_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -388,7 +391,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void on_unfocus_expression_activate () {
-        if (app_stack.visible_child_name != "app") {
+        if (app_stack.visible_child != edit_view) {
             return;
         }
 
@@ -425,7 +428,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_all ();
         save_sheet ();
 
-        app_stack.set_visible_child_name ("app");
+        app_stack.visible_child = edit_view;
         id++;
     }
 
@@ -479,7 +482,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         this.file = file;
         recents_manager.add_recents (file.file_path);
         header.set_buttons_visibility (true);
-        app_stack.set_visible_child_name ("app");
+        app_stack.visible_child = edit_view;
         show_all ();
 
         return true;
@@ -546,7 +549,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         header.set_titles (_("Spreadsheet"), null);
         expression.text = "";
 
-        app_stack.set_visible_child_name ("welcome");
+        app_stack.visible_child = welcome_view;
     }
 
     private void update_formula () {
