@@ -4,6 +4,7 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
     private const double ZOOM_LEVEL_MIN = 10.0;
     private const double ZOOM_LEVEL_MAX = 400.0;
     private const double ZOOM_LEVEL_STEP = 10.0;
+    private const double ZOOM_LEVEL_DEFAULT = 100.0;
 
     private Gtk.Adjustment zoom_scale_adj;
 
@@ -61,7 +62,7 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
         });
 
         zoom_level_button.clicked.connect ((event) => {
-            zoom_level = 100;
+            zoom_level = ZOOM_LEVEL_DEFAULT;
         });
     }
 }
