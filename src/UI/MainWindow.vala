@@ -480,7 +480,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         }
 
         this.file = file;
-        recents_manager.add_recents (file.file_path);
+        recents_manager.prepend (file.file_path);
         header.set_buttons_visibility (true);
         app_stack.visible_child = edit_view;
         show_all ();
@@ -491,7 +491,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     // Triggered when an opened sheet is modified
     public void save_sheet () {
         new CSVWriter (active_sheet.page).write_to_file (file.file_path);
-        recents_manager.add_recents (file.file_path);
+        recents_manager.prepend (file.file_path);
     }
 
     private void save_as_sheet () {
@@ -518,7 +518,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             }
 
             new CSVWriter (active_sheet.page).write_to_file (path);
-            recents_manager.add_recents (path);
+            recents_manager.prepend (path);
 
             // Open the saved file
             try {
