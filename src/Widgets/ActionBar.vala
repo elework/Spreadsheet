@@ -1,6 +1,11 @@
 public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
     public signal void zoom_level_changed ();
 
+    private const double ZOOM_LEVEL_MIN = 10.0;
+    private const double ZOOM_LEVEL_MAX = 400.0;
+    private const double ZOOM_LEVEL_STEP = 10.0;
+    private const double ZOOM_LEVEL_DEFAULT = 100.0;
+
     private Gtk.Adjustment zoom_scale_adj;
 
     public int zoom_level {
@@ -20,20 +25,29 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
     }
 
     construct {
-        zoom_scale_adj = new Gtk.Adjustment (zoom_level, 10, 400, 10, 10, 0);
+        zoom_scale_adj = new Gtk.Adjustment (
+            zoom_level,
+            ZOOM_LEVEL_MIN,
+            ZOOM_LEVEL_MAX,
+            ZOOM_LEVEL_STEP,
+            ZOOM_LEVEL_STEP,
+            0.0
+        );
 
-        var zoom_scale = new Gtk.Scale (Gtk.Orientation.HORIZONTAL, zoom_scale_adj);
-        zoom_scale.tooltip_text = (_("Zoom in/out the sheet"));
+        var zoom_scale = new Gtk.Scale (Gtk.Orientation.HORIZONTAL, zoom_scale_adj) {
+            tooltip_text = (_("Zoom in/out the sheet")),
+            draw_value = false,
+            margin_top = 3,
+            margin_bottom = 3,
+            margin_start = 3,
+            margin_end = 12
+        };
         zoom_scale.set_size_request (100, 0);
-        zoom_scale.draw_value = false;
-        zoom_scale.margin_top = 3;
-        zoom_scale.margin_bottom = 3;
-        zoom_scale.margin_start = 3;
-        zoom_scale.margin_end = 12;
 
-        var zoom_level_button = new Gtk.Button.with_label (zoom_level_text);
-        zoom_level_button.tooltip_text = (_("Reset to the default zoom level"));
-        zoom_level_button.margin_end = 12;
+        var zoom_level_button = new Gtk.Button.with_label (zoom_level_text) {
+            tooltip_text = (_("Reset to the default zoom level")),
+            margin_end = 12
+        };
 
         var action_bar = new Gtk.ActionBar ();
         action_bar.pack_end (zoom_level_button);
@@ -48,7 +62,7 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
         });
 
         zoom_level_button.clicked.connect ((event) => {
-            zoom_level = 100;
+            zoom_level = (int) ZOOM_LEVEL_DEFAULT;
         });
     }
 }
