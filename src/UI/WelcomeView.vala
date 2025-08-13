@@ -6,8 +6,6 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void open_choose_activated ();
     public signal void open_activated (string path);
 
-    private Gtk.ListBox recents_listbox;
-
     public WelcomeView () {
     }
 
@@ -40,7 +38,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         var recents_manager = RecentsManager.get_default ();
 
-        recents_listbox = new Gtk.ListBox ();
+        var recents_listbox = new Gtk.ListBox ();
         recents_listbox.bind_model (recents_manager.recents_liststore, create_recent_row);
 
         var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
