@@ -1,4 +1,4 @@
-public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
+public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
     public signal void zoom_level_changed ();
 
     private Gtk.Adjustment zoom_scale_adj;
@@ -35,8 +35,11 @@ public class Spreadsheet.Widgets.ActionBar : Gtk.ActionBar {
         zoom_level_button.tooltip_text = (_("Reset to the default zoom level"));
         zoom_level_button.margin_end = 12;
 
-        pack_end (zoom_level_button);
-        pack_end (zoom_scale);
+        var action_bar = new Gtk.ActionBar ();
+        action_bar.pack_end (zoom_level_button);
+        action_bar.pack_end (zoom_scale);
+
+        child = action_bar;
 
         zoom_scale_adj.value_changed.connect (() => {
             zoom_level = (int) zoom_scale_adj.value;
