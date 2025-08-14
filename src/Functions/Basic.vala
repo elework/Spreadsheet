@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 namespace Spreadsheet.Functions {
     private double number (Value num) {
         Type num_type = num.type ();

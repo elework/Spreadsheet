@@ -43,7 +43,7 @@ Before writing some code, let the others know on what you'll be working. The bes
 We follow the [coding style of elementary OS](https://docs.elementary.io/develop/writing-apps/code-style) and [its Human Interface Guidelines](https://docs.elementary.io/hig#human-interface-guidelines) in our code, please try to respect them. But there are two differences:
 
 * We also name our namespaces after the folder they are in (e.g. `Spreadsheet.Services.Formula.AST` is in `src/Services/Formula/AST`)
-* We don't put the GPL in every file, since the project is licensed under the MIT license
+* The project is licensed under the MIT license unlike most of the projects in the elementary ecosystem. Make sure you will NEVER bring codes licensed under copyleft!
 
 ### Translating This App
 

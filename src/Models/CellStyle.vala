@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public class Spreadsheet.CellStyle : Object {
     public const Gdk.RGBA BG_COLOR_DEFAULT = { 1, 1, 1, 1 };
 

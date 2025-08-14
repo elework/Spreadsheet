@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public class Spreadsheet.Models.StateChange<G> : Object {
     public G before;
     public G after;

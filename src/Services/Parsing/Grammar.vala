@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public abstract class Spreadsheet.Services.Parsing.Grammar : Object {
     public Gee.HashMap<string, Gee.ArrayList<Evaluator>> rules {
         get;
