@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 /**
  * Generates identifier using the alphabet and an index.
  *

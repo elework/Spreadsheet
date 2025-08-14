@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public class Spreadsheet.Models.Function : Object {
     public string name { get; construct; }
     public ApplyFunc apply { get; construct; }

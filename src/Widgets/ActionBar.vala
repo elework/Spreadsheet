@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
     public signal void zoom_level_changed ();
 
