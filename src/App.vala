@@ -14,6 +14,9 @@ public class Spreadsheet.App : Gtk.Application {
     public const string ACTION_NAME_NEW = "new";
     private const string ACTION_NAME_QUIT = "quit";
 
+    public const string[] ACTION_ACCELS_NEW = { "<Control>n", null };
+    private const string[] ACTION_ACCELS_QUIT = { "<Control>q", null };
+
     private const GLib.ActionEntry[] ACTION_ENTRIES = {
         { ACTION_NAME_NEW, on_new_activate },
         { ACTION_NAME_QUIT, on_quit_activate },
@@ -54,8 +57,8 @@ public class Spreadsheet.App : Gtk.Application {
         );
 
         add_action_entries (ACTION_ENTRIES, this);
-        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_NEW, { "<Control>n" });
-        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_QUIT, { "<Control>q" });
+        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_NEW, ACTION_ACCELS_NEW);
+        set_accels_for_action (ACTION_PREFIX + ACTION_NAME_QUIT, ACTION_ACCELS_QUIT);
     }
 
     protected override void open (File[] csv_files, string hint) {

@@ -113,7 +113,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     public const string ACTION_PREFIX = "win.";
-    public const string ACTION_NAME_NEW = "new";
     public const string ACTION_NAME_OPEN = "open";
     public const string ACTION_NAME_SAVE_AS = "save_as";
     public const string ACTION_NAME_UNDO = "undo";
@@ -122,6 +121,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private const string ACTION_NAME_SAVE = "save";
     private const string ACTION_NAME_FOCUS_EXPRESSION = "focus_expression";
     private const string ACTION_NAME_UNFOCUS_EXPRESSION = "unfocus_expression";
+
+    public const string[] ACTION_ACCELS_OPEN = { "<Control>o", null };
+    public const string[] ACTION_ACCELS_SAVE_AS = { "<Control><Shift>s", null };
+    public const string[] ACTION_ACCELS_UNDO = { "<Control>z", null };
+    public const string[] ACTION_ACCELS_REDO = { "<Control><Shift>z", null };
+    private const string[] ACTION_ACCELS_WELCOME = { "<Alt>Home", null };
+    private const string[] ACTION_ACCELS_SAVE = { "<Control>s", null };
+    private const string[] ACTION_ACCELS_FOCUS_EXPRESSION = { "F2", null };
+    private const string[] ACTION_ACCELS_UNFOCUS_EXPRESSION = { "Escape", null };
 
     private const GLib.ActionEntry[] ACTION_ENTRIES = {
         { ACTION_NAME_WELCOME, on_welcome_activate },
@@ -163,14 +171,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         add (app_stack);
 
         add_action_entries (ACTION_ENTRIES, this);
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_WELCOME, { "<Alt>Home" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_OPEN, { "<Control>o" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE, { "<Control>s" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE_AS, { "<Control><Shift>s" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNDO, { "<Control>z" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_REDO, { "<Control><Shift>z" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, { "F2" });
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, { "Escape" });
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_WELCOME, ACTION_ACCELS_WELCOME);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_OPEN, ACTION_ACCELS_OPEN);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE, ACTION_ACCELS_SAVE);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_SAVE_AS, ACTION_ACCELS_SAVE_AS);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNDO, ACTION_ACCELS_UNDO);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_REDO, ACTION_ACCELS_REDO);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, ACTION_ACCELS_FOCUS_EXPRESSION);
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, ACTION_ACCELS_UNFOCUS_EXPRESSION);
 
         welcome_view.new_activated.connect (new_sheet);
         welcome_view.open_choose_activated.connect (open_sheet_choose);
