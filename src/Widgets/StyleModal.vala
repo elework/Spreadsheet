@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public class Spreadsheet.StyleModal : Gtk.Grid {
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         var style_stack = new Gtk.Stack ();

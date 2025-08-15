@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ */
+
 public delegate Spreadsheet.Services.Parsing.Token Evaluation (string match);
 
 public class Spreadsheet.Services.Parsing.Evaluator : Object {
