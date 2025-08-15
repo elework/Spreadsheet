@@ -266,12 +266,12 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     public override bool draw (Context cr) {
-        RGBA default_cell_stroke = { 0.3, 0.3, 0.3, 1 };
+        RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         RGBA default_font_color = { 0, 0, 0, 1 };
 
         var style = window.get_style_context ();
 
-        RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
+        RGBA normal = style.get_color ();
 
         // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
         RGBA selected_fill = { 0 };

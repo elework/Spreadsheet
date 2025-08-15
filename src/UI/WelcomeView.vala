@@ -11,6 +11,32 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void open_choose_activated ();
     public signal void open_activated (string path);
 
+    private class RecentRow : Gtk.Box {
+        public string basename { get; construct; }
+        public string path { get; construct; }
+
+        public RecentRow (string basename, string path) {
+            Object (
+                basename: basename,
+                path: path
+            );
+        }
+
+        construct {
+            orientation = Gtk.Orientation.HORIZONTAL;
+            spacing = 12;
+
+            var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet");
+
+            var label = new Granite.HeaderLabel (basename) {
+                secondary_text = path
+            };
+
+            append (spreadsheet_icon);
+            append (label);
+        }
+    }
+
     public WelcomeView () {
     }
 
@@ -18,19 +44,11 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         orientation = Gtk.Orientation.HORIZONTAL;
         spacing = 0;
 
-        var welcome = new Granite.Widgets.Welcome (
-            _("Spreadsheet"),
-            _("Start something new, or continue what you have been working on.")
-        );
-        welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
-        welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.activated.connect ((index) => {
-            if (index == 0) {
-                new_activated ();
-            } else if (index == 1) {
-                open_choose_activated ();
-            }
-        });
+        var welcome = new Granite.Placeholder (_("Spreadsheet")) {
+            description = _("Start something new, or continue what you have been working on.")
+        };
+        var new_button = welcome.append_button (Icon.new_for_string ("document-new"), _("New Sheet"), _("Create an empty sheet"));
+        var open_button = welcome.append_button (Icon.new_for_string ("document-open"), _("Open File"), _("Choose a saved file"));
 
         var recent_title = new Gtk.Label (_("Recent files")) {
             halign = Gtk.Align.CENTER,
@@ -46,11 +64,11 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         var recents_listbox = new Gtk.ListBox ();
         recents_listbox.bind_model (recents_manager.recents_liststore, create_recent_row);
 
-        var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
+        var recent_scrolled = new Gtk.ScrolledWindow () {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
-            halign = Gtk.Align.CENTER
+            halign = Gtk.Align.CENTER,
+            child = recents_listbox
         };
-        recent_scrolled.add (recents_listbox);
 
         var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             margin_top = 12,
@@ -58,12 +76,12 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             margin_start = 12,
             margin_end = 12
         };
-        recent_box.pack_start (recent_title, false, false);
-        recent_box.pack_start (recent_scrolled);
+        recent_box.append (recent_title);
+        recent_box.append (recent_scrolled);
 
         var recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
-        recent_widgets_box.pack_start (recent_box);
+        recent_widgets_box.append (new Gtk.Separator (Gtk.Orientation.VERTICAL));
+        recent_widgets_box.append (recent_box);
 
         recents_manager.recents_liststore.bind_property ("n_items",
             recent_widgets_box, "no_show_all",
@@ -73,9 +91,20 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
                 return true;
             });
 
-        get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
-        pack_start (welcome);
-        pack_start (recent_widgets_box);
+        new_button.clicked.connect (() => {
+            new_activated ();
+        });
+        open_button.clicked.connect (() => {
+            open_choose_activated ();
+        });
+
+        recents_listbox.row_activated.connect ((row) => {
+            open_activated (((RecentRow) row).path);
+        });
+
+        get_style_context ().add_class (Granite.STYLE_CLASS_VIEW);
+        append (welcome);
+        append (recent_widgets_box);
     }
 
     private Gtk.Widget create_recent_row (Object item) {
@@ -88,14 +117,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (GLib.Environment.get_home_dir (), "~");
         }
 
-        // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-        var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
-
-        var recent_row = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-        recent_row.clicked.connect (() => {
-            open_activated (path);
-        });
-
-        return recent_row;
+        var row = new RecentRow (basename, display_path);
+        return row;
     }
 }
