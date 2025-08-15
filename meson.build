@@ -87,10 +87,9 @@ executable(meson.project_name(),
         dependency('gio-2.0', version: '>= 2.64'),
         dependency('glib-2.0'),
         dependency('gobject-2.0'),
-        dependency('granite', version: '>=5.4.0'),
-        # Version limitation for Gtk.EventControllerKey
-        dependency('gtk+-3.0', version: '>=3.24'),
-        dependency('libhandy-1', version: '>=1.2.0'),
+        dependency('granite-7'),
+        dependency('gtk4'),
+        dependency('libadwaita-1'),
         dependency('pango')
     ],
     install: true,
