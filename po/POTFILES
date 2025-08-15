@@ -4,4 +4,3 @@ src/UI/MainWindow.vala
 src/UI/WelcomeView.vala
 src/Widgets/ActionBar.vala
 src/Widgets/StyleModal.vala
-src/Widgets/TitleBar.vala

@@ -75,7 +75,6 @@ sources = files(
     'src' / 'Widgets' / 'FunctionListRow.vala',
     'src' / 'Widgets' / 'Sheet.vala',
     'src' / 'Widgets' / 'StyleModal.vala',
-    'src' / 'Widgets' / 'TitleBar.vala',
 )
 
 executable(meson.project_name(),
