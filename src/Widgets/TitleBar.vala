@@ -8,8 +8,8 @@ using Spreadsheet.UI;
 public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     public MainWindow window { get; construct; }
 
-    private Gtk.ToolButton undo_button;
-    private Gtk.ToolButton redo_button;
+    private Gtk.Button undo_button;
+    private Gtk.Button redo_button;
 
     public TitleBar (MainWindow window) {
         Object (
@@ -19,32 +19,27 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     }
 
     construct {
-        var new_window_icon = new Gtk.Image.from_icon_name ("window-new", Gtk.IconSize.SMALL_TOOLBAR);
-        var new_window_button = new Gtk.ToolButton (new_window_icon, null) {
+        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip (App.ACTION_ACCELS_NEW, _("Open another window")),
             action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
         };
 
-        var open_icon = new Gtk.Image.from_icon_name ("document-open", Gtk.IconSize.SMALL_TOOLBAR);
-        var open_button = new Gtk.ToolButton (open_icon, null) {
+        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_OPEN, _("Open a file")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
         };
 
-        var save_as_icon = new Gtk.Image.from_icon_name ("document-save-as", Gtk.IconSize.SMALL_TOOLBAR);
-        var save_as_button = new Gtk.ToolButton (save_as_icon, null) {
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_SAVE_AS, _("Save this file with a different name")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
         };
 
-        var redo_icon = new Gtk.Image.from_icon_name ("edit-redo", Gtk.IconSize.SMALL_TOOLBAR);
-        redo_button = new Gtk.ToolButton (redo_icon, null) {
+        redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_REDO, _("Redo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
         };
 
-        var undo_icon = new Gtk.Image.from_icon_name ("edit-undo", Gtk.IconSize.SMALL_TOOLBAR);
-        undo_button = new Gtk.ToolButton (undo_icon, null) {
+        undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_UNDO, _("Undo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
         };
@@ -56,7 +51,6 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
         pack_end (undo_button);
 
         set_buttons_visibility (false);
-        update_header ();
     }
 
     public void set_buttons_visibility (bool is_visible) {
@@ -67,8 +61,11 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     }
 
     public void update_header () {
-        undo_button.sensitive = window.history_manager.can_undo ();
-        redo_button.sensitive = window.history_manager.can_redo ();
+        bool can_undo = window.history_manager.can_undo ();
+        ((SimpleAction) window.lookup_action (MainWindow.ACTION_NAME_UNDO)).set_enabled (can_undo);
+
+        bool can_redo = window.history_manager.can_redo ();
+        ((SimpleAction) window.lookup_action (MainWindow.ACTION_NAME_REDO)).set_enabled (can_redo);
     }
 
     public void set_titles (string title, string? subtitle) {

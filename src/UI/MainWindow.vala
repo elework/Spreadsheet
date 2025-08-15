@@ -180,6 +180,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, ACTION_ACCELS_FOCUS_EXPRESSION);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, ACTION_ACCELS_UNFOCUS_EXPRESSION);
 
+        header.update_header ();
+
         welcome_view.new_activated.connect (new_sheet);
         welcome_view.open_choose_activated.connect (open_sheet_choose);
         welcome_view.open_activated.connect ((path) => {
