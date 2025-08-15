@@ -17,7 +17,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private RecentsManager recents_manager;
     private uint configure_id;
 
-    private TitleBar header;
+    private Gtk.HeaderBar header;
+
     public Widgets.ActionBar action_bar { get; private set; }
 
     private WelcomeView welcome_view;
@@ -51,7 +52,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
             }
 
-            header.set_titles (value.title, display_path == null ? _("Not saved yet") : display_path);
+            header.title = value.title;
+            header.subtitle = display_path == null ? _("Not saved yet") : display_path;
 
             while (tab_view.n_pages > 0) {
                 tab_view.close_page (tab_view.get_nth_page (0));
@@ -165,7 +167,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app_stack.add (welcome_view);
         app_stack.add (edit_view);
 
-        header = new TitleBar (this);
+        header = build_header ();
         set_titlebar (header);
 
         add (app_stack);
@@ -180,7 +182,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_FOCUS_EXPRESSION, ACTION_ACCELS_FOCUS_EXPRESSION);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_UNFOCUS_EXPRESSION, ACTION_ACCELS_UNFOCUS_EXPRESSION);
 
-        header.update_header ();
+        update_header ();
 
         welcome_view.new_activated.connect (new_sheet);
         welcome_view.open_choose_activated.connect (open_sheet_choose);
@@ -421,7 +423,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         string documents = "";
         File? path = null;
 
-        header.set_buttons_visibility (true);
+        set_header_buttons_visibility (true);
 
         do {
             file_name = _("Untitled Spreadsheet %i").printf (id++);
@@ -496,7 +498,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         this.file = file;
         recents_manager.prepend (file.file_path);
-        header.set_buttons_visibility (true);
+        set_header_buttons_visibility (true);
         app_stack.visible_child = edit_view;
         show_all ();
 
@@ -551,17 +553,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void undo_sheet () {
         history_manager.undo ();
-        header.update_header ();
+        update_header ();
     }
 
     private void redo_sheet () {
         history_manager.redo ();
-        header.update_header ();
+        update_header ();
     }
 
     public void show_welcome () {
-        header.set_buttons_visibility (false);
-        header.set_titles (_("Spreadsheet"), null);
+        set_header_buttons_visibility (false);
+        header.title = _("Spreadsheet");
+        header.subtitle = null;
         expression.text = "";
 
         app_stack.visible_child = welcome_view;
@@ -591,7 +594,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
-        header.update_header ();
+        update_header ();
         active_sheet.move_bottom ();
         active_sheet.grab_focus ();
     }
@@ -617,7 +620,60 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 }
             ));
         }
-        header.update_header ();
+        update_header ();
         active_sheet.grab_focus ();
+    }
+
+    private Gtk.HeaderBar build_header () {
+        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.LARGE_TOOLBAR) {
+            tooltip_markup = Granite.markup_accel_tooltip (App.ACTION_ACCELS_NEW, _("Open another window")),
+            action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
+        };
+
+        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR) {
+            tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_OPEN, _("Open a file")),
+            action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
+        };
+
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.LARGE_TOOLBAR) {
+            tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_SAVE_AS, _("Save this file with a different name")),
+            action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
+        };
+
+        var redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.LARGE_TOOLBAR) {
+            tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_REDO, _("Redo")),
+            action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
+        };
+
+        var undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.LARGE_TOOLBAR) {
+            tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_UNDO, _("Undo")),
+            action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
+        };
+
+        var header = new Gtk.HeaderBar () {
+            show_close_button = true
+        };
+        header.pack_start (new_window_button);
+        header.pack_start (open_button);
+        header.pack_start (save_as_button);
+        header.pack_end (redo_button);
+        header.pack_end (undo_button);
+
+        return header;
+    }
+
+    private void set_header_buttons_visibility (bool is_visible) {
+        foreach (var button in header.get_children ()) {
+            button.visible = is_visible;
+            button.no_show_all = !is_visible;
+        }
+    }
+
+    private void update_header () {
+        bool can_undo = history_manager.can_undo ();
+        ((SimpleAction) lookup_action (MainWindow.ACTION_NAME_UNDO)).set_enabled (can_undo);
+
+        bool can_redo = history_manager.can_redo ();
+        ((SimpleAction) lookup_action (MainWindow.ACTION_NAME_REDO)).set_enabled (can_redo);
     }
 }
