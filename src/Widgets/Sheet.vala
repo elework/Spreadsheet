@@ -221,14 +221,18 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         grab_focus ();
     }
 
-    private void on_scroll (double x_delta, double y_delta) {
+    private bool on_scroll (double x_delta, double y_delta) {
         if (y_delta > 0) {
             window.action_bar.zoom_level -= 10;
+            return true;
         }
 
         if (y_delta < 0) {
             window.action_bar.zoom_level += 10;
+            return true;
         }
+
+        return false;
     }
 
     private double get_left_margin () {
@@ -265,6 +269,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         queue_draw ();
     }
 
+    /*
     public override bool draw (Context cr) {
         RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         RGBA default_font_color = { 0, 0, 0, 1 };
@@ -446,4 +451,5 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         return true;
     }
+    */
 }

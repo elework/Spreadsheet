@@ -273,6 +273,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         style_toggle.get_style_context ().add_class ("toggle-button");
         style_toggle.tooltip_text = _("Set colors to letters in a selected cell");
         bool resized = false;
+        /*
         style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
             int padding = 5;
@@ -291,6 +292,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             cr.fill ();
             return false;
         });
+        */
 
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
