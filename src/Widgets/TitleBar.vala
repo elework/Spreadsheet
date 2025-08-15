@@ -14,27 +14,27 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     }
 
     construct {
-        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.BUTTON) {
+        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>N" }, _("Open another window")),
             action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
         };
 
-        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.BUTTON) {
+        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>O" }, _("Open a file")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
         };
 
-        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.BUTTON) {
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl><Shift>S" }, _("Save this file with a different name")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
         };
 
-        redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.BUTTON) {
+        redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl><Shift>Z" }, _("Redo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
         };
 
-        undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.BUTTON) {
+        undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.LARGE_TOOLBAR) {
             tooltip_markup = Granite.markup_accel_tooltip ({ "<Ctrl>Z" }, _("Undo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
         };
