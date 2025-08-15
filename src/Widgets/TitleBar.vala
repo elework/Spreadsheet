@@ -51,7 +51,6 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
         pack_end (undo_button);
 
         set_buttons_visibility (false);
-        update_header ();
     }
 
     public void set_buttons_visibility (bool is_visible) {
@@ -62,8 +61,13 @@ public class Spreadsheet.Widgets.TitleBar : Gtk.HeaderBar {
     }
 
     public void update_header () {
-        undo_button.sensitive = window.history_manager.can_undo ();
-        redo_button.sensitive = window.history_manager.can_redo ();
+        bool can_undo = window.history_manager.can_undo ();
+        undo_button.sensitive = can_undo;
+        ((SimpleAction) window.lookup_action (MainWindow.ACTION_NAME_UNDO)).set_enabled (can_undo);
+
+        bool can_redo = window.history_manager.can_redo ();
+        redo_button.sensitive = can_redo;
+        ((SimpleAction) window.lookup_action (MainWindow.ACTION_NAME_REDO)).set_enabled (can_redo);
     }
 
     public void set_titles (string title, string? subtitle) {
