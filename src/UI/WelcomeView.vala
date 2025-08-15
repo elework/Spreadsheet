@@ -84,10 +84,10 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         recent_widgets_box.append (recent_box);
 
         recents_manager.recents_liststore.bind_property ("n_items",
-            recent_widgets_box, "no_show_all",
+            recent_widgets_box, "visible",
             BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
-            (binding, _n_items, ref _no_show_all) => {
-                _no_show_all = ((uint) _n_items) == 0;
+            (binding, _n_items, ref _visible) => {
+                _visible = ((uint) _n_items) > 0;
                 return true;
             });
 
