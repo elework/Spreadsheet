@@ -43,10 +43,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     public delegate bool DoForwardFunc (Gtk.Widget widget);
     public signal bool forward_key_press (DoForwardFunc forward_func);
 
-    // Keep as a member variable instead of a local variable despite unnecessary in the view of scope
-    // to prevent from being freed and thus button press is not handled
-    private Gtk.GestureMultiPress button_press_controller;
-
     public Sheet (Page page, MainWindow window) {
         this.page = page;
         this.window = window;
@@ -71,7 +67,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         }
         can_focus = true;
 
-        button_press_controller = new Gtk.GestureMultiPress (this) {
+        var button_press_controller = new Gtk.GestureClick () {
             button = Gdk.BUTTON_PRIMARY
         };
         button_press_controller.pressed.connect (on_click);
@@ -82,14 +78,14 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             update_zoom_level ();
         });
 
-        var scroll_controller = new Gtk.EventControllerScroll (this, Gtk.EventControllerScrollFlags.VERTICAL) {
+        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
             // Scroll event handler is not active in Sheet without Ctrl key press
             // so that scrolling the viewport by Gtk.ScrolledWindow works
             propagation_phase = Gtk.PropagationPhase.NONE
         };
         scroll_controller.scroll.connect (on_scroll);
 
-        var key_press_controller = new Gtk.EventControllerKey (this);
+        var key_press_controller = new Gtk.EventControllerKey ();
         key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
             if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
                 switch (keyval) {
@@ -157,6 +153,11 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             // Deactivate the scroll event handler
             scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
         });
+
+        unowned var this_widget = (Gtk.Widget) this;
+        this_widget.add_controller (button_press_controller);
+        this_widget.add_controller (scroll_controller);
+        this_widget.add_controller (key_press_controller);
     }
 
     private void select (int line, int col) {

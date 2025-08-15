@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.Widgets.ActionBar : Gtk.Bin {
+public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
     public signal void zoom_level_changed ();
 
     private const double ZOOM_LEVEL_MIN = 10.0;

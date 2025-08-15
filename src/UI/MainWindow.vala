@@ -29,7 +29,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private ToggleButton style_toggle;
     private Popover style_popup;
 
-    private Hdy.TabView tab_view = new Hdy.TabView ();
+    private Adw.TabView tab_view = new Adw.TabView ();
 
     public Sheet active_sheet {
         get {
@@ -193,29 +193,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_welcome ();
     }
 
-    protected override bool configure_event (Gdk.EventConfigure event) {
-        if (configure_id != 0) {
-            GLib.Source.remove (configure_id);
-        }
-
-        configure_id = Timeout.add (100, () => {
-            configure_id = 0;
-
-            Spreadsheet.App.settings.set_boolean ("is-maximized", is_maximized);
-
-            if (!is_maximized) {
-                int w;
-                int h;
-                get_size (out w, out h);
-                Spreadsheet.App.settings.set ("window-size", "(ii)", w, h);
-            }
-
-            return false;
-        });
-
-        return base.configure_event (event);
-    }
-
     private Grid toolbar () {
         var toolbar = new Grid ();
         toolbar.border_width = 10;
@@ -330,7 +307,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         // TODO: Create new sheet on click
         var new_tab_button = new Gtk.Button.from_icon_name ("list-add-symbolic");
 
-        var tab_bar = new Hdy.TabBar () {
+        var tab_bar = new Adw.TabBar () {
             view = tab_view,
             autohide = false,
             expand_tabs = false,
