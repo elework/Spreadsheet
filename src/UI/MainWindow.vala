@@ -195,14 +195,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Grid toolbar () {
-        var toolbar = new Grid () {
-            margin_top = 10,
-            margin_bottom = 10,
-            margin_start = 10,
-            margin_end = 10
-        };
-        toolbar.column_spacing = 10;
-
         expression = new Entry ();
         expression.hexpand = true;
         expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
@@ -232,12 +224,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_scrolled.hexpand = true;
         function_list_scrolled.child = function_list;
 
-        var function_list_grid = new Grid ();
-        function_list_grid.orientation = Orientation.HORIZONTAL;
-        function_list_grid.margin_top = 10;
-        function_list_grid.margin_bottom = 10;
-        function_list_grid.margin_start = 10;
-        function_list_grid.margin_end = 10;
+        var function_list_grid = new Grid () {
+            orientation = Orientation.HORIZONTAL,
+            margin_top = 10,
+            margin_bottom = 10,
+            margin_start = 10,
+            margin_end = 10
+        };
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
@@ -297,9 +290,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
         */
 
+        var toolbar = new Grid () {
+            margin_top = 10,
+            margin_bottom = 10,
+            margin_start = 10,
+            margin_end = 10,
+            column_spacing = 10
+        };
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
         toolbar.attach (style_button, 2, 0);
+
         return toolbar;
     }
 
