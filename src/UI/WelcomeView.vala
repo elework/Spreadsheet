@@ -32,7 +32,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             margin_start = 24,
             margin_end = 24
         };
-        recent_title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+        recent_title.add_css_class (Granite.STYLE_CLASS_H2_LABEL);
 
         var recents_manager = RecentsManager.get_default ();
 
@@ -77,7 +77,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             open_activated (((IconLabelRow) row).secondary_text);
         });
 
-        get_style_context ().add_class (Granite.STYLE_CLASS_VIEW);
+        add_css_class (Granite.STYLE_CLASS_VIEW);
         append (welcome);
         append (recent_widgets_box);
     }

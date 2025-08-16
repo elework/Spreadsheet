@@ -249,7 +249,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             tooltip_text = _("Insert functions to a selected cell"),
             popover = popup
         };
-        function_list_bt.get_style_context ().add_class ("func-list-button");
+        function_list_bt.add_css_class ("func-list-button");
 
         expression.activate.connect (update_formula);
 
@@ -271,7 +271,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             tooltip_text = _("Set colors to letters in a selected cell"),
             popover = style_popup
         };
-        style_button.get_style_context ().add_class ("style-button");
+        style_button.add_css_class ("style-button");
         /*
         bool resized = false;
         style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button

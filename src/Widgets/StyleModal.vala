@@ -70,7 +70,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        style_box.get_style_context ().add_class (Granite.STYLE_CLASS_LINKED);
+        style_box.add_css_class (Granite.STYLE_CLASS_LINKED);
         style_box.append (bold_button);
         style_box.append (italic_button);
         style_box.append (underline_button);

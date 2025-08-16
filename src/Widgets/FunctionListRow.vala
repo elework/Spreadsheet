@@ -24,7 +24,7 @@ public class Spreadsheet.Widgets.FunctionListRow : Gtk.ListBoxRow {
             justify = Gtk.Justification.FILL,
             halign = Gtk.Align.START,
         };
-        doc_label.get_style_context ().add_class (Granite.STYLE_CLASS_DIM_LABEL);
+        doc_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
 
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
         box.append (name_label);
