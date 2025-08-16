@@ -222,10 +222,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         toolbar.column_spacing = 10;
 
         function_list_bt = new Gtk.MenuButton () {
-            label = "f(x)"
+            label = "f(x)",
+            tooltip_text = _("Insert functions to a selected cell")
         };
         function_list_bt.get_style_context ().add_class ("func-list-button");
-        function_list_bt.tooltip_text = _("Insert functions to a selected cell");
 
         expression = new Entry ();
         expression.hexpand = true;
