@@ -34,7 +34,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.MenuButton style_button;
     private Popover style_popup;
 
-    private Adw.TabView tab_view = new Adw.TabView ();
+    private Adw.TabView tab_view;
 
     public Sheet active_sheet {
         get {
@@ -313,6 +313,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         // TODO: Create new sheet on click
         var new_tab_button = new Gtk.Button.from_icon_name ("list-add-symbolic");
+
+        tab_view = new Adw.TabView () {
+            vexpand = true
+        };
 
         var tab_bar = new Adw.TabBar () {
             view = tab_view,
@@ -607,30 +611,55 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Gtk.HeaderBar build_header () {
-        new_window_button = new Gtk.Button.from_icon_name ("window-new") {
+        var new_window_icon = new Gtk.Image.from_icon_name ("window-new") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        new_window_button = new Gtk.Button () {
+            child = new_window_icon,
             tooltip_markup = Granite.markup_accel_tooltip (App.ACTION_ACCELS_NEW, _("Open another window")),
             action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
         };
+        new_window_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        open_button = new Gtk.Button.from_icon_name ("document-open") {
+        var open_icon = new Gtk.Image.from_icon_name ("document-open") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        open_button = new Gtk.Button () {
+            child = open_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_OPEN, _("Open a file")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
         };
+        open_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        save_as_button = new Gtk.Button.from_icon_name ("document-save-as") {
+        var save_as_icon = new Gtk.Image.from_icon_name ("document-save-as") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        save_as_button = new Gtk.Button () {
+            child = save_as_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_SAVE_AS, _("Save this file with a different name")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
         };
+        save_as_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        redo_button = new Gtk.Button.from_icon_name ("edit-redo") {
+        var redo_icon = new Gtk.Image.from_icon_name ("edit-redo") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        redo_button = new Gtk.Button () {
+            child = redo_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_REDO, _("Redo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
         };
+        redo_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        undo_button = new Gtk.Button.from_icon_name ("edit-undo") {
+        var undo_icon = new Gtk.Image.from_icon_name ("edit-undo") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        undo_button = new Gtk.Button () {
+            child = undo_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_UNDO, _("Undo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
         };
+        undo_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
         header_label = new Granite.HeaderLabel (_("Spreadsheet")) {
             secondary_text = _("Not saved yet")
