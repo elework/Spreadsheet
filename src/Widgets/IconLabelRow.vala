@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.Widgets.IconLabelRow : Gtk.Box {
+public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
     public string icon_name { get; construct; }
     public string primary_text { get; construct; }
     public string secondary_text { get; construct; }
@@ -17,16 +17,31 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Box {
     }
 
     construct {
-        orientation = Gtk.Orientation.HORIZONTAL;
-        spacing = 12;
+        margin_top = 6;
+        margin_bottom = 6;
+        margin_start= 6;
+        margin_end = 6;
 
-        var icon = new Gtk.Image.from_icon_name (icon_name);
-
-        var label = new Granite.HeaderLabel (primary_text) {
-            secondary_text = secondary_text
+        var icon = new Gtk.Image.from_icon_name (icon_name) {
+            halign = Gtk.Align.CENTER,
+            valign = Gtk.Align.CENTER,
+            icon_size = Gtk.IconSize.LARGE
         };
 
-        append (icon);
-        append (label);
+        var primary_label = new Gtk.Label (primary_text) {
+            wrap = true,
+            wrap_mode = Pango.WrapMode.WORD
+        };
+        primary_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
+
+        var secondary_label = new Gtk.Label (secondary_text) {
+            wrap = true,
+            wrap_mode = Pango.WrapMode.WORD
+        };
+        secondary_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+
+        attach (icon, 0, 0, 1, 2);
+        attach (primary_label, 1, 0, 1, 1);
+        attach (secondary_label, 1, 1, 1, 1);
     }
 }

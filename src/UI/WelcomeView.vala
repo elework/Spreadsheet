@@ -41,7 +41,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         var recent_scrolled = new Gtk.ScrolledWindow () {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
-            halign = Gtk.Align.CENTER,
+            hexpand = true,
+            vexpand = true,
             child = recents_listbox
         };
 
