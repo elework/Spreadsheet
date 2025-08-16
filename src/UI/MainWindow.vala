@@ -15,7 +15,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private RecentsManager recents_manager;
-    private uint configure_id;
 
     private Gtk.HeaderBar header;
     private Granite.HeaderLabel header_label;
@@ -276,8 +275,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             popover = style_popup
         };
         style_button.get_style_context ().add_class ("style-button");
-        bool resized = false;
         /*
+        bool resized = false;
         style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
             int padding = 5;
