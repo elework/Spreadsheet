@@ -67,12 +67,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
             Sheet? last_sheet = null;
             foreach (var page in value.pages) {
-                var viewport = new Gtk.Viewport (null, null);
-                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
-                var scrolled = new Gtk.ScrolledWindow () {
-                    child = viewport
-                };
-
                 var sheet = new Sheet (page, this);
                 foreach (var cell in page.cells) {
                     if (cell.selected) {
@@ -104,7 +98,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     clear_formula ();
                 });
 
-                viewport.child = sheet;
+                var viewport = new Gtk.Viewport (null, null) {
+                    child = sheet
+                };
+                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
+
+                var scrolled = new Gtk.ScrolledWindow () {
+                    child = viewport
+                };
+
                 last_sheet = sheet;
 
                 var tabpage = tab_view.append (scrolled);
@@ -240,11 +242,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
-        var popup = new Popover ();
-        popup.width_request = 320;
-        popup.height_request = 600;
-        popup.position = PositionType.BOTTOM;
-        popup.child = function_list_grid;
+        var popup = new Popover () {
+            width_request = 320,
+            height_request = 600,
+            position = PositionType.BOTTOM,
+            child = function_list_grid
+        };
 
         function_list_bt = new Gtk.MenuButton () {
             label = "f(x)",
