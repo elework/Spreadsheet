@@ -285,7 +285,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             popover = style_popup,
             direction = Gtk.ArrowType.NONE
         };
-        style_button.add_css_class ("style-button");
 
         var toolbar = new Grid () {
             margin_top = 10,
