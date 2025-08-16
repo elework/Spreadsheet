@@ -154,10 +154,9 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
         });
 
-        unowned var this_widget = (Gtk.Widget) this;
-        this_widget.add_controller (button_press_controller);
-        this_widget.add_controller (scroll_controller);
-        this_widget.add_controller (key_press_controller);
+        add_controller (button_press_controller);
+        add_controller (scroll_controller);
+        add_controller (key_press_controller);
     }
 
     private void select (int line, int col) {
@@ -269,8 +268,12 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         queue_draw ();
     }
 
-    /*
-    public override bool draw (Context cr) {
+    protected override void snapshot (Gtk.Snapshot snapshot) {
+        Graphene.Rect bounds;
+        compute_bounds (this, out bounds);
+
+        Cairo.Context cr = snapshot.append_cairo (bounds);
+
         RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         RGBA default_font_color = { 0, 0, 0, 1 };
 
@@ -448,8 +451,5 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             cr.show_text (cell.display_content);
             cr.restore ();
         }
-
-        return true;
     }
-    */
 }
