@@ -32,7 +32,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Stack app_stack;
     private Gtk.MenuButton function_list_bt;
     private Entry expression;
-    private Gtk.MenuButton style_toggle;
+    private Gtk.MenuButton style_button;
     private Popover style_popup;
 
     private Adw.TabView tab_view = new Adw.TabView ();
@@ -85,13 +85,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         expression.text = cell.formula;
                         function_list_bt.sensitive = true;
                         expression.sensitive = true;
-                        style_toggle.sensitive = true;
+                        style_button.sensitive = true;
                         style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                     } else {
                         expression.text = "";
                         function_list_bt.sensitive = false;
                         expression.sensitive = false;
-                        style_toggle.sensitive = false;
+                        style_button.sensitive = false;
                     }
                 });
                 sheet.forward_key_press.connect ((do_forward) => {
@@ -247,10 +247,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         popup.child = function_list_grid;
 
         function_list_bt = new Gtk.MenuButton () {
-            label = "f(x)"
+            label = "f(x)",
+            tooltip_text = _("Insert functions to a selected cell"),
+            popover = popup
         };
         function_list_bt.get_style_context ().add_class ("func-list-button");
-        function_list_bt.tooltip_text = _("Insert functions to a selected cell");
 
         expression.activate.connect (update_formula);
 
@@ -266,24 +267,24 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         style_popup = new Popover ();
         style_popup.position = PositionType.BOTTOM;
 
-        style_toggle = new Gtk.MenuButton () {
+        style_button = new Gtk.MenuButton () {
             label = "Open Sans 14",
+            tooltip_text = _("Set colors to letters in a selected cell"),
             popover = style_popup
         };
-        style_toggle.get_style_context ().add_class ("toggle-button");
-        style_toggle.tooltip_text = _("Set colors to letters in a selected cell");
+        style_button.get_style_context ().add_class ("style-button");
         bool resized = false;
         /*
-        style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
+        style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
             int padding = 5;
             int border = get_style_context ().get_border (StateFlags.NORMAL).left;
-            int square_size = style_toggle.get_allocated_height () - (border * 2);
-            int width = style_toggle.get_allocated_width ();
+            int square_size = style_button.get_allocated_height () - (border * 2);
+            int width = style_button.get_allocated_width ();
 
             if (!resized) {
-                style_toggle.get_child ().halign = Gtk.Align.START;
-                style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
+                style_button.get_child ().halign = Gtk.Align.START;
+                style_button.width_request += width + spacing + square_size + border; // some space for the color icon
                 resized = true;
             }
 
@@ -296,7 +297,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
-        toolbar.attach (style_toggle, 2, 0);
+        toolbar.attach (style_button, 2, 0);
         return toolbar;
     }
 
