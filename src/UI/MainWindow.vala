@@ -24,9 +24,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private WelcomeView welcome_view;
     private Gtk.Box edit_view;
     private Stack app_stack;
-    private Button function_list_bt;
+    private Gtk.MenuButton function_list_bt;
     private Entry expression;
-    private ToggleButton style_toggle;
+    private Gtk.MenuButton style_button;
     private Popover style_popup;
 
     private Hdy.TabView tab_view = new Hdy.TabView ();
@@ -84,13 +84,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         expression.text = cell.formula;
                         function_list_bt.sensitive = true;
                         expression.sensitive = true;
-                        style_toggle.sensitive = true;
+                        style_button.sensitive = true;
                         style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
                     } else {
                         expression.text = "";
                         function_list_bt.sensitive = false;
                         expression.sensitive = false;
-                        style_toggle.sensitive = false;
+                        style_button.sensitive = false;
                     }
                 });
                 sheet.forward_key_press.connect ((do_forward) => {
@@ -221,9 +221,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         toolbar.border_width = 10;
         toolbar.column_spacing = 10;
 
-        function_list_bt = new Button.with_label ("f(x)");
+        function_list_bt = new Gtk.MenuButton () {
+            label = "f(x)",
+            tooltip_text = _("Insert functions to a selected cell")
+        };
         function_list_bt.get_style_context ().add_class ("func-list-button");
-        function_list_bt.tooltip_text = _("Insert functions to a selected cell");
 
         expression = new Entry ();
         expression.hexpand = true;
@@ -235,6 +237,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         popup.modal = true;
         popup.position = PositionType.BOTTOM;
         popup.border_width = 10;
+
+        function_list_bt.popover = popup;
 
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
@@ -281,20 +285,22 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             function_list.invalidate_filter ();
         });
 
-        style_toggle = new ToggleButton.with_label ("Open Sans 14");
-        style_toggle.get_style_context ().add_class ("toggle-button");
-        style_toggle.tooltip_text = _("Set colors to letters in a selected cell");
+        style_button = new Gtk.MenuButton () {
+            label = "Open Sans 14",
+            tooltip_text = _("Set colors to letters in a selected cell")
+        };
+        style_button.get_style_context ().add_class ("style-button");
         bool resized = false;
-        style_toggle.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
+        style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
             int padding = 5;
             int border = get_style_context ().get_border (StateFlags.NORMAL).left;
-            int square_size = style_toggle.get_allocated_height () - (border * 2);
-            int width = style_toggle.get_allocated_width ();
+            int square_size = style_button.get_allocated_height () - (border * 2);
+            int width = style_button.get_allocated_width ();
 
             if (!resized) {
-                style_toggle.get_child ().halign = Gtk.Align.START;
-                style_toggle.width_request += width + spacing + square_size + border; // some space for the color icon
+                style_button.get_child ().halign = Gtk.Align.START;
+                style_button.width_request += width + spacing + square_size + border; // some space for the color icon
                 resized = true;
             }
 
@@ -304,23 +310,25 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             return false;
         });
 
-        style_popup = new Popover (style_toggle);
+        style_popup = new Popover (style_button);
         style_popup.modal = true;
         style_popup.position = PositionType.BOTTOM;
         style_popup.border_width = 10;
 
-        style_toggle.toggled.connect (() => {
-            if (style_toggle.active) {
+        style_button.popover = style_popup;
+
+        style_button.toggled.connect (() => {
+            if (style_button.active) {
                 style_popup.show_all ();
             }
         });
         style_popup.closed.connect (() => {
-            style_toggle.active = false;
+            style_button.active = false;
         });
 
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
-        toolbar.add (style_toggle);
+        toolbar.add (style_button);
         return toolbar;
     }
 
