@@ -5,37 +5,12 @@
 
 using Spreadsheet.Models;
 using Spreadsheet.Services;
+using Spreadsheet.Widgets;
 
 public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void new_activated ();
     public signal void open_choose_activated ();
     public signal void open_activated (string path);
-
-    private class RecentRow : Gtk.Box {
-        public string basename { get; construct; }
-        public string path { get; construct; }
-
-        public RecentRow (string basename, string path) {
-            Object (
-                basename: basename,
-                path: path
-            );
-        }
-
-        construct {
-            orientation = Gtk.Orientation.HORIZONTAL;
-            spacing = 12;
-
-            var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet");
-
-            var label = new Granite.HeaderLabel (basename) {
-                secondary_text = path
-            };
-
-            append (spreadsheet_icon);
-            append (label);
-        }
-    }
 
     public WelcomeView () {
     }
@@ -99,7 +74,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         });
 
         recents_listbox.row_activated.connect ((row) => {
-            open_activated (((RecentRow) row).path);
+            open_activated (((IconLabelRow) row).secondary_text);
         });
 
         get_style_context ().add_class (Granite.STYLE_CLASS_VIEW);
@@ -117,7 +92,6 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (GLib.Environment.get_home_dir (), "~");
         }
 
-        var row = new RecentRow (basename, display_path);
-        return row;
+        return new IconLabelRow ("x-office-spreadsheet", basename, display_path);
     }
 }
