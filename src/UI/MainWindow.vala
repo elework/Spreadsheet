@@ -220,23 +220,16 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Grid toolbar () {
-        var toolbar = new Grid () {
-            margin_top = 10,
-            margin_bottom = 10,
-            margin_start = 10,
-            margin_end = 10,
-            column_spacing = 10
-        };
-
         function_list_bt = new Gtk.MenuButton () {
             label = "f(x)",
             tooltip_text = _("Insert functions to a selected cell")
         };
         function_list_bt.get_style_context ().add_class ("func-list-button");
 
-        expression = new Entry ();
-        expression.hexpand = true;
-        expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
+        expression = new Entry () {
+            hexpand = true,
+            tooltip_text = _("Click to insert numbers or functions to a selected cell")
+        };
 
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
@@ -254,14 +247,16 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
         });
 
-        var function_list_search_entry = new SearchEntry ();
-        function_list_search_entry.margin_bottom = 6;
-        function_list_search_entry.placeholder_text = _("Search functions");
+        var function_list_search_entry = new SearchEntry () {
+            margin_bottom = 6,
+            placeholder_text = _("Search functions")
+        };
 
-        var function_list_scrolled = new ScrolledWindow (null, null);
-        function_list_scrolled.vexpand = true;
-        function_list_scrolled.hexpand = true;
-        function_list_scrolled.child = function_list;
+        var function_list_scrolled = new ScrolledWindow (null, null) {
+            vexpand = true,
+            hexpand = true,
+            child = function_list
+        };
 
         var function_list_grid = new Grid () {
             orientation = Orientation.HORIZONTAL,
@@ -321,9 +316,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             return false;
         });
 
-        style_popup = new Popover (style_button);
-        style_popup.modal = true;
-        style_popup.position = PositionType.BOTTOM;
+        style_popup = new Popover (style_button) {
+            modal = true,
+            position = PositionType.BOTTOM
+        };
 
         style_button.popover = style_popup;
 
@@ -336,9 +332,17 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             style_button.active = false;
         });
 
+        var toolbar = new Grid () {
+            margin_top = 10,
+            margin_bottom = 10,
+            margin_start = 10,
+            margin_end = 10,
+            column_spacing = 10
+        };
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
         toolbar.attach (style_button, 2, 0);
+
         return toolbar;
     }
 
@@ -356,12 +360,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             start_action_widget = new_tab_button
         };
 
-        var layout = new Box (Orientation.VERTICAL, 0);
-        layout.homogeneous = false;
+        var layout = new Box (Orientation.VERTICAL, 0) {
+            homogeneous = false
+        };
         layout.pack_start (toolbar (), false);
         layout.pack_start (tab_bar, false);
         layout.pack_start (tab_view);
         layout.pack_end (action_bar, false);
+
         return layout;
     }
 
