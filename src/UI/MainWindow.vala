@@ -220,9 +220,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Grid toolbar () {
-        var toolbar = new Grid ();
-        toolbar.border_width = 10;
-        toolbar.column_spacing = 10;
+        var toolbar = new Grid () {
+            margin_top = 10,
+            margin_bottom = 10,
+            margin_start = 10,
+            margin_end = 10,
+            column_spacing = 10
+        };
 
         function_list_bt = new Gtk.MenuButton () {
             label = "f(x)",
@@ -259,8 +263,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_scrolled.hexpand = true;
         function_list_scrolled.child = function_list;
 
-        var function_list_grid = new Grid ();
-        function_list_grid.orientation = Orientation.HORIZONTAL;
+        var function_list_grid = new Grid () {
+            orientation = Orientation.HORIZONTAL,
+            margin_top = 10,
+            margin_bottom = 10,
+            margin_start = 10,
+            margin_end = 10
+        };
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
@@ -269,7 +278,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             height_request = 600,
             modal = true,
             position = PositionType.BOTTOM,
-            border_width = 10,
             child = function_list_grid
         };
 
@@ -316,7 +324,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         style_popup = new Popover (style_button);
         style_popup.modal = true;
         style_popup.position = PositionType.BOTTOM;
-        style_popup.border_width = 10;
 
         style_button.popover = style_popup;
 
