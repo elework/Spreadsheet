@@ -8,9 +8,6 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
     public string primary_text { get; set; }
     public string secondary_text { get; set; }
 
-    public IconLabelRow () {
-    }
-
     construct {
         margin_top = 6;
         margin_bottom = 6;
