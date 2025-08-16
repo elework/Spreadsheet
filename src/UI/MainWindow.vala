@@ -17,7 +17,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private RecentsManager recents_manager;
 
     private Gtk.HeaderBar header;
-    private Granite.HeaderLabel header_label;
+    private Gtk.Label header_title_label;
+    private Gtk.Label header_subtitle_label;
     private Gtk.Button new_window_button;
     private Gtk.Button open_button;
     private Gtk.Button save_as_button;
@@ -57,8 +58,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
             }
 
-            header_label.label = value.title;
-            header_label.secondary_text = display_path == null ? _("Not saved yet") : display_path;
+            header_title_label.label = value.title;
+            header_subtitle_label.label = display_path == null ? _("Not saved yet") : display_path;
 
             while (tab_view.n_pages > 0) {
                 tab_view.close_page (tab_view.get_nth_page (0));
@@ -549,8 +550,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void show_welcome () {
         set_header_buttons_visibility (false);
-        header_label.label = _("Spreadsheet");
-        header_label.secondary_text = null;
+        header_title_label.label = _("Spreadsheet");
+        header_subtitle_label.label = null;
         expression.text = "";
 
         app_stack.visible_child = welcome_view;
@@ -661,12 +662,33 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         };
         undo_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        header_label = new Granite.HeaderLabel (_("Spreadsheet")) {
-            secondary_text = _("Not saved yet")
+        header_title_label = new Gtk.Label (null) {
+            halign = Gtk.Align.CENTER
         };
+        header_title_label.add_css_class ("title");
+
+        header_subtitle_label = new Gtk.Label (null) {
+            halign = Gtk.Align.CENTER
+        };
+        header_subtitle_label.add_css_class (Granite.STYLE_CLASS_SMALL_LABEL);
+        header_subtitle_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+
+        header_subtitle_label.bind_property ("label",
+            header_subtitle_label, "visible",
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
+            (bindings, _label, ref _visible) => {
+                _visible = ((string) _label).length > 0;
+                return true;
+            });
+
+        var label_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
+            valign = Gtk.Align.CENTER
+        };
+        label_box.append (header_title_label);
+        label_box.append (header_subtitle_label);
 
         var header = new Gtk.HeaderBar () {
-            title_widget = header_label
+            title_widget = label_box
         };
         header.pack_start (new_window_button);
         header.pack_start (open_button);
