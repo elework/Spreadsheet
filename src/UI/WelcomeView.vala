@@ -48,9 +48,9 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
-            halign = Gtk.Align.CENTER
+            halign = Gtk.Align.CENTER,
+            child = recents_listbox
         };
-        recent_scrolled.add (recents_listbox);
 
         var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             margin_top = 12,

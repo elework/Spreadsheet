@@ -61,18 +61,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
             Sheet? last_sheet = null;
             foreach (var page in value.pages) {
-                var scrolled = new Gtk.ScrolledWindow (null, null);
-                var viewport = new Gtk.Viewport (null, null);
-                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
-                scrolled.add (viewport);
-
                 var sheet = new Sheet (page, this);
                 foreach (var cell in page.cells) {
                     style_popup.foreach ((ch) => {
                         style_popup.remove (ch);
                     });
                     if (cell.selected) {
-                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                        style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                         break;
                     }
                 }
@@ -85,7 +80,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         function_list_bt.sensitive = true;
                         expression.sensitive = true;
                         style_button.sensitive = true;
-                        style_popup.add (new StyleModal (cell.font_style, cell.cell_style));
+                        style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                     } else {
                         expression.text = "";
                         function_list_bt.sensitive = false;
@@ -104,7 +99,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                     clear_formula ();
                 });
 
-                viewport.add (sheet);
+                var viewport = new Gtk.Viewport (null, null) {
+                    child = sheet
+                };
+                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
+
+                var scrolled = new Gtk.ScrolledWindow (null, null) {
+                    child = viewport
+                };
+
                 last_sheet = sheet;
 
                 var tabpage = tab_view.append (scrolled);
@@ -170,7 +173,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         header = build_header ();
         set_titlebar (header);
 
-        add (app_stack);
+        child = app_stack;
 
         add_action_entries (ACTION_ENTRIES, this);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_WELCOME, ACTION_ACCELS_WELCOME);
@@ -231,22 +234,13 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         expression.hexpand = true;
         expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
 
-        var popup = new Popover (function_list_bt);
-        popup.width_request = 320;
-        popup.height_request = 600;
-        popup.modal = true;
-        popup.position = PositionType.BOTTOM;
-        popup.border_width = 10;
-
-        function_list_bt.popover = popup;
-
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
         foreach (var func in FunctionManager.get_default ().functions) {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
             var row = new FunctionListRow (func);
-            function_list.add (row);
+            function_list.insert (row, -1);
         }
 
         function_list.row_activated.connect ((row) => {
@@ -263,14 +257,23 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var function_list_scrolled = new ScrolledWindow (null, null);
         function_list_scrolled.vexpand = true;
         function_list_scrolled.hexpand = true;
-        function_list_scrolled.add (function_list);
+        function_list_scrolled.child = function_list;
 
         var function_list_grid = new Grid ();
         function_list_grid.orientation = Orientation.HORIZONTAL;
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
-        popup.add (function_list_grid);
+        var popup = new Popover (function_list_bt) {
+            width_request = 320,
+            height_request = 600,
+            modal = true,
+            position = PositionType.BOTTOM,
+            border_width = 10,
+            child = function_list_grid
+        };
+
+        function_list_bt.popover = popup;
 
         function_list_bt.clicked.connect (popup.show_all);
 
@@ -328,7 +331,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         toolbar.attach (function_list_bt, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
-        toolbar.add (style_button);
+        toolbar.attach (style_button, 2, 0);
         return toolbar;
     }
 
