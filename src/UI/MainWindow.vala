@@ -248,7 +248,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_bt = new Gtk.MenuButton () {
             label = "f(x)",
             tooltip_text = _("Insert functions to a selected cell"),
-            popover = popup
+            popover = popup,
+            direction = Gtk.ArrowType.NONE
         };
         function_list_bt.add_css_class ("func-list-button");
 
@@ -270,7 +271,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         style_button = new Gtk.MenuButton () {
             label = "Open Sans 14",
             tooltip_text = _("Set colors to letters in a selected cell"),
-            popover = style_popup
+            popover = style_popup,
+            direction = Gtk.ArrowType.NONE
         };
         style_button.add_css_class ("style-button");
         /*
