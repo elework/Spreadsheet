@@ -25,7 +25,7 @@ public class Spreadsheet.Widgets.RoundedSquare : Gtk.DrawingArea {
         set_draw_func (draw);
     }
 
-    private void draw (Gtk.DrawingArea self, Cairo.Context cr, int width, int height) {
+    private void draw (Gtk.DrawingArea _self, Cairo.Context cr, int width, int height) {
         Gdk.cairo_set_source_rgba (cr, color);
         Util.draw_rounded_path (cr, 0, 0, width, height, radius);
         cr.fill ();

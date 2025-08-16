@@ -270,12 +270,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         var font_name_label = new Gtk.Label ("Open Sans 14");
 
-        Gdk.RGBA font_color = { 0, 0, 0, 1 };
+        Gdk.RGBA font_color = { 0.0f, 0.0f, 0.0f, 1.0f };
         var font_color_square = new RoundedSquare (font_color, 18, 18, 2) {
             halign = Gtk.Align.END
         };
 
-        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
+        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 18);
         style_summary.append (font_name_label);
         style_summary.append (font_color_square);
 
