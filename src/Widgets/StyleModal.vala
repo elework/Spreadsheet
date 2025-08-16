@@ -5,6 +5,11 @@
 
 public class Spreadsheet.StyleModal : Gtk.Grid {
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
+        margin_top = 10;
+        margin_bottom = 10;
+        margin_start = 10;
+        margin_end = 10;
+
         var style_stack = new Gtk.Stack ();
         style_stack.add_titled (create_fonts_grid (font_style), "fonts-grid", _("Font"));
         style_stack.add_titled (create_cells_grid (cell_style), "cells-grid", _("Cell"));
