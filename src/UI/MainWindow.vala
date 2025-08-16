@@ -101,7 +101,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 var viewport = new Gtk.Viewport (null, null) {
                     child = sheet
                 };
-                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
+                viewport.set_size_request (tab_view.get_width (), tab_view.get_height ());
 
                 var scrolled = new Gtk.ScrolledWindow () {
                     child = viewport

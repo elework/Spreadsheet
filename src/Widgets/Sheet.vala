@@ -298,7 +298,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // white background
         cr.set_source_rgb (1, 1, 1);
-        cr.rectangle (left_margin, height, get_allocated_width () - left_margin, get_allocated_height () - height);
+        cr.rectangle (left_margin, height, get_width () - left_margin, get_height () - height);
         cr.fill ();
 
         // draw the letters and the numbers on the side
