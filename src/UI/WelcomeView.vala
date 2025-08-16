@@ -36,14 +36,21 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         var recents_manager = RecentsManager.get_default ();
 
-        var recents_listbox = new Gtk.ListBox ();
-        recents_listbox.bind_model (recents_manager.recents_liststore, create_recent_row);
+        var recents_selection_model = new Gtk.NoSelection (recents_manager.recents_liststore);
+
+        var recents_factory = new Gtk.SignalListItemFactory ();
+        recents_factory.setup.connect (recents_setup);
+        recents_factory.bind.connect (recents_bind);
+
+        var recents_list = new Gtk.ListView (recents_selection_model, recents_factory) {
+            single_click_activate = true
+        };
 
         var recent_scrolled = new Gtk.ScrolledWindow () {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
             hexpand = true,
             vexpand = true,
-            child = recents_listbox
+            child = recents_list
         };
 
         var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
@@ -74,8 +81,9 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             open_choose_activated ();
         });
 
-        recents_listbox.row_activated.connect ((row) => {
-            open_activated (((IconLabelRow) row).secondary_text);
+        recents_list.activate.connect ((pos) => {
+            var path_obj = recents_manager.recents_liststore.get_item (pos) as StringObject;
+            open_activated (path_obj.string);
         });
 
         add_css_class (Granite.STYLE_CLASS_VIEW);
@@ -83,8 +91,17 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         append (recent_widgets_box);
     }
 
-    private Gtk.Widget create_recent_row (Object item) {
-        var path_obj = (StringObject) item;
+    private void recents_setup (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var row = new IconLabelRow ();
+        list_item.child = row;
+    }
+
+    private void recents_bind (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var path_obj = list_item.item as StringObject;
         var path = path_obj.string;
 
         string basename = Path.get_basename (path);
@@ -93,6 +110,9 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (GLib.Environment.get_home_dir (), "~");
         }
 
-        return new IconLabelRow ("x-office-spreadsheet", basename, display_path);
+        var row = list_item.child as IconLabelRow;
+        row.icon_name = "x-office-spreadsheet";
+        row.primary_text = basename;
+        row.secondary_text = display_path;
     }
 }
