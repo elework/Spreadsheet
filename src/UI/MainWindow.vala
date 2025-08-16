@@ -268,34 +268,24 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             position = PositionType.BOTTOM
         };
 
+        var font_name_label = new Gtk.Label ("Open Sans 14");
+
+        Gdk.RGBA font_color = { 0, 0, 0, 1 };
+        var font_color_square = new RoundedSquare (font_color, 18, 18, 2) {
+            halign = Gtk.Align.END
+        };
+
+        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
+        style_summary.append (font_name_label);
+        style_summary.append (font_color_square);
+
         style_button = new Gtk.MenuButton () {
-            label = "Open Sans 14",
+            child = style_summary,
             tooltip_text = _("Set colors to letters in a selected cell"),
             popover = style_popup,
             direction = Gtk.ArrowType.NONE
         };
         style_button.add_css_class ("style-button");
-        /*
-        bool resized = false;
-        style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
-            int spacing = 10;
-            int padding = 5;
-            int border = get_style_context ().get_border (StateFlags.NORMAL).left;
-            int square_size = style_button.get_allocated_height () - (border * 2);
-            int width = style_button.get_allocated_width ();
-
-            if (!resized) {
-                style_button.get_child ().halign = Gtk.Align.START;
-                style_button.width_request += width + spacing + square_size + border; // some space for the color icon
-                resized = true;
-            }
-
-            cr.set_source_rgb (0, 0, 0);
-            Util.draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
-            cr.fill ();
-            return false;
-        });
-        */
 
         var toolbar = new Grid () {
             margin_top = 10,

@@ -74,6 +74,7 @@ sources = files(
     'src' / 'Widgets' / 'ActionBar.vala',
     'src' / 'Widgets' / 'FunctionListRow.vala',
     'src' / 'Widgets' / 'IconLabelRow.vala',
+    'src' / 'Widgets' / 'RoundedSquare.vala',
     'src' / 'Widgets' / 'Sheet.vala',
     'src' / 'Widgets' / 'StyleModal.vala',
 )
