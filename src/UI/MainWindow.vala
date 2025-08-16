@@ -195,9 +195,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Grid toolbar () {
-        expression = new Entry ();
-        expression.hexpand = true;
-        expression.tooltip_text = _("Click to insert numbers or functions to a selected cell");
+        expression = new Entry () {
+            hexpand = true,
+            tooltip_text = _("Click to insert numbers or functions to a selected cell")
+        };
 
         var function_list = new ListBox ();
         var functions_liststore = new GLib.ListStore (Type.OBJECT);
@@ -215,14 +216,16 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
         });
 
-        var function_list_search_entry = new SearchEntry ();
-        function_list_search_entry.margin_bottom = 6;
-        function_list_search_entry.placeholder_text = _("Search functions");
+        var function_list_search_entry = new SearchEntry () {
+            margin_bottom = 6,
+            placeholder_text = _("Search functions")
+        };
 
-        var function_list_scrolled = new ScrolledWindow ();
-        function_list_scrolled.vexpand = true;
-        function_list_scrolled.hexpand = true;
-        function_list_scrolled.child = function_list;
+        var function_list_scrolled = new ScrolledWindow () {
+            vexpand = true,
+            hexpand = true,
+            child = function_list
+        };
 
         var function_list_grid = new Grid () {
             orientation = Orientation.HORIZONTAL,
@@ -259,8 +262,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             function_list.invalidate_filter ();
         });
 
-        style_popup = new Popover ();
-        style_popup.position = PositionType.BOTTOM;
+        style_popup = new Popover () {
+            position = PositionType.BOTTOM
+        };
 
         style_button = new Gtk.MenuButton () {
             label = "Open Sans 14",
@@ -318,12 +322,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             start_action_widget = new_tab_button
         };
 
-        var layout = new Box (Orientation.VERTICAL, 0);
-        layout.homogeneous = false;
+        var layout = new Box (Orientation.VERTICAL, 0) {
+            homogeneous = false
+        };
         layout.append (toolbar ());
         layout.append (tab_bar);
         layout.append (tab_view);
         layout.append (action_bar);
+
         return layout;
     }
 
