@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema path="/io/github/elework/spreadsheet/" id="io.github.elework.spreadsheet">
-    <key name="window-size" type="(ii)">
-      <default>(800, 700)</default>
-      <summary>Window size</summary>
-      <description>Size of last closed window</description>
+    <key name="window-width" type="i">
+      <default>800</default>
+      <summary>Window width</summary>
+      <description>Width of last closed window</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>700</default>
+      <summary>Window height</summary>
+      <description>Height of last closed window</description>
     </key>
     <key name="is-maximized" type="b">
       <default>false</default>

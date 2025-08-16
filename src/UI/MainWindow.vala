@@ -15,9 +15,15 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private RecentsManager recents_manager;
-    private uint configure_id;
 
     private Gtk.HeaderBar header;
+    private Gtk.Label header_title_label;
+    private Gtk.Label header_subtitle_label;
+    private Gtk.Button new_window_button;
+    private Gtk.Button open_button;
+    private Gtk.Button save_as_button;
+    private Gtk.Button redo_button;
+    private Gtk.Button undo_button;
 
     public Widgets.ActionBar action_bar { get; private set; }
 
@@ -29,7 +35,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private Gtk.MenuButton style_button;
     private Popover style_popup;
 
-    private Hdy.TabView tab_view = new Hdy.TabView ();
+    private Adw.TabView tab_view;
 
     public Sheet active_sheet {
         get {
@@ -52,8 +58,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
             }
 
-            header.title = value.title;
-            header.subtitle = display_path == null ? _("Not saved yet") : display_path;
+            header_title_label.label = value.title;
+            header_subtitle_label.label = display_path == null ? _("Not saved yet") : display_path;
 
             while (tab_view.n_pages > 0) {
                 tab_view.close_page (tab_view.get_nth_page (0));
@@ -63,18 +69,12 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             foreach (var page in value.pages) {
                 var sheet = new Sheet (page, this);
                 foreach (var cell in page.cells) {
-                    style_popup.foreach ((ch) => {
-                        style_popup.remove (ch);
-                    });
                     if (cell.selected) {
                         style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                         break;
                     }
                 }
                 sheet.selection_changed.connect ((cell) => {
-                    style_popup.foreach ((ch) => {
-                        style_popup.remove (ch);
-                    });
                     if (cell != null) {
                         expression.text = cell.formula;
                         function_list_bt.sensitive = true;
@@ -90,7 +90,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 });
                 sheet.forward_key_press.connect ((do_forward) => {
                     expression.grab_focus_without_selecting ();
-                    expression.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
 
                     return do_forward (expression);
                 });
@@ -102,9 +101,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 var viewport = new Gtk.Viewport (null, null) {
                     child = sheet
                 };
-                viewport.set_size_request (tab_view.get_allocated_width (), tab_view.get_allocated_height ());
+                viewport.set_size_request (tab_view.get_width (), tab_view.get_height ());
 
-                var scrolled = new Gtk.ScrolledWindow (null, null) {
+                var scrolled = new Gtk.ScrolledWindow () {
                     child = viewport
                 };
 
@@ -157,7 +156,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     construct {
         var cssprovider = new Gtk.CssProvider ();
         cssprovider.load_from_resource ("/io/github/elework/spreadsheet/Application.css");
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (),
+        Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (),
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
@@ -167,8 +166,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         edit_view = sheet ();
 
         app_stack = new Stack ();
-        app_stack.add (welcome_view);
-        app_stack.add (edit_view);
+        app_stack.add_child (welcome_view);
+        app_stack.add_child (edit_view);
 
         header = build_header ();
         set_titlebar (header);
@@ -196,36 +195,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_welcome ();
     }
 
-    protected override bool configure_event (Gdk.EventConfigure event) {
-        if (configure_id != 0) {
-            GLib.Source.remove (configure_id);
-        }
-
-        configure_id = Timeout.add (100, () => {
-            configure_id = 0;
-
-            Spreadsheet.App.settings.set_boolean ("is-maximized", is_maximized);
-
-            if (!is_maximized) {
-                int w;
-                int h;
-                get_size (out w, out h);
-                Spreadsheet.App.settings.set ("window-size", "(ii)", w, h);
-            }
-
-            return false;
-        });
-
-        return base.configure_event (event);
-    }
-
     private Grid toolbar () {
-        function_list_bt = new Gtk.MenuButton () {
-            label = "f(x)",
-            tooltip_text = _("Insert functions to a selected cell")
-        };
-        function_list_bt.get_style_context ().add_class ("func-list-button");
-
         expression = new Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
@@ -237,7 +207,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
             var row = new FunctionListRow (func);
-            function_list.insert (row, -1);
+            function_list.append (row);
         }
 
         function_list.row_activated.connect ((row) => {
@@ -252,7 +222,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             placeholder_text = _("Search functions")
         };
 
-        var function_list_scrolled = new ScrolledWindow (null, null) {
+        var function_list_scrolled = new ScrolledWindow () {
             vexpand = true,
             hexpand = true,
             child = function_list
@@ -268,17 +238,20 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
-        var popup = new Popover (function_list_bt) {
+        var popup = new Popover () {
             width_request = 320,
             height_request = 600,
-            modal = true,
             position = PositionType.BOTTOM,
             child = function_list_grid
         };
 
-        function_list_bt.popover = popup;
-
-        function_list_bt.clicked.connect (popup.show_all);
+        function_list_bt = new Gtk.MenuButton () {
+            label = "f(x)",
+            tooltip_text = _("Insert functions to a selected cell"),
+            popover = popup,
+            direction = Gtk.ArrowType.NONE
+        };
+        function_list_bt.add_css_class ("func-list-button");
 
         expression.activate.connect (update_formula);
 
@@ -291,46 +264,28 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             function_list.invalidate_filter ();
         });
 
-        style_button = new Gtk.MenuButton () {
-            label = "Open Sans 14",
-            tooltip_text = _("Set colors to letters in a selected cell")
-        };
-        style_button.get_style_context ().add_class ("style-button");
-        bool resized = false;
-        style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
-            int spacing = 10;
-            int padding = 5;
-            int border = get_style_context ().get_border (StateFlags.NORMAL).left;
-            int square_size = style_button.get_allocated_height () - (border * 2);
-            int width = style_button.get_allocated_width ();
-
-            if (!resized) {
-                style_button.get_child ().halign = Gtk.Align.START;
-                style_button.width_request += width + spacing + square_size + border; // some space for the color icon
-                resized = true;
-            }
-
-            cr.set_source_rgb (0, 0, 0);
-            Util.draw_rounded_path (cr, width - (border + square_size - padding), border + padding, square_size - (padding * 2), square_size - (padding * 2), 2);
-            cr.fill ();
-            return false;
-        });
-
-        style_popup = new Popover (style_button) {
-            modal = true,
+        style_popup = new Popover () {
             position = PositionType.BOTTOM
         };
 
-        style_button.popover = style_popup;
+        var font_name_label = new Gtk.Label ("Open Sans 14");
 
-        style_button.toggled.connect (() => {
-            if (style_button.active) {
-                style_popup.show_all ();
-            }
-        });
-        style_popup.closed.connect (() => {
-            style_button.active = false;
-        });
+        Gdk.RGBA font_color = { 0, 0, 0, 1 };
+        var font_color_square = new RoundedSquare (font_color, 18, 18, 2) {
+            halign = Gtk.Align.END
+        };
+
+        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
+        style_summary.append (font_name_label);
+        style_summary.append (font_color_square);
+
+        style_button = new Gtk.MenuButton () {
+            child = style_summary,
+            tooltip_text = _("Set colors to letters in a selected cell"),
+            popover = style_popup,
+            direction = Gtk.ArrowType.NONE
+        };
+        style_button.add_css_class ("style-button");
 
         var toolbar = new Grid () {
             margin_top = 10,
@@ -352,7 +307,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         // TODO: Create new sheet on click
         var new_tab_button = new Gtk.Button.from_icon_name ("list-add-symbolic");
 
-        var tab_bar = new Hdy.TabBar () {
+        tab_view = new Adw.TabView () {
+            vexpand = true
+        };
+
+        var tab_bar = new Adw.TabBar () {
             view = tab_view,
             autohide = false,
             expand_tabs = false,
@@ -363,10 +322,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         var layout = new Box (Orientation.VERTICAL, 0) {
             homogeneous = false
         };
-        layout.pack_start (toolbar (), false);
-        layout.pack_start (tab_bar, false);
-        layout.pack_start (tab_view);
-        layout.pack_end (action_bar, false);
+        layout.append (toolbar ());
+        layout.append (tab_bar);
+        layout.append (tab_view);
+        layout.append (action_bar);
 
         return layout;
     }
@@ -466,7 +425,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         file.add_page (page);
         this.file = file;
 
-        show_all ();
         save_sheet ();
 
         app_stack.visible_child = edit_view;
@@ -489,7 +447,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 return;
             }
 
-            open_sheet (chooser.get_filename ());
+            open_sheet (chooser.get_file ().get_path ());
 
             chooser.destroy ();
         });
@@ -515,7 +473,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 modal = true
             };
             error_dialog.response.connect (error_dialog.destroy);
-            error_dialog.show_all ();
+            error_dialog.present ();
 
             return false;
         }
@@ -524,7 +482,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         recents_manager.prepend (file.file_path);
         set_header_buttons_visibility (true);
         app_stack.visible_child = edit_view;
-        show_all ();
 
         return true;
     }
@@ -545,7 +502,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         filter.add_pattern ("*.csv");
         filter.set_filter_name (_("CSV files"));
         chooser.add_filter (filter);
-        chooser.do_overwrite_confirmation = true;
 
         chooser.response.connect ((response_id) => {
             if (response_id != ResponseType.ACCEPT) {
@@ -553,7 +509,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 return;
             }
 
-            path = chooser.get_filename ();
+            path = chooser.get_file ().get_path ();
             if (!path.has_suffix (".csv")) {
                 path += ".csv";
             }
@@ -564,7 +520,6 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             // Open the saved file
             try {
                 file = new CSVParser.from_file (path).parse ();
-                show_all ();
             } catch (ParserError err) {
                 debug ("Error: " + err.message);
             }
@@ -587,8 +542,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     public void show_welcome () {
         set_header_buttons_visibility (false);
-        header.title = _("Spreadsheet");
-        header.subtitle = null;
+        header_title_label.label = _("Spreadsheet");
+        header_subtitle_label.label = null;
         expression.text = "";
 
         app_stack.visible_child = welcome_view;
@@ -649,33 +604,83 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private Gtk.HeaderBar build_header () {
-        var new_window_button = new Gtk.Button.from_icon_name ("window-new", Gtk.IconSize.LARGE_TOOLBAR) {
+        var new_window_icon = new Gtk.Image.from_icon_name ("window-new") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        new_window_button = new Gtk.Button () {
+            child = new_window_icon,
             tooltip_markup = Granite.markup_accel_tooltip (App.ACTION_ACCELS_NEW, _("Open another window")),
             action_name = App.ACTION_PREFIX + App.ACTION_NAME_NEW
         };
+        new_window_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        var open_button = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR) {
+        var open_icon = new Gtk.Image.from_icon_name ("document-open") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        open_button = new Gtk.Button () {
+            child = open_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_OPEN, _("Open a file")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_OPEN
         };
+        open_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as", Gtk.IconSize.LARGE_TOOLBAR) {
+        var save_as_icon = new Gtk.Image.from_icon_name ("document-save-as") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        save_as_button = new Gtk.Button () {
+            child = save_as_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_SAVE_AS, _("Save this file with a different name")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_SAVE_AS
         };
+        save_as_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        var redo_button = new Gtk.Button.from_icon_name ("edit-redo", Gtk.IconSize.LARGE_TOOLBAR) {
+        var redo_icon = new Gtk.Image.from_icon_name ("edit-redo") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        redo_button = new Gtk.Button () {
+            child = redo_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_REDO, _("Redo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_REDO
         };
+        redo_button.add_css_class (Granite.STYLE_CLASS_FLAT);
 
-        var undo_button = new Gtk.Button.from_icon_name ("edit-undo", Gtk.IconSize.LARGE_TOOLBAR) {
+        var undo_icon = new Gtk.Image.from_icon_name ("edit-undo") {
+            icon_size = Gtk.IconSize.LARGE
+        };
+        undo_button = new Gtk.Button () {
+            child = undo_icon,
             tooltip_markup = Granite.markup_accel_tooltip (MainWindow.ACTION_ACCELS_UNDO, _("Undo")),
             action_name = MainWindow.ACTION_PREFIX + MainWindow.ACTION_NAME_UNDO
         };
+        undo_button.add_css_class (Granite.STYLE_CLASS_FLAT);
+
+        header_title_label = new Gtk.Label (null) {
+            halign = Gtk.Align.CENTER
+        };
+        header_title_label.add_css_class ("title");
+
+        header_subtitle_label = new Gtk.Label (null) {
+            halign = Gtk.Align.CENTER
+        };
+        header_subtitle_label.add_css_class (Granite.STYLE_CLASS_SMALL_LABEL);
+        header_subtitle_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+
+        header_subtitle_label.bind_property ("label",
+            header_subtitle_label, "visible",
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
+            (bindings, _label, ref _visible) => {
+                _visible = ((string) _label).length > 0;
+                return true;
+            });
+
+        var label_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
+            valign = Gtk.Align.CENTER
+        };
+        label_box.append (header_title_label);
+        label_box.append (header_subtitle_label);
 
         var header = new Gtk.HeaderBar () {
-            show_close_button = true
+            title_widget = label_box
         };
         header.pack_start (new_window_button);
         header.pack_start (open_button);
@@ -687,10 +692,11 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void set_header_buttons_visibility (bool is_visible) {
-        foreach (var button in header.get_children ()) {
-            button.visible = is_visible;
-            button.no_show_all = !is_visible;
-        }
+        new_window_button.visible = is_visible;
+        open_button.visible = is_visible;
+        save_as_button.visible = is_visible;
+        redo_button.visible = is_visible;
+        undo_button.visible = is_visible;
     }
 
     private void update_header () {
