@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
+public class Spreadsheet.Widgets.IconLabelRow : Gtk.ListBoxRow {
     public string icon_name { get; construct; }
     public string primary_text { get; construct; }
     public string secondary_text { get; construct; }
@@ -17,11 +17,6 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
     }
 
     construct {
-        margin_top = 6;
-        margin_bottom = 6;
-        margin_start= 6;
-        margin_end = 6;
-
         var icon = new Gtk.Image.from_icon_name (icon_name) {
             halign = Gtk.Align.CENTER,
             valign = Gtk.Align.CENTER,
@@ -40,8 +35,16 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
         };
         secondary_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
 
-        attach (icon, 0, 0, 1, 2);
-        attach (primary_label, 1, 0, 1, 1);
-        attach (secondary_label, 1, 1, 1, 1);
+        var grid = new Gtk.Grid () {
+            margin_top = 6,
+            margin_bottom = 6,
+            margin_start= 6,
+            margin_end = 6
+        };
+        grid.attach (icon, 0, 0, 1, 2);
+        grid.attach (primary_label, 1, 0, 1, 1);
+        grid.attach (secondary_label, 1, 1, 1, 1);
+
+        child = grid;
     }
 }
