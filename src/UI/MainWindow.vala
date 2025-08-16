@@ -286,10 +286,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         });
 
         style_button = new Gtk.MenuButton () {
-            label = "Open Sans 14"
+            label = "Open Sans 14",
+            tooltip_text = _("Set colors to letters in a selected cell")
         };
         style_button.get_style_context ().add_class ("style-button");
-        style_button.tooltip_text = _("Set colors to letters in a selected cell");
         bool resized = false;
         style_button.draw.connect ((cr) => { // draw the color rectangle on the right of the style button
             int spacing = 10;
