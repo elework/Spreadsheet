@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017-2021 Spreadsheet Developers -->
+<component type="desktop-application">
+  <id>io.github.elework.spreadsheet</id>
+
+  <name>Spreadsheet</name>
+  <summary>Create simple and beautiful spreadsheets</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <description>
+    <p>
+      A spreadsheet app that lets you create simple and beautiful spreadsheets.
+    </p>
+    <p>
+      Features include:
+    </p>
+    <ul>
+      <li>Four arithmetic operations</li>
+      <li>Advanced mathematics operations like modulo or trigonometric functions</li>
+      <li>Referencing other cells like <code>A1</code></li>
+      <li>Load and save sheets in the CSV format</li>
+      <li>Save sheets automatically when created or modified</li>
+      <li>Open CSV files from your file manager</li>
+    </ul>
+  </description>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2025-08-17">
+      <description translate="no">
+        <ul>
+          <li>Initial release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <developer id="io.github.elework">
+    <name>Spreadsheet Developers</name>
+  </developer>
+
+  <url type="homepage">https://github.com/elework/Spreadsheet</url>
+  <url type="bugtracker">https://github.com/elework/Spreadsheet/issues</url>
+  <url type="help">https://github.com/elework/Spreadsheet/discussions</url>
+  <url type="vcs-browser">https://github.com/elework/Spreadsheet</url>
+  <url type="translate">https://github.com/elework/Spreadsheet/tree/main/po</url>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#9bdb4d</color>
+    <color type="primary" scheme_preference="dark">#206b00</color>
+  </branding>
+
+  <launchable type="desktop-id">io.github.elework.spreadsheet.desktop</launchable>
+  <translation type="gettext">io.github.elework.spreadsheet</translation>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/elework/Spreadsheet/main/screen.png</image>
+    </screenshot>
+  </screenshots>
+</component>
