@@ -461,8 +461,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         page.title = _("Sheet 1");
 
         var file = new SpreadSheet ();
-        file.title = file_name;
         file.file_path = path.get_path ();
+        file.title = Path.get_basename (file.file_path);
         file.add_page (page);
         this.file = file;
 
