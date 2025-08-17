@@ -174,6 +174,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         child = app_stack;
 
+        header_title_label.bind_property ("label",
+            this, "title",
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE);
+
         add_action_entries (ACTION_ENTRIES, this);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_WELCOME, ACTION_ACCELS_WELCOME);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_NAME_OPEN, ACTION_ACCELS_OPEN);
