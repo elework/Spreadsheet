@@ -94,7 +94,7 @@ public class Spreadsheet.App : Gtk.Application {
          * Don't bind Settings to windows because state change in one window
          * affects all of other windows.
          */
-        window.maximized =  App.settings.get_boolean ("is-maximized");
+        window.maximized = App.settings.get_boolean ("is-maximized");
         window.default_width = App.settings.get_int ("window-width");
         window.default_height = App.settings.get_int ("window-height");
 
