@@ -16,7 +16,7 @@ Search for your language code (e.g. en = English, zh_CN = Chinese Simplified). S
 
 ## Translate .po Files
 
-Now what you've been waiting for! Copy `po/io.github.elework.spreadsheet.pot` and name `po/<language_code>.po` and copy `po/extra/extra.pot` and name `po/extra/<language_code>.po`. Then translate these created .po files using a .po file editor of your choice (e.g. Poedit). The former file contains strings for the app itself and the latter is for metadata files (.appdata.xml and .desktop files).
+Now what you've been waiting for! Copy `po/io.github.elework.spreadsheet.pot` and name `po/<language_code>.po` and copy `po/extra/extra.pot` and name `po/extra/<language_code>.po`. Then translate these created .po files using a .po file editor of your choice (e.g. Poedit). The former file contains strings for the app itself and the latter is for metadata files (.metainfo.xml and .desktop files).
 
 ## Commit Your Translation Works
 
