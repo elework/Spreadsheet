@@ -85,8 +85,7 @@ executable(meson.project_name(),
     sources,
     dependencies: [
         dependency('gee-0.8'),
-        # Version limitation for GLib.ListStore.find_with_equal_func
-        dependency('gio-2.0', version: '>= 2.64'),
+        dependency('gio-2.0', version: '>= 2.74'), # GLib.ListStore.n_items
         dependency('glib-2.0'),
         dependency('gobject-2.0'),
         dependency('granite-7'),
