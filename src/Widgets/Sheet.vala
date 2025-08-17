@@ -71,6 +71,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             button = Gdk.BUTTON_PRIMARY
         };
         button_press_controller.pressed.connect (on_click);
+        add_controller (button_press_controller);
 
         update_zoom_level ();
 
@@ -84,6 +85,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             propagation_phase = Gtk.PropagationPhase.NONE
         };
         scroll_controller.scroll.connect (on_scroll);
+        add_controller (scroll_controller);
 
         var key_press_controller = new Gtk.EventControllerKey ();
         key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
@@ -153,9 +155,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             // Deactivate the scroll event handler
             scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
         });
-
-        add_controller (button_press_controller);
-        add_controller (scroll_controller);
         add_controller (key_press_controller);
     }
 
