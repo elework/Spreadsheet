@@ -17,16 +17,19 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
         var icon = new Gtk.Image () {
             halign = Gtk.Align.CENTER,
             valign = Gtk.Align.CENTER,
+            margin_end = 6,
             icon_size = Gtk.IconSize.LARGE
         };
 
         var primary_label = new Gtk.Label (null) {
+            halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
         };
         primary_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
 
         var secondary_label = new Gtk.Label (null) {
+            halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
         };
