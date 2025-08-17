@@ -88,7 +88,6 @@ public class Spreadsheet.App : Gtk.Application {
 
     private MainWindow new_window () {
         var window = new MainWindow (this);
-        window.present ();
 
         /*
          * Don't bind Settings to windows because state change in one window
@@ -101,6 +100,8 @@ public class Spreadsheet.App : Gtk.Application {
         App.settings.bind ("is-maximized", window, "maximized", SettingsBindFlags.SET);
         App.settings.bind ("window-width", window, "default_width", SettingsBindFlags.SET);
         App.settings.bind ("window-height", window, "default_height", SettingsBindFlags.SET);
+
+        window.present ();
 
         return window;
     }
