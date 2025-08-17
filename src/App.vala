@@ -88,13 +88,16 @@ public class Spreadsheet.App : Gtk.Application {
 
     private MainWindow new_window () {
         var window = new MainWindow (this);
-        // TODO: Does it still valid that window must present first before binding in GTK 4?
         window.present ();
 
-        App.settings.bind ("window-height", window, "default-height", SettingsBindFlags.DEFAULT);
-        App.settings.bind ("window-width", window, "default-width", SettingsBindFlags.DEFAULT);
-        // TODO: Doesn't this make the window bigger and bigger on startup?
-        App.settings.bind ("is-maximized", window, "maximized", SettingsBindFlags.DEFAULT);
+        window.default_width = App.settings.get_int ("window-width");
+        App.settings.bind ("window-width", window, "default_width", SettingsBindFlags.SET);
+
+        window.default_height = App.settings.get_int ("window-height");
+        App.settings.bind ("window-height", window, "default_height", SettingsBindFlags.SET);
+
+        window.maximized =  App.settings.get_boolean ("is-maximized");
+        App.settings.bind ("is-maximized", window, "maximized", SettingsBindFlags.SET);
 
         return window;
     }
