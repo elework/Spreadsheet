@@ -66,6 +66,8 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             });
         }
         can_focus = true;
+        focusable = true;
+        focus_on_click = true;
 
         var button_press_controller = new Gtk.GestureClick () {
             button = Gdk.BUTTON_PRIMARY
