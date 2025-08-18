@@ -91,6 +91,9 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                 sheet.forward_key_press.connect ((do_forward) => {
                     expression.grab_focus_without_selecting ();
 
+                    var common_text = new Gtk.Text.with_buffer (expression.buffer);
+                    common_text.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
+
                     return do_forward (expression);
                 });
 
