@@ -132,7 +132,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     public const string[] ACTION_ACCELS_OPEN = { "<Control>o", null };
     public const string[] ACTION_ACCELS_SAVE_AS = { "<Control><Shift>s", null };
     public const string[] ACTION_ACCELS_UNDO = { "<Control>z", null };
-    public const string[] ACTION_ACCELS_REDO = { "<Control><Shift>z", null };
+    public const string[] ACTION_ACCELS_REDO = { "<Control><Shift>z", "<Control>y", null };
     private const string[] ACTION_ACCELS_WELCOME = { "<Alt>Home", null };
     private const string[] ACTION_ACCELS_SAVE = { "<Control>s", null };
     private const string[] ACTION_ACCELS_FOCUS_EXPRESSION = { "F2", null };
