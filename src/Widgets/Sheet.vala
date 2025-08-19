@@ -65,7 +65,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 window.save_sheet ();
             });
         }
-        can_focus = true;
         focusable = true;
         focus_on_click = true;
 
