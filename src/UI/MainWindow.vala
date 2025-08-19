@@ -282,7 +282,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             halign = Gtk.Align.END
         };
 
-        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 18);
+        var style_summary = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 19);
         style_summary.append (font_name_label);
         style_summary.append (font_color_square);
 
