@@ -14,21 +14,25 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
         margin_start= 6;
         margin_end = 6;
 
-        var icon = new Gtk.Image.from_icon_name ("image-missing") {
+        icon_name = "image-missing";
+        primary_text = "";
+        secondary_text = "";
+
+        var icon = new Gtk.Image.from_icon_name (icon_name) {
             halign = Gtk.Align.CENTER,
             valign = Gtk.Align.CENTER,
             margin_end = 6,
             icon_size = Gtk.IconSize.LARGE
         };
 
-        var primary_label = new Gtk.Label ("") {
+        var primary_label = new Gtk.Label (primary_text) {
             halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
         };
         primary_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
 
-        var secondary_label = new Gtk.Label ("") {
+        var secondary_label = new Gtk.Label (secondary_text) {
             halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
