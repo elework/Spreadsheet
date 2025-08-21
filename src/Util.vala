@@ -17,7 +17,7 @@ namespace Spreadsheet.Util {
     }
 
     public static string keyval_to_utf8 (uint keyval) {
-        unichar unicode = Gdk.keyval_to_unicode (keyval);
+        var unicode = ((unichar) Gdk.keyval_to_unicode (keyval));
 
         // HACK: I wish if Vala binding for g_unichar_to_utf8() would be separated like
         //     public string to_utf8 ()
