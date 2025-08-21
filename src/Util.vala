@@ -15,4 +15,18 @@ namespace Spreadsheet.Util {
         ctx.arc (x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
         ctx.close_path ();
     }
+
+    public static string keyval_to_utf8 (uint keyval) {
+        unichar unicode = Gdk.keyval_to_unicode (keyval);
+
+        // HACK: I wish if Vala binding for g_unichar_to_utf8() would be separated like
+        //     public string to_utf8 ()
+        //     public int compute_utf8_len ()
+        // instead of
+        //     public int to_utf8 (string? outbuf)
+        char input_text[6];
+        unicode.to_utf8 ((string ?) input_text);
+
+        return (string) input_text;
+    }
 }

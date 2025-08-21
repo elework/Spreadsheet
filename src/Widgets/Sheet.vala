@@ -40,8 +40,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     public signal void selection_cleared ();
 
-    public delegate bool DoForwardFunc (Gtk.Widget widget);
-    public signal bool forward_key_press (DoForwardFunc forward_func);
+    public signal void forward_input_text (string text);
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -148,9 +147,10 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             }
 
             // No special key is used, thus the intent is user input
-            return forward_key_press ((widget) => {
-                return key_press_controller.forward (widget);
-            });
+            string input_text = Util.keyval_to_utf8 (keyval);
+            forward_input_text (input_text);
+
+            return true;
         });
         key_press_controller.key_released.connect ((keyval, keycode, state) => {
             // Deactivate the scroll event handler

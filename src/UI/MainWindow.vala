@@ -88,13 +88,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
                         style_button.sensitive = false;
                     }
                 });
-                sheet.forward_key_press.connect ((do_forward) => {
+                sheet.forward_input_text.connect ((text) => {
                     expression.grab_focus_without_selecting ();
 
-                    var common_text = new Gtk.Text.with_buffer (expression.buffer);
-                    common_text.move_cursor (Gtk.MovementStep.BUFFER_ENDS, expression.text.length, false);
+                    int pos = -1;
+                    expression.do_insert_text (text, -1, ref pos);
 
-                    return do_forward (expression);
+                    // Set the cursor position after the last character of Entry
+                    expression.set_position (-1);
                 });
 
                 sheet.selection_cleared.connect (() => {
