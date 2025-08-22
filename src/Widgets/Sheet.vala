@@ -273,9 +273,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         Gdk.RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         Gdk.RGBA default_font_color = { 0, 0, 0, 1 };
 
-        var style = window.get_style_context ();
-
-        Gdk.RGBA normal = style.get_color ();
+        Gdk.RGBA normal = get_color ();
 
         // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
         Gdk.RGBA selected_fill = { 0 };
