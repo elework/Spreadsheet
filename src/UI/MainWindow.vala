@@ -436,28 +436,30 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         id++;
     }
 
-    private void open_sheet_choose () {
-        var chooser = new Gtk.FileChooserNative (
-            _("Open a file"), this, Gtk.FileChooserAction.OPEN, _("_Open"), _("_Cancel")
-        );
+    private async void open_sheet_choose () {
+        var csv_filter = new Gtk.FileFilter () {
+            name = _("CSV files"),
+        };
+        csv_filter.add_pattern ("*.csv");
 
-        Gtk.FileFilter filter = new Gtk.FileFilter ();
-        filter.add_pattern ("*.csv");
-        filter.set_filter_name (_("CSV files"));
-        chooser.add_filter (filter);
+        var filters = new ListStore (typeof (Gtk.FileFilter));
+        filters.append (csv_filter);
 
-        chooser.response.connect ((response_id) => {
-            if (response_id != Gtk.ResponseType.ACCEPT) {
-                chooser.destroy ();
-                return;
-            }
+        var file_dialog = new Gtk.FileDialog () {
+            title = _("Open a file"),
+            accept_label = _("_Open"),
+            filters = filters
+        };
 
-            open_sheet (chooser.get_file ().get_path ());
+        File file;
+        try {
+            file = yield file_dialog.open (this, null);
+        } catch (Error err) {
+            warning ("Failed to open file: %s", err.message);
+            return;
+        }
 
-            chooser.destroy ();
-        });
-
-        chooser.show ();
+        open_sheet (file.get_path ());
     }
 
     public bool open_sheet (string path) {
@@ -497,42 +499,44 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         recents_manager.prepend (file.file_path);
     }
 
-    private void save_as_sheet () {
-        string path = "";
-        var chooser = new Gtk.FileChooserNative (
-            _("Save your work"), this, Gtk.FileChooserAction.SAVE, _("_Save"), _("_Cancel")
-        );
+    private async void save_as_sheet () {
+        var csv_filter = new Gtk.FileFilter () {
+            name = _("CSV files"),
+        };
+        csv_filter.add_pattern ("*.csv");
 
-        Gtk.FileFilter filter = new Gtk.FileFilter ();
-        filter.add_pattern ("*.csv");
-        filter.set_filter_name (_("CSV files"));
-        chooser.add_filter (filter);
+        var filters = new ListStore (typeof (Gtk.FileFilter));
+        filters.append (csv_filter);
 
-        chooser.response.connect ((response_id) => {
-            if (response_id != Gtk.ResponseType.ACCEPT) {
-                chooser.destroy ();
-                return;
-            }
+        var file_dialog = new Gtk.FileDialog () {
+            title = _("Save your work"),
+            accept_label = _("_Save"),
+            filters = filters
+        };
 
-            path = chooser.get_file ().get_path ();
-            if (!path.has_suffix (".csv")) {
-                path += ".csv";
-            }
+        File file;
+        try {
+            file = yield file_dialog.save (this, null);
+        } catch (Error err) {
+            warning ("Failed to save file: %s", err.message);
+            return;
+        }
 
-            new CSVWriter (active_sheet.page).write_to_file (path);
-            recents_manager.prepend (path);
+        string path = file.get_path ();
+        if (!path.has_suffix (".csv")) {
+            path += ".csv";
+        }
 
-            // Open the saved file
-            try {
-                file = new CSVParser.from_file (path).parse ();
-            } catch (ParserError err) {
-                debug ("Error: " + err.message);
-            }
+        new CSVWriter (active_sheet.page).write_to_file (path);
+        recents_manager.prepend (path);
 
-            chooser.destroy ();
-        });
-
-        chooser.show ();
+        // Open the saved file
+        try {
+            this.file = new CSVParser.from_file (path).parse ();
+        } catch (ParserError err) {
+            debug ("Error: " + err.message);
+            return;
+        }
     }
 
     private void undo_sheet () {
