@@ -26,8 +26,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     }
 
     construct {
-        // TODO: Replace with Gtk.StringList after porting to GTK 4
-        recents_liststore = new ListStore (typeof (StringObject));
+        recents_liststore = new ListStore (typeof (RecentItem));
         load ();
         sync ();
     }
@@ -48,8 +47,8 @@ public class Spreadsheet.Services.RecentsManager : Object {
 
         uint recents_num = uint.min (recents_liststore.n_items, RECENTS_NUM_MAX);
         for (uint i = 0; i < recents_num; i++) {
-            var obj = ((StringObject) recents_liststore.get_item (i));
-            new_recents.append_val (obj.string);
+            var obj = ((RecentItem) recents_liststore.get_item (i));
+            new_recents.append_val (obj.path);
         }
 
         Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
@@ -68,13 +67,13 @@ public class Spreadsheet.Services.RecentsManager : Object {
             return false;
         }
 
-        var path_obj = new StringObject (path);
+        var recent_item = new RecentItem (path);
 
         uint pos;
         bool dup_exists = recents_liststore.find_with_equal_func (
-            path_obj,
+            recent_item,
             ((a, b) => {
-                return ((StringObject) a).string == ((StringObject) b).string;
+                return ((RecentItem) a).path == ((RecentItem) b).path;
             }),
             out pos
         );
@@ -84,7 +83,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
 
         cut_off (RECENTS_NUM_MAX - 1);
 
-        recents_liststore.insert (0, path_obj);
+        recents_liststore.insert (0, recent_item);
 
         return true;
     }

@@ -82,8 +82,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         });
 
         recents_list.activate.connect ((pos) => {
-            var path_obj = recents_manager.recents_liststore.get_item (pos) as StringObject;
-            open_activated (path_obj.string);
+            var recent_item = recents_manager.recents_liststore.get_item (pos) as RecentItem;
+            open_activated (recent_item.path);
         });
 
         add_css_class (Granite.STYLE_CLASS_VIEW);
@@ -101,8 +101,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     private void recents_bind (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var path_obj = list_item.item as StringObject;
-        var path = path_obj.string;
+        var recent_item = list_item.item as RecentItem;
+        var path = recent_item.path;
 
         string basename = Path.get_basename (path);
         string display_path = path;
