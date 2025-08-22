@@ -34,7 +34,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     private void load () {
         recents_liststore.remove_all ();
 
-        var recents_gsettings = Spreadsheet.App.settings.get_strv ("recent-files");
+        var recents_gsettings = App.settings.get_strv ("recent-files");
 
         int recents_num = int.min (recents_gsettings.length, RECENTS_NUM_MAX);
         for (int i_rev = (recents_num - 1); i_rev >= 0; i_rev--) {
@@ -51,7 +51,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
             new_recents.append_val (obj.path);
         }
 
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
+        App.settings.set_strv ("recent-files", new_recents.data);
     }
 
     private void cut_off (uint preserve_count) {
