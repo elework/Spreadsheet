@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Spreadsheet.Services.CSV;
-using Spreadsheet.Services.Parsing;
 using Spreadsheet.UI;
 
 public class Spreadsheet.App : Gtk.Application {
