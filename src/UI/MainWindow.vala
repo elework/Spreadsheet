@@ -440,7 +440,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         var csv_filter = new Gtk.FileFilter () {
             name = _("CSV files"),
         };
-        csv_filter.add_pattern ("*.csv");
+        csv_filter.add_mime_type ("text/csv");
 
         var filters = new ListStore (typeof (Gtk.FileFilter));
         filters.append (csv_filter);
@@ -503,7 +503,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         var csv_filter = new Gtk.FileFilter () {
             name = _("CSV files"),
         };
-        csv_filter.add_pattern ("*.csv");
+        csv_filter.add_mime_type ("text/csv");
 
         var filters = new ListStore (typeof (Gtk.FileFilter));
         filters.append (csv_filter);
