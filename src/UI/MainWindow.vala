@@ -344,7 +344,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     }
 
     private void on_open_activate () {
-        open_sheet_choose ();
+        open_sheet_choose.begin ();
     }
 
     private void on_save_activate () {
@@ -360,7 +360,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             return;
         }
 
-        save_as_sheet ();
+        save_as_sheet.begin ();
     }
 
     private void on_undo_activate () {
