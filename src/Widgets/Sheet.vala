@@ -40,12 +40,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     public signal void selection_cleared ();
 
-    public delegate bool DoForwardFunc (Gtk.Widget widget);
-    public signal bool forward_key_press (DoForwardFunc forward_func);
-
-    // Keep as a member variable instead of a local variable despite unnecessary in the view of scope
-    // to prevent from being freed and thus button press is not handled
-    private Gtk.GestureMultiPress button_press_controller;
+    public signal void forward_input_text (string text);
 
     public Sheet (Page page, MainWindow window) {
         this.page = page;
@@ -69,12 +64,14 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 window.save_sheet ();
             });
         }
-        can_focus = true;
+        focusable = true;
+        focus_on_click = true;
 
-        button_press_controller = new Gtk.GestureMultiPress (this) {
+        var button_press_controller = new Gtk.GestureClick () {
             button = Gdk.BUTTON_PRIMARY
         };
         button_press_controller.pressed.connect (on_click);
+        add_controller (button_press_controller);
 
         update_zoom_level ();
 
@@ -82,14 +79,15 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             update_zoom_level ();
         });
 
-        var scroll_controller = new Gtk.EventControllerScroll (this, Gtk.EventControllerScrollFlags.VERTICAL) {
+        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
             // Scroll event handler is not active in Sheet without Ctrl key press
             // so that scrolling the viewport by Gtk.ScrolledWindow works
             propagation_phase = Gtk.PropagationPhase.NONE
         };
         scroll_controller.scroll.connect (on_scroll);
+        add_controller (scroll_controller);
 
-        var key_press_controller = new Gtk.EventControllerKey (this);
+        var key_press_controller = new Gtk.EventControllerKey ();
         key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
             if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
                 switch (keyval) {
@@ -149,14 +147,16 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             }
 
             // No special key is used, thus the intent is user input
-            return forward_key_press ((widget) => {
-                return key_press_controller.forward (widget);
-            });
+            string input_text = Util.keyval_to_utf8 (keyval);
+            forward_input_text (input_text);
+
+            return true;
         });
         key_press_controller.key_released.connect ((keyval, keycode, state) => {
             // Deactivate the scroll event handler
             scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
         });
+        add_controller (key_press_controller);
     }
 
     private void select (int line, int col) {
@@ -220,14 +220,18 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         grab_focus ();
     }
 
-    private void on_scroll (double x_delta, double y_delta) {
+    private bool on_scroll (double x_delta, double y_delta) {
         if (y_delta > 0) {
             window.action_bar.zoom_level -= 10;
+            return true;
         }
 
         if (y_delta < 0) {
             window.action_bar.zoom_level += 10;
+            return true;
         }
+
+        return false;
     }
 
     private double get_left_margin () {
@@ -264,13 +268,18 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         queue_draw ();
     }
 
-    public override bool draw (Context cr) {
-        RGBA default_cell_stroke = { 0.3, 0.3, 0.3, 1 };
+    protected override void snapshot (Gtk.Snapshot snapshot) {
+        Graphene.Rect bounds;
+        compute_bounds (this, out bounds);
+
+        Cairo.Context cr = snapshot.append_cairo (bounds);
+
+        RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         RGBA default_font_color = { 0, 0, 0, 1 };
 
         var style = window.get_style_context ();
 
-        RGBA normal = style.get_color (Gtk.StateFlags.NORMAL);
+        RGBA normal = style.get_color ();
 
         // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
         RGBA selected_fill = { 0 };
@@ -289,7 +298,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // white background
         cr.set_source_rgb (1, 1, 1);
-        cr.rectangle (left_margin, height, get_allocated_width () - left_margin, get_allocated_height () - height);
+        cr.rectangle (left_margin, height, get_width () - left_margin, get_height () - height);
         cr.fill ();
 
         // draw the letters and the numbers on the side
@@ -442,7 +451,5 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             cr.show_text (cell.display_content);
             cr.restore ();
         }
-
-        return true;
     }
 }

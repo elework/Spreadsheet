@@ -5,6 +5,7 @@
 
 using Spreadsheet.Models;
 using Spreadsheet.Services;
+using Spreadsheet.Widgets;
 
 public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void new_activated ();
@@ -18,19 +19,11 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         orientation = Gtk.Orientation.HORIZONTAL;
         spacing = 0;
 
-        var welcome = new Granite.Widgets.Welcome (
-            _("Spreadsheet"),
-            _("Start something new, or continue what you have been working on.")
-        );
-        welcome.append ("document-new", _("New Sheet"), _("Create an empty sheet"));
-        welcome.append ("document-open", _("Open File"), _("Choose a saved file"));
-        welcome.activated.connect ((index) => {
-            if (index == 0) {
-                new_activated ();
-            } else if (index == 1) {
-                open_choose_activated ();
-            }
-        });
+        var welcome = new Granite.Placeholder (_("Spreadsheet")) {
+            description = _("Start something new, or continue what you have been working on.")
+        };
+        var new_button = welcome.append_button (new ThemedIcon ("document-new"), _("New Sheet"), _("Create an empty sheet"));
+        var open_button = welcome.append_button (new ThemedIcon ("document-open"), _("Open File"), _("Choose a saved file"));
 
         var recent_title = new Gtk.Label (_("Recent files")) {
             halign = Gtk.Align.CENTER,
@@ -39,17 +32,25 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             margin_start = 24,
             margin_end = 24
         };
-        recent_title.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+        recent_title.add_css_class (Granite.STYLE_CLASS_H2_LABEL);
 
         var recents_manager = RecentsManager.get_default ();
 
-        var recents_listbox = new Gtk.ListBox ();
-        recents_listbox.bind_model (recents_manager.recents_liststore, create_recent_row);
+        var recents_selection_model = new Gtk.NoSelection (recents_manager.recents_liststore);
 
-        var recent_scrolled = new Gtk.ScrolledWindow (null, null) {
+        var recents_factory = new Gtk.SignalListItemFactory ();
+        recents_factory.setup.connect (recents_setup);
+        recents_factory.bind.connect (recents_bind);
+
+        var recents_list = new Gtk.ListView (recents_selection_model, recents_factory) {
+            single_click_activate = true
+        };
+
+        var recent_scrolled = new Gtk.ScrolledWindow () {
             hscrollbar_policy = Gtk.PolicyType.NEVER,
-            halign = Gtk.Align.CENTER,
-            child = recents_listbox
+            hexpand = true,
+            vexpand = true,
+            child = recents_list
         };
 
         var recent_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
@@ -58,28 +59,49 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             margin_start = 12,
             margin_end = 12
         };
-        recent_box.pack_start (recent_title, false, false);
-        recent_box.pack_start (recent_scrolled);
+        recent_box.append (recent_title);
+        recent_box.append (recent_scrolled);
 
         var recent_widgets_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        recent_widgets_box.pack_start (new Gtk.Separator (Gtk.Orientation.VERTICAL), false);
-        recent_widgets_box.pack_start (recent_box);
+        recent_widgets_box.append (new Gtk.Separator (Gtk.Orientation.VERTICAL));
+        recent_widgets_box.append (recent_box);
 
         recents_manager.recents_liststore.bind_property ("n_items",
-            recent_widgets_box, "no_show_all",
+            recent_widgets_box, "visible",
             BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
-            (binding, _n_items, ref _no_show_all) => {
-                _no_show_all = ((uint) _n_items) == 0;
+            (binding, _n_items, ref _visible) => {
+                _visible = ((uint) _n_items) > 0;
                 return true;
             });
 
-        get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
-        pack_start (welcome);
-        pack_start (recent_widgets_box);
+        new_button.clicked.connect (() => {
+            new_activated ();
+        });
+        open_button.clicked.connect (() => {
+            open_choose_activated ();
+        });
+
+        recents_list.activate.connect ((pos) => {
+            var path_obj = recents_manager.recents_liststore.get_item (pos) as StringObject;
+            open_activated (path_obj.string);
+        });
+
+        add_css_class (Granite.STYLE_CLASS_VIEW);
+        append (welcome);
+        append (recent_widgets_box);
     }
 
-    private Gtk.Widget create_recent_row (Object item) {
-        var path_obj = (StringObject) item;
+    private void recents_setup (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var row = new IconLabelRow ();
+        list_item.child = row;
+    }
+
+    private void recents_bind (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var path_obj = list_item.item as StringObject;
         var path = path_obj.string;
 
         string basename = Path.get_basename (path);
@@ -88,14 +110,9 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (GLib.Environment.get_home_dir (), "~");
         }
 
-        // IconSize.DIALOG because it's 48px, just like WelcomeButton needs
-        var spreadsheet_icon = new Gtk.Image.from_icon_name ("x-office-spreadsheet", Gtk.IconSize.DIALOG);
-
-        var recent_row = new Granite.Widgets.WelcomeButton (spreadsheet_icon, basename, display_path);
-        recent_row.clicked.connect (() => {
-            open_activated (path);
-        });
-
-        return recent_row;
+        var row = list_item.child as IconLabelRow;
+        row.icon_name = "x-office-spreadsheet";
+        row.primary_text = basename;
+        row.secondary_text = display_path;
     }
 }

@@ -24,11 +24,11 @@ public class Spreadsheet.Widgets.FunctionListRow : Gtk.ListBoxRow {
             justify = Gtk.Justification.FILL,
             halign = Gtk.Align.START,
         };
-        doc_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
+        doc_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
 
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-        box.pack_start (name_label);
-        box.pack_start (doc_label);
+        box.append (name_label);
+        box.append (doc_label);
 
         selectable = false;
         margin_top = 3;
@@ -36,7 +36,7 @@ public class Spreadsheet.Widgets.FunctionListRow : Gtk.ListBoxRow {
 
         realize.connect (() => {
             // Use the pointing hand cursor instead of the normal arrow cursor
-            get_window ().cursor = new Gdk.Cursor.from_name (get_display (), "pointer");
+            cursor = new Gdk.Cursor.from_name ("pointer", null);
         });
 
         child = box;

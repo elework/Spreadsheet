@@ -89,17 +89,19 @@ public class Spreadsheet.App : Gtk.Application {
     private MainWindow new_window () {
         var window = new MainWindow (this);
 
-        bool is_maximized = App.settings.get_boolean ("is-maximized");
-        if (is_maximized) {
-            window.maximize ();
-        }
+        /*
+         * Don't bind Settings to windows because state change in one window
+         * affects all of other windows.
+         */
+        window.maximized = App.settings.get_boolean ("is-maximized");
+        window.default_width = App.settings.get_int ("window-width");
+        window.default_height = App.settings.get_int ("window-height");
 
-        int window_width;
-        int window_height;
-        App.settings.get ("window-size", "(ii)", out window_width, out window_height);
-        window.set_default_size (window_width, window_height);
+        App.settings.bind ("is-maximized", window, "maximized", SettingsBindFlags.SET);
+        App.settings.bind ("window-width", window, "default_width", SettingsBindFlags.SET);
+        App.settings.bind ("window-height", window, "default_height", SettingsBindFlags.SET);
 
-        window.show_all ();
+        window.present ();
 
         return window;
     }

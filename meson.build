@@ -73,6 +73,7 @@ sources = files(
     'src' / 'UI' / 'WelcomeView.vala',
     'src' / 'Widgets' / 'ActionBar.vala',
     'src' / 'Widgets' / 'FunctionListRow.vala',
+    'src' / 'Widgets' / 'IconLabelRow.vala',
     'src' / 'Widgets' / 'RoundedSquare.vala',
     'src' / 'Widgets' / 'Sheet.vala',
     'src' / 'Widgets' / 'StyleModal.vala',
@@ -87,9 +88,9 @@ executable(meson.project_name(),
         dependency('gio-2.0', version: '>= 2.74'), # GLib.ListStore.n_items
         dependency('glib-2.0'),
         dependency('gobject-2.0'),
-        dependency('granite', version: '>=5.4.0'),
-        dependency('gtk+-3.0', version: '>=3.24'), # Gtk.EventControllerKey
-        dependency('libhandy-1', version: '>=1.2.0'),
+        dependency('granite-7'),
+        dependency('gtk4'),
+        dependency('libadwaita-1'),
         dependency('pango')
     ],
     install: true,

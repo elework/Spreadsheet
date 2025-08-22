@@ -15,7 +15,6 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
         style_stack.add_titled (create_cells_grid (cell_style), "cells-grid", _("Cell"));
 
         var style_stack_switcher = new Gtk.StackSwitcher () {
-            homogeneous = true,
             halign = Gtk.Align.CENTER,
             stack = style_stack
         };
@@ -29,28 +28,28 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
 
         // TODO: Add a widget that can choose a font and its size
 
-        var bold_icon = new Gtk.Image.from_icon_name ("format-text-bold-symbolic", Gtk.IconSize.BUTTON);
+        var bold_icon = new Gtk.Image.from_icon_name ("format-text-bold-symbolic");
         var bold_button = new Gtk.ToggleButton () {
             child = bold_icon,
             focus_on_click = false,
             tooltip_text = _("Bold")
         };
 
-        var italic_icon = new Gtk.Image.from_icon_name ("format-text-italic-symbolic", Gtk.IconSize.BUTTON);
+        var italic_icon = new Gtk.Image.from_icon_name ("format-text-italic-symbolic");
         var italic_button = new Gtk.ToggleButton () {
             child = italic_icon,
             focus_on_click = false,
             tooltip_text = _("Italic")
         };
 
-        var underline_icon = new Gtk.Image.from_icon_name ("format-text-underline-symbolic", Gtk.IconSize.BUTTON);
+        var underline_icon = new Gtk.Image.from_icon_name ("format-text-underline-symbolic");
         var underline_button = new Gtk.ToggleButton () {
             child = underline_icon,
             focus_on_click = false,
             tooltip_text = _("Underline")
         };
 
-        var strikethrough_icon = new Gtk.Image.from_icon_name ("format-text-strikethrough-symbolic", Gtk.IconSize.BUTTON);
+        var strikethrough_icon = new Gtk.Image.from_icon_name ("format-text-strikethrough-symbolic");
         var strikethrough_button = new Gtk.ToggleButton () {
             child = strikethrough_icon,
             focus_on_click = false,
@@ -71,11 +70,11 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
         var style_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-        style_box.get_style_context ().add_class (Gtk.STYLE_CLASS_LINKED);
-        style_box.pack_start (bold_button);
-        style_box.pack_start (italic_button);
-        style_box.pack_start (underline_button);
-        style_box.pack_start (strikethrough_button);
+        style_box.add_css_class (Granite.STYLE_CLASS_LINKED);
+        style_box.append (bold_button);
+        style_box.append (italic_button);
+        style_box.append (underline_button);
+        style_box.append (strikethrough_button);
 
         var color_header_label = new Granite.HeaderLabel (_("Color"));
 
@@ -88,7 +87,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
                 color_button, "rgba",
                 BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-        var color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var color_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic") {
             halign = Gtk.Align.START,
             tooltip_text = _("Reset font color of a selected cell to black")
         };
@@ -131,7 +130,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
             tooltip_text = _("Set fill color of a selected cell")
         };
 
-        var bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var bg_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic") {
             halign = Gtk.Align.START,
             tooltip_text = _("Remove fill color of a selected cell")
         };
@@ -152,7 +151,7 @@ public class Spreadsheet.StyleModal : Gtk.Grid {
             tooltip_text = _("Set the border width of a selected cell")
         };
 
-        var stroke_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic", Gtk.IconSize.BUTTON) {
+        var stroke_reset_button = new Gtk.Button.from_icon_name ("edit-delete-symbolic") {
             halign = Gtk.Align.START,
             tooltip_text = _("Remove stroke color of a selected cell")
         };
