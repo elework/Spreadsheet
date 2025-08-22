@@ -26,8 +26,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     }
 
     construct {
-        // TODO: Replace with Gtk.StringList after porting to GTK 4
-        recents_liststore = new ListStore (typeof (StringObject));
+        recents_liststore = new ListStore (typeof (RecentItem));
         load ();
         sync ();
     }
@@ -35,7 +34,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     private void load () {
         recents_liststore.remove_all ();
 
-        var recents_gsettings = Spreadsheet.App.settings.get_strv ("recent-files");
+        var recents_gsettings = App.settings.get_strv ("recent-files");
 
         int recents_num = int.min (recents_gsettings.length, RECENTS_NUM_MAX);
         for (int i_rev = (recents_num - 1); i_rev >= 0; i_rev--) {
@@ -48,11 +47,11 @@ public class Spreadsheet.Services.RecentsManager : Object {
 
         uint recents_num = uint.min (recents_liststore.n_items, RECENTS_NUM_MAX);
         for (uint i = 0; i < recents_num; i++) {
-            var obj = ((StringObject) recents_liststore.get_item (i));
-            new_recents.append_val (obj.string);
+            var obj = ((RecentItem) recents_liststore.get_item (i));
+            new_recents.append_val (obj.path);
         }
 
-        Spreadsheet.App.settings.set_strv ("recent-files", new_recents.data);
+        App.settings.set_strv ("recent-files", new_recents.data);
     }
 
     private void cut_off (uint preserve_count) {
@@ -68,13 +67,13 @@ public class Spreadsheet.Services.RecentsManager : Object {
             return false;
         }
 
-        var path_obj = new StringObject (path);
+        var recent_item = new RecentItem (path);
 
         uint pos;
         bool dup_exists = recents_liststore.find_with_equal_func (
-            path_obj,
+            recent_item,
             ((a, b) => {
-                return ((StringObject) a).string == ((StringObject) b).string;
+                return ((RecentItem) a).path == ((RecentItem) b).path;
             }),
             out pos
         );
@@ -84,7 +83,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
 
         cut_off (RECENTS_NUM_MAX - 1);
 
-        recents_liststore.insert (0, path_obj);
+        recents_liststore.insert (0, recent_item);
 
         return true;
     }
