@@ -3,7 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Spreadsheet.Services;
 using Spreadsheet.Services.Parsing;
 
 public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {

@@ -3,12 +3,10 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Spreadsheet.Services.CSV;
-using Spreadsheet.Services.Parsing;
 using Spreadsheet.UI;
 
 public class Spreadsheet.App : Gtk.Application {
-    public static GLib.Settings settings { get; private set; }
+    public static Settings settings { get; private set; }
 
     public const string ACTION_PREFIX = "app.";
     public const string ACTION_NAME_NEW = "new";
@@ -17,7 +15,7 @@ public class Spreadsheet.App : Gtk.Application {
     public const string[] ACTION_ACCELS_NEW = { "<Control>n", null };
     private const string[] ACTION_ACCELS_QUIT = { "<Control>q", null };
 
-    private const GLib.ActionEntry[] ACTION_ENTRIES = {
+    private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_NAME_NEW, on_new_activate },
         { ACTION_NAME_QUIT, on_quit_activate },
     };

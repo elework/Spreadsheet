@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.FontStyle : Object {
+public class Spreadsheet.Models.FontStyle : Object {
     public const Gdk.RGBA FONT_COLOR_DEFAULT = { 0, 0, 0, 1 };
 
     public Gdk.RGBA font_color { get; set; }

@@ -8,10 +8,8 @@ using Spreadsheet.Models;
 using Spreadsheet.Services;
 using Spreadsheet.Services.CSV;
 using Spreadsheet.Services.Parsing;
-using Gtk;
-using Gdk;
 
-public class Spreadsheet.UI.MainWindow : ApplicationWindow {
+public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     public App app { get; construct; }
     public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
     private RecentsManager recents_manager;
@@ -29,18 +27,18 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private WelcomeView welcome_view;
     private Gtk.Box edit_view;
-    private Stack app_stack;
+    private Gtk.Stack app_stack;
     private Gtk.MenuButton function_list_bt;
-    private Entry expression;
+    private Gtk.Entry expression;
     private Gtk.MenuButton style_button;
-    private Popover style_popup;
+    private Gtk.Popover style_popup;
 
     private Adw.TabView tab_view;
 
     public Sheet active_sheet {
         get {
-            ScrolledWindow scroll = (ScrolledWindow)tab_view.selected_page.child;
-            Viewport vp = (Viewport)scroll.get_child ();
+            Gtk.ScrolledWindow scroll = (Gtk.ScrolledWindow)tab_view.selected_page.child;
+            Gtk.Viewport vp = (Gtk.Viewport)scroll.get_child ();
             return (Sheet)vp.get_child ();
         }
     }
@@ -54,8 +52,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             _file = value;
 
             string? display_path = value.file_path;
-            if (GLib.Environment.get_home_dir () in display_path) {
-                display_path = display_path.replace (GLib.Environment.get_home_dir (), "~");
+            if (Environment.get_home_dir () in display_path) {
+                display_path = display_path.replace (Environment.get_home_dir (), "~");
             }
 
             header_title_label.label = value.title;
@@ -139,7 +137,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     private const string[] ACTION_ACCELS_FOCUS_EXPRESSION = { "F2", null };
     private const string[] ACTION_ACCELS_UNFOCUS_EXPRESSION = { "Escape", null };
 
-    private const GLib.ActionEntry[] ACTION_ENTRIES = {
+    private const ActionEntry[] ACTION_ENTRIES = {
         { ACTION_NAME_WELCOME, on_welcome_activate },
         { ACTION_NAME_OPEN, on_open_activate },
         { ACTION_NAME_SAVE, on_save_activate },
@@ -169,7 +167,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
         edit_view = sheet ();
 
-        app_stack = new Stack ();
+        app_stack = new Gtk.Stack ();
         app_stack.add_child (welcome_view);
         app_stack.add_child (edit_view);
 
@@ -203,14 +201,14 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         show_welcome ();
     }
 
-    private Grid toolbar () {
-        expression = new Entry () {
+    private Gtk.Grid toolbar () {
+        expression = new Gtk.Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
         };
 
-        var function_list = new ListBox ();
-        var functions_liststore = new GLib.ListStore (Type.OBJECT);
+        var function_list = new Gtk.ListBox ();
+        var functions_liststore = new ListStore (Type.OBJECT);
         foreach (var func in FunctionManager.get_default ().functions) {
             functions_liststore.append (new FuncSearchList (func.name, func.doc));
 
@@ -225,19 +223,19 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
         });
 
-        var function_list_search_entry = new SearchEntry () {
+        var function_list_search_entry = new Gtk.SearchEntry () {
             margin_bottom = 6,
             placeholder_text = _("Search functions")
         };
 
-        var function_list_scrolled = new ScrolledWindow () {
+        var function_list_scrolled = new Gtk.ScrolledWindow () {
             vexpand = true,
             hexpand = true,
             child = function_list
         };
 
-        var function_list_grid = new Grid () {
-            orientation = Orientation.HORIZONTAL,
+        var function_list_grid = new Gtk.Grid () {
+            orientation = Gtk.Orientation.HORIZONTAL,
             margin_top = 10,
             margin_bottom = 10,
             margin_start = 10,
@@ -246,10 +244,10 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
         function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
 
-        var popup = new Popover () {
+        var popup = new Gtk.Popover () {
             width_request = 320,
             height_request = 600,
-            position = PositionType.BOTTOM,
+            position = Gtk.PositionType.BOTTOM,
             child = function_list_grid
         };
 
@@ -272,8 +270,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             function_list.invalidate_filter ();
         });
 
-        style_popup = new Popover () {
-            position = PositionType.BOTTOM
+        style_popup = new Gtk.Popover () {
+            position = Gtk.PositionType.BOTTOM
         };
 
         var font_name_label = new Gtk.Label ("Open Sans 14");
@@ -294,7 +292,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             direction = Gtk.ArrowType.NONE
         };
 
-        var toolbar = new Grid () {
+        var toolbar = new Gtk.Grid () {
             margin_top = 10,
             margin_bottom = 10,
             margin_start = 10,
@@ -308,7 +306,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         return toolbar;
     }
 
-    private Box sheet () {
+    private Gtk.Box sheet () {
         action_bar = new Widgets.ActionBar ();
 
         // TODO: Create new sheet on click
@@ -326,7 +324,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
             start_action_widget = new_tab_button
         };
 
-        var layout = new Box (Orientation.VERTICAL, 0) {
+        var layout = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             homogeneous = false
         };
         layout.append (toolbar ());
@@ -439,8 +437,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
     }
 
     private void open_sheet_choose () {
-        var chooser = new FileChooserNative (
-            _("Open a file"), this, FileChooserAction.OPEN, _("_Open"), _("_Cancel")
+        var chooser = new Gtk.FileChooserNative (
+            _("Open a file"), this, Gtk.FileChooserAction.OPEN, _("_Open"), _("_Cancel")
         );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
@@ -449,7 +447,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.add_filter (filter);
 
         chooser.response.connect ((response_id) => {
-            if (response_id != ResponseType.ACCEPT) {
+            if (response_id != Gtk.ResponseType.ACCEPT) {
                 chooser.destroy ();
                 return;
             }
@@ -501,8 +499,8 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
 
     private void save_as_sheet () {
         string path = "";
-        var chooser = new FileChooserNative (
-            _("Save your work"), this, FileChooserAction.SAVE, _("_Save"), _("_Cancel")
+        var chooser = new Gtk.FileChooserNative (
+            _("Save your work"), this, Gtk.FileChooserAction.SAVE, _("_Save"), _("_Cancel")
         );
 
         Gtk.FileFilter filter = new Gtk.FileFilter ();
@@ -511,7 +509,7 @@ public class Spreadsheet.UI.MainWindow : ApplicationWindow {
         chooser.add_filter (filter);
 
         chooser.response.connect ((response_id) => {
-            if (response_id != ResponseType.ACCEPT) {
+            if (response_id != Gtk.ResponseType.ACCEPT) {
                 chooser.destroy ();
                 return;
             }

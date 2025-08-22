@@ -5,7 +5,6 @@
 
 using Spreadsheet.Services.Parsing;
 using Spreadsheet.Models;
-using Gee;
 
 public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
 
@@ -22,7 +21,7 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
         }
     }
 
-    public CSVParser (ArrayList<Token> tokens) {
+    public CSVParser (Gee.ArrayList<Token> tokens) {
         base (tokens);
     }
 
@@ -40,8 +39,8 @@ public class Spreadsheet.Services.CSV.CSVParser : Parsing.Parser {
         return sheet;
     }
 
-    public ArrayList<Cell> parse_sheet (Page page) throws ParserError {
-        var cells = new ArrayList<Cell> ();
+    public Gee.ArrayList<Cell> parse_sheet (Page page) throws ParserError {
+        var cells = new Gee.ArrayList<Cell> ();
         int fields_count = 0;
         int line = 0;
         int col = 0;

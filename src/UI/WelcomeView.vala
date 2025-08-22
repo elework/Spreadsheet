@@ -106,8 +106,8 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
 
         string basename = Path.get_basename (path);
         string display_path = path;
-        if (GLib.Environment.get_home_dir () in path) {
-            display_path = path.replace (GLib.Environment.get_home_dir (), "~");
+        if (Environment.get_home_dir () in path) {
+            display_path = path.replace (Environment.get_home_dir (), "~");
         }
 
         var row = list_item.child as IconLabelRow;
