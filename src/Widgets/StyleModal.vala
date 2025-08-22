@@ -3,7 +3,9 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.StyleModal : Gtk.Grid {
+using Spreadsheet.Models;
+
+public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
     public StyleModal (FontStyle font_style, CellStyle cell_style) {
         margin_top = 10;
         margin_bottom = 10;
