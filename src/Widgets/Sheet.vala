@@ -3,10 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Gdk;
-using Gee;
-using Gtk;
-using Cairo;
 using Spreadsheet.Models;
 using Spreadsheet.UI;
 
@@ -235,20 +231,20 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     private double get_left_margin () {
-        Context cr = new Context (new ImageSurface (Format.ARGB32, 0, 0));
+        Cairo.Context cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
         cr.set_font_size (height - padding * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
-        TextExtents left_ext;
+        Cairo.TextExtents left_ext;
         cr.text_extents (page.lines.to_string (), out left_ext);
         return left_ext.width + border;
     }
 
     private double get_initial_left_margin () {
         if (initial_left_margin == null) {
-            Context cr = new Context (new ImageSurface (Format.ARGB32, 0, 0));
+            Cairo.Context cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
             cr.set_font_size (DEFAULT_HEIGHT - DEFAULT_PADDING * 2);
             cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
-            TextExtents left_ext;
+            Cairo.TextExtents left_ext;
             cr.text_extents (page.lines.to_string (), out left_ext);
             initial_left_margin = left_ext.width + DEFAULT_BORDER;
         }
@@ -274,21 +270,21 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         Cairo.Context cr = snapshot.append_cairo (bounds);
 
-        RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
-        RGBA default_font_color = { 0, 0, 0, 1 };
+        Gdk.RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
+        Gdk.RGBA default_font_color = { 0, 0, 0, 1 };
 
         var style = window.get_style_context ();
 
-        RGBA normal = style.get_color ();
+        Gdk.RGBA normal = style.get_color ();
 
         // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
-        RGBA selected_fill = { 0 };
+        Gdk.RGBA selected_fill = { 0 };
         selected_fill.parse (BLUEBERRY_100);
 
-        RGBA selected_stroke = { 0 };
+        Gdk.RGBA selected_stroke = { 0 };
         selected_stroke.parse (BLUEBERRY_500);
 
-        RGBA selected_font_color = { 0 };
+        Gdk.RGBA selected_font_color = { 0 };
         selected_font_color.parse (BLACK_500);
 
         cr.set_font_size (height - padding * 2);
@@ -321,7 +317,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             }
 
             string rownum_str = "%d".printf (i + 1);
-            TextExtents extents;
+            Cairo.TextExtents extents;
             cr.text_extents (rownum_str, out extents);
             double x = left_margin / 2 - extents.width / 2;
             double y = height + border + height * i + height / 2 + extents.height / 2;
@@ -347,7 +343,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 Gdk.cairo_set_source_rgba (cr, selected_font_color);
             }
 
-            TextExtents extents;
+            Cairo.TextExtents extents;
             cr.text_extents (letter, out extents);
             double x = left_margin + border + width * i + width / 2 - extents.width / 2;
             double y = height / 2 + extents.height / 2;
@@ -415,7 +411,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 Gdk.cairo_set_source_rgba (cr, default_font_color);
             }
 
-            TextExtents extents;
+            Cairo.TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double x = left_margin + ((cell.column + 1) * width - (padding + border + extents.width));
             double y = height + ((cell.line + 1) * height - (padding + border));

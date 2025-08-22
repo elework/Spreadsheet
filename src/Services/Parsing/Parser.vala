@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Gee;
-
 public errordomain Spreadsheet.Services.Parsing.ParserError {
     UNEXPECTED,
     INCOMPLETE
@@ -12,7 +10,7 @@ public errordomain Spreadsheet.Services.Parsing.ParserError {
 
 public abstract class Spreadsheet.Services.Parsing.Parser : Object {
 
-    protected ArrayList<Token> tokens { get; set; }
+    protected Gee.ArrayList<Token> tokens { get; set; }
 
     protected int index = 0;
 
@@ -22,7 +20,7 @@ public abstract class Spreadsheet.Services.Parsing.Parser : Object {
 
     protected Token next { owned get { return tokens[index + 1]; } }
 
-    protected Parser (ArrayList<Token> tokens) {
+    protected Parser (Gee.ArrayList<Token> tokens) {
        Object (tokens: tokens);
     }
 

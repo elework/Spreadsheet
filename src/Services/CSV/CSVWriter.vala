@@ -3,7 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Gee;
 using Spreadsheet.Models;
 
 public class Spreadsheet.Services.CSV.CSVWriter : Object {
@@ -14,11 +13,11 @@ public class Spreadsheet.Services.CSV.CSVWriter : Object {
     }
 
     public string to_string () {
-        ArrayList<ArrayList<string>> table = new ArrayList<ArrayList<string>> ();
+        Gee.ArrayList<Gee.ArrayList<string>> table = new Gee.ArrayList<Gee.ArrayList<string>> ();
         int max_records = 0;
         foreach (var cell in page.cells) {
             while (table.size - 1 < cell.line) {
-                table.add (new ArrayList<string> ());
+                table.add (new Gee.ArrayList<string> ());
             }
             var line = table[cell.line];
             while (line.size - 1 < cell.column) {

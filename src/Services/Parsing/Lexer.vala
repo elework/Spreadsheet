@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Gee;
-
 public class Spreadsheet.Services.Parsing.Lexer : Object {
 
     public Grammar grammar { get; construct set; }
@@ -13,10 +11,10 @@ public class Spreadsheet.Services.Parsing.Lexer : Object {
         Object (grammar: g);
     }
 
-    public ArrayList<Token?> tokenize (string _expr) {
+    public Gee.ArrayList<Token?> tokenize (string _expr) {
         string expr = _expr.strip ();
-        var res = new ArrayList<Token?> ();
-        var stack = new ArrayList<string> ();
+        var res = new Gee.ArrayList<Token?> ();
+        var stack = new Gee.ArrayList<string> ();
         stack.add ("root");
 
         while (expr.length > 0) { // we consume all the expression
@@ -37,7 +35,7 @@ public class Spreadsheet.Services.Parsing.Lexer : Object {
                         }
 
                         if (eval.push != null) {
-                            stack.add_all (new ArrayList<string>.wrap (eval.push));
+                            stack.add_all (new Gee.ArrayList<string>.wrap (eval.push));
                         }
 
                         expr = expr.substring (size);
