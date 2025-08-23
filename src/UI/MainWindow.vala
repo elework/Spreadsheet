@@ -397,7 +397,15 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         }
 
         active_sheet.grab_focus ();
-        formula_entry.text = "";
+
+        // Reset undecided changes
+        Cell? selected_cell = active_sheet.selected_cell;
+        if (selected_cell == null) {
+            formula_entry.text = "";
+            return;
+        }
+
+        formula_entry.text = selected_cell.formula;
     }
 
     private void new_sheet () {
