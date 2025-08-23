@@ -218,49 +218,24 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         row.doc_text = func.doc;
     }
 
-    private static string create_func_searchterm (Function func) {
-        return "%s %s".printf (func.name, func.doc);
-    }
-
     private Gtk.Grid toolbar () {
         expression = new Gtk.Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
         };
 
-        var func_name_exp = new Gtk.PropertyExpression (typeof (Function), null, "name");
-        var func_doc_exp = new Gtk.PropertyExpression (typeof (Function), null, "doc");
-
-        var func_exp = new Gtk.CClosureExpression (
-            typeof (string), null,
-            { func_name_exp, func_doc_exp },
-            (Callback) create_func_searchterm,
-            null, null);
-
-        var func_filter = new Gtk.StringFilter (func_exp) {
-            ignore_case = true,
-            match_mode = Gtk.StringFilterMatchMode.SUBSTRING
-        };
-
-        var functions_liststore = new ListStore (typeof (Function));
-        foreach (var func in FunctionManager.get_default ().functions) {
-            functions_liststore.append (func);
-        }
-
-        var func_filter_model = new Gtk.FilterListModel (functions_liststore, func_filter);
-
-        var func_selection_model = new Gtk.NoSelection (func_filter_model);
-
         var func_factory = new Gtk.SignalListItemFactory ();
         func_factory.setup.connect (func_item_setup);
         func_factory.bind.connect (func_item_bind);
 
-        var function_list = new Gtk.ListView (func_selection_model, func_factory) {
+        unowned var func_manager = FunctionManager.get_default ();
+
+        var function_list = new Gtk.ListView (func_manager.func_selection_model, func_factory) {
             single_click_activate = true
         };
 
         function_list.activate.connect ((pos) => {
-            var func = functions_liststore.get_item (pos) as Function;
+            var func = func_manager.func_selection_model.get_item (pos) as Function;
 
             expression.text += ")";
             expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
@@ -305,7 +280,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         expression.activate.connect (update_formula);
 
         function_list_search_entry.search_changed.connect (() => {
-            func_filter.search = function_list_search_entry.text;
+            func_manager.filter (function_list_search_entry.text);
         });
 
         style_popup = new Gtk.Popover () {

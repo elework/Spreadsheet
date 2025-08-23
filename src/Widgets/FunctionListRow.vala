@@ -18,6 +18,9 @@ public class Spreadsheet.Widgets.FunctionListRow : Gtk.Box {
         margin_top = 3;
         margin_bottom = 3;
 
+        name_text = "";
+        doc_text = "";
+
         var name_label = new Gtk.Label (name_text) {
             justify = Gtk.Justification.LEFT,
             halign = Gtk.Align.START,

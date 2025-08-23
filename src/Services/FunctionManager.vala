@@ -7,6 +7,7 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.Services.FunctionManager : Object {
     public Gee.ArrayList<Function> functions { get; private set; }
+    public Gtk.SelectionModel func_selection_model { get; private set; }
 
     public static unowned FunctionManager get_default () {
         if (instance == null) {
@@ -17,7 +18,12 @@ public class Spreadsheet.Services.FunctionManager : Object {
     }
     private static FunctionManager? instance = null;
 
+    private Gtk.StringFilter func_filter;
+
     private FunctionManager () {
+    }
+
+    construct {
         functions = new Gee.ArrayList<Function> ();
 
         functions.add (new Function ("sum", Functions.sum, _("Add numbers")));
@@ -40,5 +46,36 @@ public class Spreadsheet.Services.FunctionManager : Object {
         functions.add (new Function ("arccos", Functions.arccos, _("Gives the arc cosine of a number")));
         functions.add (new Function ("arcsin", Functions.arcsin, _("Gives the arc sine of a number")));
         functions.add (new Function ("arctan", Functions.arctan, _("Gives the arc tangent of a number")));
+
+        var func_name_exp = new Gtk.PropertyExpression (typeof (Function), null, "name");
+        var func_doc_exp = new Gtk.PropertyExpression (typeof (Function), null, "doc");
+
+        var func_exp = new Gtk.CClosureExpression (
+            typeof (string), null,
+            { func_name_exp, func_doc_exp },
+            (Callback) create_func_searchterm,
+            null, null);
+
+        func_filter = new Gtk.StringFilter (func_exp) {
+            ignore_case = true,
+            match_mode = Gtk.StringFilterMatchMode.SUBSTRING
+        };
+
+        var func_liststore = new ListStore (typeof (Function));
+        foreach (var func in functions) {
+            func_liststore.append (func);
+        }
+
+        var func_filter_model = new Gtk.FilterListModel (func_liststore, func_filter);
+
+        func_selection_model = new Gtk.NoSelection (func_filter_model);
+    }
+
+    public void filter (string term) {
+        func_filter.search = term;
+    }
+
+    private static string create_func_searchterm (Function func) {
+        return "%s %s".printf (func.name, func.doc);
     }
 }
