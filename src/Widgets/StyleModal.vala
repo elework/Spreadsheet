@@ -80,7 +80,8 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
 
         var color_header_label = new Granite.HeaderLabel (_("Color"));
 
-        var color_button = new Gtk.ColorButton () {
+        var color_dialog = new Gtk.ColorDialog ();
+        var color_button = new Gtk.ColorDialogButton (color_dialog) {
             halign = Gtk.Align.START,
             tooltip_text = _("Set font color of a selected cell")
         };
@@ -127,7 +128,8 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
     private Gtk.Grid create_cells_grid (CellStyle cell_style) {
         var bg_header_label = new Granite.HeaderLabel (_("Fill"));
 
-        var bg_color_button = new Gtk.ColorButton () {
+        var bg_color_dialog = new Gtk.ColorDialog ();
+        var bg_color_button = new Gtk.ColorDialogButton (bg_color_dialog) {
             halign = Gtk.Align.START,
             tooltip_text = _("Set fill color of a selected cell")
         };
@@ -139,7 +141,8 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
 
         var stroke_header_label = new Granite.HeaderLabel (_("Stroke"));
 
-        var stroke_color_button = new Gtk.ColorButton () {
+        var stroke_color_dialog = new Gtk.ColorDialog ();
+        var stroke_color_button = new Gtk.ColorDialogButton (stroke_color_dialog) {
             halign = Gtk.Align.START,
             tooltip_text = _("Set stroke color of a selected cell")
         };
