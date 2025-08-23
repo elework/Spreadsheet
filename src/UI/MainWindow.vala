@@ -201,26 +201,49 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         show_welcome ();
     }
 
+    private void func_item_setup (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var row = new FunctionListRow ();
+        list_item.child = row;
+    }
+
+    private void func_item_bind (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var func = list_item.item as Function;
+        var row = list_item.child as FunctionListRow;
+
+        row.name_text = func.name;
+        row.doc_text = func.doc;
+    }
+
     private Gtk.Grid toolbar () {
         expression = new Gtk.Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
         };
 
-        var function_list = new Gtk.ListBox ();
-        var functions_liststore = new ListStore (Type.OBJECT);
+        var functions_liststore = new ListStore (typeof (Function));
         foreach (var func in FunctionManager.get_default ().functions) {
-            functions_liststore.append (new FuncSearchList (func.name, func.doc));
-
-            var row = new FunctionListRow (func);
-            function_list.append (row);
+            functions_liststore.append (func);
         }
 
-        function_list.row_activated.connect ((row) => {
-            var func_row = row as FunctionListRow;
+        var func_selection_model = new Gtk.NoSelection (functions_liststore);
+
+        var func_factory = new Gtk.SignalListItemFactory ();
+        func_factory.setup.connect (func_item_setup);
+        func_factory.bind.connect (func_item_bind);
+
+        var function_list = new Gtk.ListView (func_selection_model, func_factory) {
+            single_click_activate = true
+        };
+
+        function_list.activate.connect ((pos) => {
+            var func = functions_liststore.get_item (pos) as Function;
 
             expression.text += ")";
-            expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
+            expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
         });
 
         var function_list_search_entry = new Gtk.SearchEntry () {
@@ -261,14 +284,14 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         expression.activate.connect (update_formula);
 
-        function_list.set_filter_func ((list_box_row) => {
-            var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
-            return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
-        });
+        //function_list.set_filter_func ((list_box_row) => {
+        //    var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
+        //    return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
+        //});
 
-        function_list_search_entry.search_changed.connect (() => {
-            function_list.invalidate_filter ();
-        });
+        //function_list_search_entry.search_changed.connect (() => {
+        //    function_list.invalidate_filter ();
+        //});
 
         style_popup = new Gtk.Popover () {
             position = Gtk.PositionType.BOTTOM
