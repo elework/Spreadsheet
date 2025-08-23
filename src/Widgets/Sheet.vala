@@ -6,8 +6,13 @@
 using Spreadsheet.Models;
 using Spreadsheet.UI;
 
-
 public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
+    public signal void selection_changed (Cell? new_selection);
+    public signal void clear_cell ();
+    public signal void forward_input_text (string text);
+
+    public Page page { get; construct; }
+    public Cell? selected_cell { get; set; }
 
     // Brand colors by elementary. See https://elementary.io/brand
     private const string BLUEBERRY_100 = "#8cd5ff";
@@ -15,32 +20,41 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private const string BLACK_500 = "#333333";
 
     // Cell dimensions
-    const double DEFAULT_WIDTH = 70;
-    const double DEFAULT_HEIGHT = 25;
-    const double DEFAULT_PADDING = 5;
-    const double DEFAULT_BORDER = 0.5;
+    private const double DEFAULT_WIDTH = 70;
+    private const double DEFAULT_HEIGHT = 25;
+    private const double DEFAULT_PADDING = 5;
+    private const double DEFAULT_BORDER = 0.5;
 
-    double width;
-    double height;
-    double padding;
-    double border;
-    double? initial_left_margin = null;
-
-    public Page page { get; set; }
+    /*
+     *        <--------->  width
+     *       |     A     |
+     *  -----|-----------|--            <-
+     *       |           |   ) padding    |
+     *    1  |      foo  |                | height
+     *       |           |   ) padding    |
+     *  -----|-----------|--            <-
+     *
+     *       ^
+     *     border
+     */
+    private double width;
+    private double height;
+    private double padding;
+    private double border;
 
     private MainWindow window;
-
-    public Cell? selected_cell { get; set; }
-
-    public signal void selection_changed (Cell? new_selection);
-
-    public signal void selection_cleared ();
-
-    public signal void forward_input_text (string text);
+    private Gtk.EventControllerScroll scroll_controller;
 
     public Sheet (Page page, MainWindow window) {
-        this.page = page;
+        Object (
+            page: page
+        );
+
         this.window = window;
+
+        focusable = true;
+        focus_on_click = true;
+
         foreach (var cell in page.cells) {
             if (selected_cell == null) {
                 selected_cell = cell;
@@ -60,8 +74,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 window.save_sheet ();
             });
         }
-        focusable = true;
-        focus_on_click = true;
 
         var button_press_controller = new Gtk.GestureClick () {
             button = Gdk.BUTTON_PRIMARY
@@ -75,7 +87,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             update_zoom_level ();
         });
 
-        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
+        scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
             // Scroll event handler is not active in Sheet without Ctrl key press
             // so that scrolling the viewport by Gtk.ScrolledWindow works
             propagation_phase = Gtk.PropagationPhase.NONE
@@ -84,81 +96,17 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         add_controller (scroll_controller);
 
         var key_press_controller = new Gtk.EventControllerKey ();
-        key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
-            if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                switch (keyval) {
-                    case Gdk.Key.plus:
-                        window.action_bar.zoom_level += 10;
-                        return true;
-                    case Gdk.Key.minus:
-                        window.action_bar.zoom_level -= 10;
-                        return true;
-                    case Gdk.Key.@0:
-                        window.action_bar.zoom_level = 100;
-                        return true;
-                    case Gdk.Key.Home:
-                        select (0, 0);
-                        return true;
-                    default:
-                        break;
-                }
-            }
-
-            switch (keyval) {
-                case Gdk.Key.Tab:
-                    move_right ();
-                    return true;
-                case Gdk.Key.Right:
-                    move_right ();
-                    return true;
-                case Gdk.Key.Down:
-                case Gdk.Key.Return:
-                    move_bottom ();
-                    return true;
-                case Gdk.Key.Up:
-                    move_top ();
-                    return true;
-                case Gdk.Key.Left:
-                    move_left ();
-                    return true;
-                case Gdk.Key.BackSpace:
-                case Gdk.Key.Delete:
-                    selection_cleared ();
-                    return true;
-                case Gdk.Key.Control_L:
-                case Gdk.Key.Control_R:
-                    // Activate the scroll event handler
-                    scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
-                    return true;
-                default:
-                    // Check if the keyval corresponds to a character key or modifier key that we don't handle
-                    if (Gdk.keyval_to_unicode (keyval) == 0) {
-                        // Do nothing if the button pressed is ONLY a modifier. If a combination
-                        // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
-                        // instead be checked with the state parameter before here.
-                        return true;
-                    }
-
-                    break;
-            }
-
-            // No special key is used, thus the intent is user input
-            string input_text = Util.keyval_to_utf8 (keyval);
-            forward_input_text (input_text);
-
-            return true;
-        });
-        key_press_controller.key_released.connect ((keyval, keycode, state) => {
-            // Deactivate the scroll event handler
-            scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
-        });
+        key_press_controller.key_pressed.connect (on_key_press);
+        key_press_controller.key_released.connect (on_key_release);
         add_controller (key_press_controller);
     }
 
     private void select (int line, int col) {
         // Do nothing if the new selected cell are the same with the currently selected
-        if (line == selected_cell.line && col == selected_cell.column) {
-            return;
+        if (line == selected_cell.line) {
+            if (col == selected_cell.column) {
+                return;
+            }
         }
 
         foreach (var cell in page.cells) {
@@ -169,27 +117,41 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                     selected_cell = null;
                     selection_changed (null);
                 }
-            } else if (cell.line == line && cell.column == col) {
-                // Select the new cell
-                cell.selected = true;
-                selected_cell = cell;
-                selection_changed (cell);
+
+                continue;
+            }
+
+            if (cell.line == line) {
+                if (cell.column == col) {
+                    // Select the new cell
+                    cell.selected = true;
+                    selected_cell = cell;
+                    selection_changed (cell);
+                }
             }
         }
+
         queue_draw ();
     }
 
-    private void move (int line_add, int col_add) {
-        // Ignore key press to the outside of the sheet
-        if (selected_cell.line + line_add < 0 || selected_cell.column + col_add < 0) {
+    private void move (int line_add, int column_add) {
+        if (selected_cell == null) {
+            select (0, 0);
             return;
         }
 
-        if (selected_cell != null) {
-            select (selected_cell.line + line_add, selected_cell.column + col_add);
-        } else {
-            select (0, 0);
+        int line_after = selected_cell.line + line_add;
+        int column_after = selected_cell.column + column_add;
+
+        // Ignore key press to the outside of the sheet
+        if (line_after < 0 || line_after >= page.lines) {
+            return;
         }
+        if (column_after < 0 || column_after >= page.columns) {
+            return;
+        }
+
+        select (line_after, column_after);
     }
 
     public void move_top () {
@@ -209,14 +171,25 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     private void on_click (int n_press, double x, double y) {
-        var left_margin = get_left_margin ();
-        var col = (int)((x - left_margin) / (double)width);
-        var line = (int)((y - height) / (double)height);
-        select (line, col);
+        double linenum_width = calc_linenum_width (page.lines, height, padding);
+        double columnid_height = height;
+
+        /*
+         *  linenum_width   width       (x, y)
+         *  <->             <--->       |
+         *  ___|__A__|__B__|__C__|__D__||_E__|__ ) columnid_height
+         *  _1_|_____|_____|_____|_____|*____|__ ) height
+         *  _2_|_____|_____|_____|_____|_____|__
+         */
+        var column = (int) ((x - linenum_width) / width);
+        var line = (int) ((y - columnid_height) / height);
+
+        select (line, column);
         grab_focus ();
     }
 
     private bool on_scroll (double x_delta, double y_delta) {
+        // Only sensitive for horizontal scroll
         if (y_delta > 0) {
             window.action_bar.zoom_level -= 10;
             return true;
@@ -230,36 +203,111 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         return false;
     }
 
-    private double get_left_margin () {
-        Cairo.Context cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
-        cr.set_font_size (height - padding * 2);
-        cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
-        Cairo.TextExtents left_ext;
-        cr.text_extents (page.lines.to_string (), out left_ext);
-        return left_ext.width + border;
-    }
-
-    private double get_initial_left_margin () {
-        if (initial_left_margin == null) {
-            Cairo.Context cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
-            cr.set_font_size (DEFAULT_HEIGHT - DEFAULT_PADDING * 2);
-            cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
-            Cairo.TextExtents left_ext;
-            cr.text_extents (page.lines.to_string (), out left_ext);
-            initial_left_margin = left_ext.width + DEFAULT_BORDER;
+    private bool on_key_press (uint keyval, uint keycode, Gdk.ModifierType state) {
+        if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+            switch (keyval) {
+                case Gdk.Key.plus:
+                    window.action_bar.zoom_level += 10;
+                    return true;
+                case Gdk.Key.minus:
+                    window.action_bar.zoom_level -= 10;
+                    return true;
+                case Gdk.Key.@0:
+                    window.action_bar.zoom_level = 100;
+                    return true;
+                case Gdk.Key.Home:
+                    select (0, 0);
+                    return true;
+                default:
+                    break;
+            }
         }
 
-        return initial_left_margin;
+        switch (keyval) {
+            case Gdk.Key.Tab:
+                move_right ();
+                return true;
+            case Gdk.Key.Right:
+                move_right ();
+                return true;
+            case Gdk.Key.Down:
+            case Gdk.Key.Return:
+                move_bottom ();
+                return true;
+            case Gdk.Key.Up:
+                move_top ();
+                return true;
+            case Gdk.Key.Left:
+                move_left ();
+                return true;
+            case Gdk.Key.BackSpace:
+            case Gdk.Key.Delete:
+                clear_cell ();
+                return true;
+            case Gdk.Key.Control_L:
+            case Gdk.Key.Control_R:
+                // Activate the scroll event handler
+                scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
+                return true;
+            default:
+                // Check if the keyval corresponds to a character key or modifier key that we don't handle
+                if (Gdk.keyval_to_unicode (keyval) == 0) {
+                    // Do nothing if the button pressed is ONLY a modifier. If a combination
+                    // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
+                    // instead be checked with the state parameter before here.
+                    return true;
+                }
+
+                break;
+        }
+
+        // No special key is used, thus the intent is user input
+        string input_text = Util.keyval_to_utf8 (keyval);
+        forward_input_text (input_text);
+
+        return true;
+    }
+
+    private void on_key_release (uint keyval, uint keycode, Gdk.ModifierType state) {
+        // Deactivate the scroll event handler
+        scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
+    }
+
+    private static double calc_linenum_width (int linenum_max, double height, double padding) {
+        var cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
+        cr.set_font_size (height - padding * 2);
+        cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
+
+        /*
+         *  Calculate this
+         *  <------->
+         *           |    A    |
+         *  ---------|---------|--
+         *     100   |         |   <-- Use the maximum line number
+         *  ---------|---------|--     to make sure no line numbers will be cut off
+         *  <->   <->
+         *  padding
+         */
+        Cairo.TextExtents linenum_ext;
+        cr.text_extents (linenum_max.to_string (), out linenum_ext);
+
+        return linenum_ext.width + (padding * 2);
     }
 
     private void update_zoom_level () {
         double zoom_level = window.action_bar.zoom_level * 0.01;
 
-        set_size_request ((int) ((get_initial_left_margin () + DEFAULT_WIDTH * page.columns) * zoom_level), (int) (DEFAULT_HEIGHT * page.lines * zoom_level));
         width = DEFAULT_WIDTH * zoom_level;
         height = DEFAULT_HEIGHT * zoom_level;
         padding = DEFAULT_PADDING * zoom_level;
         border = DEFAULT_BORDER * zoom_level;
+
+        double linenum_width = calc_linenum_width (page.lines, height, padding);
+        double columnid_height = height;
+
+        double page_width = linenum_width + (width * page.columns);
+        double page_height = columnid_height + (height * page.lines);
+        set_size_request ((int) page_width, (int) page_height);
 
         queue_draw ();
     }
@@ -277,7 +325,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         Gdk.RGBA default_cell_stroke = { 0.3f, 0.3f, 0.3f, 1 };
         Gdk.RGBA default_font_color = { 0, 0, 0, 1 };
 
-        Gdk.RGBA normal = get_color ();
+        Gdk.RGBA style_bg_color = get_color ();
 
         // Ignore return values of Gdk.RGBA.parse() because we feed constant hex color code
         Gdk.RGBA selected_fill = { 0 };
@@ -292,11 +340,11 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         cr.set_font_size (height - padding * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
-        double left_margin = get_left_margin ();
+        double linenum_width = calc_linenum_width (page.lines, height, padding);
 
         // white background
         cr.set_source_rgb (1, 1, 1);
-        cr.rectangle (left_margin, height, get_width () - left_margin, get_height () - height);
+        cr.rectangle (linenum_width, height, get_width () - linenum_width, get_height () - height);
         cr.fill ();
 
         // draw the letters and the numbers on the side
@@ -304,41 +352,41 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // numbers on the left side
         for (int i = 0; i < page.lines; i++) {
-            Gdk.cairo_set_source_rgba (cr, normal);
-            cr.rectangle (0, height + border + i * height, left_margin, height);
+            Gdk.cairo_set_source_rgba (cr, style_bg_color);
+            cr.rectangle (0, height + border + i * height, linenum_width, height);
             cr.stroke ();
 
             if (selected_cell != null && selected_cell.line == i) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, selected_fill);
-                cr.rectangle (0, height + border + i * height, left_margin, height);
+                cr.rectangle (0, height + border + i * height, linenum_width, height);
                 cr.fill ();
                 cr.restore ();
 
                 Gdk.cairo_set_source_rgba (cr, selected_font_color);
             }
 
-            string rownum_str = "%d".printf (i + 1);
+            string linenum_str = "%d".printf (i + 1);
             Cairo.TextExtents extents;
-            cr.text_extents (rownum_str, out extents);
-            double x = left_margin / 2 - extents.width / 2;
+            cr.text_extents (linenum_str, out extents);
+            double x = linenum_width / 2 - extents.width / 2;
             double y = height + border + height * i + height / 2 + extents.height / 2;
 
             cr.move_to (x, y);
-            cr.show_text (rownum_str);
+            cr.show_text (linenum_str);
         }
 
         // letters on the top
         int i = 0;
         foreach (string letter in new AlphabetGenerator (page.columns)) {
-            Gdk.cairo_set_source_rgba (cr, normal);
-            cr.rectangle (left_margin + border + i * width, 0, width, height);
+            Gdk.cairo_set_source_rgba (cr, style_bg_color);
+            cr.rectangle (linenum_width + border + i * width, 0, width, height);
             cr.stroke ();
 
             if (selected_cell != null && selected_cell.column == i) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, selected_fill);
-                cr.rectangle (left_margin + border + i * width, 0, width, height);
+                cr.rectangle (linenum_width + border + i * width, 0, width, height);
                 cr.fill ();
                 cr.restore ();
 
@@ -347,7 +395,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
             Cairo.TextExtents extents;
             cr.text_extents (letter, out extents);
-            double x = left_margin + border + width * i + width / 2 - extents.width / 2;
+            double x = linenum_width + border + width * i + width / 2 - extents.width / 2;
             double y = height / 2 + extents.height / 2;
             cr.move_to (x, y);
             cr.show_text (letter);
@@ -367,7 +415,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             if (bg != bg_default) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, bg);
-                cr.rectangle (left_margin + border + cell.column * width, height + border + cell.line * height, width, height);
+                cr.rectangle (linenum_width + border + cell.column * width, height + border + cell.line * height, width, height);
                 cr.fill ();
                 cr.restore ();
             }
@@ -394,7 +442,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 Gdk.cairo_set_source_rgba (cr, default_cell_stroke);
             }
 
-            cr.rectangle (left_margin + border + cell.column * width, height + border + cell.line * height, width, height);
+            cr.rectangle (linenum_width + border + cell.column * width, height + border + cell.line * height, width, height);
             cr.stroke ();
             cr.restore ();
 
@@ -415,7 +463,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
             Cairo.TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
-            double x = left_margin + ((cell.column + 1) * width - (padding + border + extents.width));
+            double x = linenum_width + ((cell.column + 1) * width - (padding + border + extents.width));
             double y = height + ((cell.line + 1) * height - (padding + border));
 
             if (cell.font_style.is_underline) {
