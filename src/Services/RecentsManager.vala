@@ -51,7 +51,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
             new_recents.append_val (obj.path);
         }
 
-        App.settings.set_strv ("recent-files", new_recents.data);
+        App.settings.set_strv ("recent-files", ((string[]) new_recents.data));
     }
 
     private void cut_off (uint preserve_count) {

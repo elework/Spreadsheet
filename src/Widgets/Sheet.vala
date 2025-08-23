@@ -266,7 +266,11 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     protected override void snapshot (Gtk.Snapshot snapshot) {
         Graphene.Rect bounds;
-        compute_bounds (this, out bounds);
+        bool ret = compute_bounds (this, out bounds);
+        if (!ret) {
+            warning ("Failed to compute_bounds(), sheet will not be drawn!");
+            return;
+        }
 
         Cairo.Context cr = snapshot.append_cairo (bounds);
 
