@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.elework.spreadsheet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-31 17:40+0900\n"
+"POT-Creation-Date: 2025-08-23 17:34+0900\n"
 "PO-Revision-Date: 2025-06-11 16:00+0200\n"
 "Last-Translator: Teamcons - teamcons.carrd.co\n"
 "Language-Team: none\n"
@@ -17,258 +17,266 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/App.vala:29
+#: src/Models/Function.vala:11
+msgid "No documentation"
+msgstr "Pas de documentation"
+
+#: src/Services/FunctionManager.vala:29
 msgid "Add numbers"
 msgstr "Ajoute des nombres"
 
-#: src/App.vala:30
+#: src/Services/FunctionManager.vala:30
 msgid "Multiply numbers"
 msgstr "Multiplie des nombres"
 
-#: src/App.vala:31
+#: src/Services/FunctionManager.vala:31
 msgid "Divide numbers"
 msgstr "Divise des nombres"
 
-#: src/App.vala:32
+#: src/Services/FunctionManager.vala:32
 msgid "Subtract numbers"
 msgstr "Soustrait des nombres"
 
-#: src/App.vala:33
+#: src/Services/FunctionManager.vala:33
 msgid "Gives the modulo of numbers"
 msgstr "Donne le modulo de deux nombres"
 
-#: src/App.vala:35
+#: src/Services/FunctionManager.vala:35
 msgid "Elevate a number to the power of a second one"
 msgstr "Met un nombre à la puissance d'un autre"
 
-#: src/App.vala:36
+#: src/Services/FunctionManager.vala:36
 msgid "The square root of a number"
 msgstr "La racine carrée d'un nombre"
 
-#: src/App.vala:37
+#: src/Services/FunctionManager.vala:37
 msgid "Rounds a number to the nearest integer"
 msgstr "Arrondi un nombre à l'entier le plus proche"
 
-#: src/App.vala:38
+#: src/Services/FunctionManager.vala:38
 msgid "Removes the decimal part of a number"
 msgstr "Retire la partie décimale d'un nombre"
 
-#: src/App.vala:39
+#: src/Services/FunctionManager.vala:39
 msgid "Return the smallest value"
 msgstr "Renvoie la plus petite valeur"
 
-#: src/App.vala:40
+#: src/Services/FunctionManager.vala:40
 msgid "Return the biggest value"
 msgstr "Renvoie la plus grande valeur"
 
-#: src/App.vala:41
+#: src/Services/FunctionManager.vala:41
 msgid "Gives the mean of a list of numbers"
 msgstr "Donne la moyenne d'une liste de nombres"
 
-#: src/App.vala:43
+#: src/Services/FunctionManager.vala:43
 msgid "Gives the cosine of a number (in radians)"
 msgstr "Donne le cosinus d'un nombre (en radians)"
 
-#: src/App.vala:44
+#: src/Services/FunctionManager.vala:44
 msgid "Gives the sine of an angle (in radians)"
 msgstr "Donne le sinus d'un angle (en radians)"
 
-#: src/App.vala:45
+#: src/Services/FunctionManager.vala:45
 msgid "Gives the tangent of a number (in radians)"
 msgstr "Donne la tangente d'un nombre (en radians)"
 
-#: src/App.vala:46
+#: src/Services/FunctionManager.vala:46
 msgid "Gives the arc cosine of a number"
 msgstr "Donne l'arc cosinus d'un nombre"
 
-#: src/App.vala:47
+#: src/Services/FunctionManager.vala:47
 msgid "Gives the arc sine of a number"
 msgstr "Donne l'arc sinus d'un nombre"
 
-#: src/App.vala:48
+#: src/Services/FunctionManager.vala:48
 #, fuzzy
 msgid "Gives the arc tangent of a number"
 msgstr "Donne l'arc tangente d'un nombre"
 
-#: src/Models/Function.vala:6
-msgid "No documentation"
-msgstr "Pas de documentation"
-
-#: src/UI/MainWindow.vala:50
+#: src/UI/MainWindow.vala:60
 msgid "Not saved yet"
 msgstr "Pas encore enregistré"
 
-#: src/UI/MainWindow.vala:172 src/UI/MainWindow.vala:502
-msgid "Spreadsheet"
-msgstr "Spreadsheet"
+#: src/UI/MainWindow.vala:207
+msgid "Search functions"
+msgstr "Rechercher des fonctions"
 
-#: src/UI/MainWindow.vala:172
-msgid "Start something new, or continue what you have been working on."
-msgstr "Commencez quelque chose de nouveau, ou continuez votre travail."
-
-#: src/UI/MainWindow.vala:173
-msgid "New Sheet"
-msgstr "Nouvelle feuille"
-
-#: src/UI/MainWindow.vala:173
-msgid "Create an empty sheet"
-msgstr "Créer une feuille vierge"
-
-#: src/UI/MainWindow.vala:174
-msgid "Open File"
-msgstr "Ouvrir un fichier"
-
-#: src/UI/MainWindow.vala:174
-msgid "Choose a saved file"
-msgstr "Sélectionner un fichier enregistré"
-
-#: src/UI/MainWindow.vala:240
+#: src/UI/MainWindow.vala:246
 msgid "Insert functions to a selected cell"
 msgstr "Insérer des fonctions dans la cellule sélectionnée"
 
-#: src/UI/MainWindow.vala:244
+#: src/UI/MainWindow.vala:254
 msgid "Click to insert numbers or functions to a selected cell"
 msgstr ""
 "Cliquez pour insérer des nombres ou des fonctions dans la cellule "
 "sélectionnée"
 
-#: src/UI/MainWindow.vala:276
-msgid "Search functions"
-msgstr "Rechercher des fonctions"
-
-#: src/UI/MainWindow.vala:304
+#: src/UI/MainWindow.vala:274
 msgid "Set colors to letters in a selected cell"
 msgstr "Définir la couleur de police de la cellule sélectionnée"
 
-#: src/UI/MainWindow.vala:378
+#: src/UI/MainWindow.vala:421
 #, c-format
 msgid "Untitled Spreadsheet %i"
 msgstr "Classeur sans titre %i"
 
-#: src/UI/MainWindow.vala:386
+#: src/UI/MainWindow.vala:429
 msgid "Sheet 1"
 msgstr "Feuille 1"
 
-#: src/UI/MainWindow.vala:403 src/UI/TitleBar.vala:25
-msgid "Open a file"
-msgstr "Ouvrir un fichier"
-
-#: src/UI/MainWindow.vala:403
-msgid "_Open"
-msgstr "_Ouvrir"
-
-#: src/UI/MainWindow.vala:403 src/UI/MainWindow.vala:436
-msgid "_Cancel"
-msgstr "_Annuler"
-
-#: src/UI/MainWindow.vala:408 src/UI/MainWindow.vala:441
+#: src/UI/MainWindow.vala:447 src/UI/MainWindow.vala:510
 msgid "CSV files"
 msgstr "Fichiers CSV"
 
-#: src/UI/MainWindow.vala:436
+#: src/UI/MainWindow.vala:455 src/UI/MainWindow.vala:654
+msgid "Open a file"
+msgstr "Ouvrir un fichier"
+
+#: src/UI/MainWindow.vala:456
+msgid "_Open"
+msgstr "_Ouvrir"
+
+#: src/UI/MainWindow.vala:480
+#, fuzzy
+msgid "Unable to Open File"
+msgstr "Ouvrir un fichier"
+
+#: src/UI/MainWindow.vala:481
+msgid "Failed to parse file. The file may not be a valid CSV format."
+msgstr ""
+
+#: src/UI/MainWindow.vala:518
 msgid "Save your work"
 msgstr "Enregistrez votre travail"
 
-#: src/UI/MainWindow.vala:436
+#: src/UI/MainWindow.vala:519
 msgid "_Save"
 msgstr "_Enregistrer"
 
-#: src/UI/MainWindow.vala:518
+#: src/UI/MainWindow.vala:560 src/UI/WelcomeView.vala:22
+msgid "Spreadsheet"
+msgstr "Spreadsheet"
+
+#: src/UI/MainWindow.vala:644
+msgid "Open another window"
+msgstr "Ouvrir une autre fenêtre"
+
+#: src/UI/MainWindow.vala:664
+msgid "Save this file with a different name"
+msgstr "Enregistrer ce fichier avec un nom différent"
+
+#: src/UI/MainWindow.vala:674
+msgid "Redo"
+msgstr "Rétablir"
+
+#: src/UI/MainWindow.vala:684
+msgid "Undo"
+msgstr "Annuler"
+
+#: src/UI/WelcomeView.vala:23
+msgid "Start something new, or continue what you have been working on."
+msgstr "Commencez quelque chose de nouveau, ou continuez votre travail."
+
+#: src/UI/WelcomeView.vala:28
+msgid "New Sheet"
+msgstr "Nouvelle feuille"
+
+#: src/UI/WelcomeView.vala:29
+msgid "Create an empty sheet"
+msgstr "Créer une feuille vierge"
+
+#: src/UI/WelcomeView.vala:34
+msgid "Open File"
+msgstr "Ouvrir un fichier"
+
+#: src/UI/WelcomeView.vala:35
+msgid "Choose a saved file"
+msgstr "Sélectionner un fichier enregistré"
+
+#: src/UI/WelcomeView.vala:38
 #, fuzzy
 msgid "Recent files"
 msgstr "Ouvrir un fichier"
 
-#: src/UI/TitleBar.vala:17
-msgid "Open another window"
-msgstr "Ouvrir une autre fenêtre"
-
-#: src/UI/TitleBar.vala:33
-msgid "Save this file with a different name"
-msgstr "Enregistrer ce fichier avec un nom différent"
-
-#: src/UI/TitleBar.vala:41
-msgid "Redo"
-msgstr "Rétablir"
-
-#: src/UI/TitleBar.vala:49
-msgid "Undo"
-msgstr "Annuler"
-
-#: src/Widgets/ActionBar.vala:26
+#: src/Widgets/ActionBar.vala:43
 msgid "Zoom in/out the sheet"
 msgstr "Zoomer/Dézoomer le tableau"
 
-#: src/Widgets/ActionBar.vala:33
+#: src/Widgets/ActionBar.vala:53
 msgid "Reset to the default zoom level"
 msgstr "Revenir au zoom par défaut"
 
-#: src/Widgets/StyleModal.vala:4
+#: src/Widgets/StyleModal.vala:16
 msgid "Font"
 msgstr "Police"
 
-#: src/Widgets/StyleModal.vala:5
+#: src/Widgets/StyleModal.vala:17
 msgid "Cell"
 msgstr "Cellule"
 
-#: src/Widgets/StyleModal.vala:22
-msgid "Bold"
-msgstr "Gras"
-
-#: src/Widgets/StyleModal.vala:28
-msgid "Italic"
-msgstr "Italique"
-
-#: src/Widgets/StyleModal.vala:34
-msgid "Underline"
-msgstr "Souligné"
-
-#: src/Widgets/StyleModal.vala:40
-msgid "Strikethrough"
-msgstr "Barré"
-
-#: src/Widgets/StyleModal.vala:58
-msgid "Set font color of a selected cell"
-msgstr "Définit la couleur de police de la cellule sélectionnée"
-
-#: src/Widgets/StyleModal.vala:64
-msgid "Reset font color of a selected cell to black"
-msgstr "Réinitialise la couleur de police de la cellule sélectionnée en noir"
-
-#: src/Widgets/StyleModal.vala:68
+#: src/Widgets/StyleModal.vala:29
 msgid "Style"
 msgstr "Style"
 
-#: src/Widgets/StyleModal.vala:70
+#: src/Widgets/StyleModal.vala:37
+msgid "Bold"
+msgstr "Gras"
+
+#: src/Widgets/StyleModal.vala:44
+msgid "Italic"
+msgstr "Italique"
+
+#: src/Widgets/StyleModal.vala:51
+msgid "Underline"
+msgstr "Souligné"
+
+#: src/Widgets/StyleModal.vala:58
+msgid "Strikethrough"
+msgstr "Barré"
+
+#: src/Widgets/StyleModal.vala:81
 msgid "Color"
 msgstr "Couleur"
 
-#: src/Widgets/StyleModal.vala:101
-msgid "Set fill color of a selected cell"
-msgstr "Définir la couleur de remplissage de la cellule sélectionnée"
+#: src/Widgets/StyleModal.vala:86
+msgid "Set font color of a selected cell"
+msgstr "Définit la couleur de police de la cellule sélectionnée"
 
-#: src/Widgets/StyleModal.vala:106
-msgid "Remove fill color of a selected cell"
-msgstr "Supprime la couleur de remplissage de la cellule sélectionnée"
+#: src/Widgets/StyleModal.vala:95
+msgid "Reset font color of a selected cell to black"
+msgstr "Réinitialise la couleur de police de la cellule sélectionnée en noir"
 
-#: src/Widgets/StyleModal.vala:111
-msgid "Set stroke color of a selected cell"
-msgstr "Définit la couleur de bordure de la cellule sélectionnée"
-
-#: src/Widgets/StyleModal.vala:116
-msgid "Set the border width of a selected cell"
-msgstr "Définir la largeur de bordure de la cellule sélectionnée"
-
-#: src/Widgets/StyleModal.vala:121
-msgid "Remove stroke color of a selected cell"
-msgstr "Supprimer la couleur de border de la cellule sélectionnée"
-
-#: src/Widgets/StyleModal.vala:132
+#: src/Widgets/StyleModal.vala:129
 msgid "Fill"
 msgstr "Remplissage"
 
-#: src/Widgets/StyleModal.vala:135
+#: src/Widgets/StyleModal.vala:134
+msgid "Set fill color of a selected cell"
+msgstr "Définir la couleur de remplissage de la cellule sélectionnée"
+
+#: src/Widgets/StyleModal.vala:139
+msgid "Remove fill color of a selected cell"
+msgstr "Supprime la couleur de remplissage de la cellule sélectionnée"
+
+#: src/Widgets/StyleModal.vala:142
 msgid "Stroke"
 msgstr "Bordure"
+
+#: src/Widgets/StyleModal.vala:147
+msgid "Set stroke color of a selected cell"
+msgstr "Définit la couleur de bordure de la cellule sélectionnée"
+
+#: src/Widgets/StyleModal.vala:156
+msgid "Set the border width of a selected cell"
+msgstr "Définir la largeur de bordure de la cellule sélectionnée"
+
+#: src/Widgets/StyleModal.vala:161
+msgid "Remove stroke color of a selected cell"
+msgstr "Supprimer la couleur de border de la cellule sélectionnée"
+
+#~ msgid "_Cancel"
+#~ msgstr "_Annuler"
 
 #~ msgid "Open Last File"
 #~ msgstr "Ouvrir le dernier fichier"

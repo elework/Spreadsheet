@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-31 17:40+0900\n"
+"POT-Creation-Date: 2025-08-23 17:34+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,43 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/spreadsheet.desktop.in:3 data/spreadsheet.appdata.xml.in:8
+#: data/spreadsheet.desktop.in:6 data/spreadsheet.metainfo.xml.in:6
 msgid "Spreadsheet"
 msgstr ""
 
-#: data/spreadsheet.desktop.in:4
-msgid "Spreadsheet App"
-msgstr ""
-
-#: data/spreadsheet.desktop.in:5 data/spreadsheet.appdata.xml.in:9
+#: data/spreadsheet.desktop.in:7 data/spreadsheet.metainfo.xml.in:7
 msgid "Create simple and beautiful spreadsheets"
 msgstr ""
 
-#: data/spreadsheet.desktop.in:11
-msgid "Office;Book;"
-msgstr ""
-
-#: data/spreadsheet.appdata.xml.in:11
+#: data/spreadsheet.metainfo.xml.in:19
 msgid ""
 "A spreadsheet app that lets you create simple and beautiful spreadsheets."
 msgstr ""
 
-#: data/spreadsheet.appdata.xml.in:14
+#: data/spreadsheet.metainfo.xml.in:22
 msgid "Features include:"
 msgstr ""
 
-#: data/spreadsheet.appdata.xml.in:16
-msgid ""
-"Keyboard shortcuts for better experience. You can use your accustomed "
-"keyboard shortcuts e.g. Ctrl + Z to undo, Ctrl + Shift + Z to redo, etc."
+#: data/spreadsheet.metainfo.xml.in:26
+msgid "Four arithmetic operations"
 msgstr ""
 
-#: data/spreadsheet.appdata.xml.in:17
-msgid ""
-"Save your works automatically. Your sheets are saved automatically when "
-"created or changed."
+#: data/spreadsheet.metainfo.xml.in:27
+msgid "Advanced mathematics operations like modulo or trigonometric functions"
 msgstr ""
 
-#: data/spreadsheet.appdata.xml.in:56
+#: data/spreadsheet.metainfo.xml.in:28
+msgid "Referencing other cells like <code>A1</code>"
+msgstr ""
+
+#: data/spreadsheet.metainfo.xml.in:29
+msgid "Load and save sheets in the CSV format"
+msgstr ""
+
+#: data/spreadsheet.metainfo.xml.in:30
+msgid "Save sheets automatically when created or modified"
+msgstr ""
+
+#: data/spreadsheet.metainfo.xml.in:31
+msgid "Open CSV files from your file manager"
+msgstr ""
+
+#: data/spreadsheet.metainfo.xml.in:48
 msgid "Spreadsheet Developers"
 msgstr ""
