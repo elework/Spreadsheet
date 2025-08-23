@@ -218,10 +218,28 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         row.doc_text = func.doc;
     }
 
+    private static string create_func_searchterm (Function func) {
+        return "%s %s".printf (func.name, func.doc);
+    }
+
     private Gtk.Grid toolbar () {
         expression = new Gtk.Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
+        };
+
+        var func_name_exp = new Gtk.PropertyExpression (typeof (Function), null, "name");
+        var func_doc_exp = new Gtk.PropertyExpression (typeof (Function), null, "doc");
+
+        var func_exp = new Gtk.CClosureExpression (
+            typeof (string), null,
+            { func_name_exp, func_doc_exp },
+            (Callback) create_func_searchterm,
+            null, null);
+
+        var func_filter = new Gtk.StringFilter (func_exp) {
+            ignore_case = true,
+            match_mode = Gtk.StringFilterMatchMode.SUBSTRING
         };
 
         var functions_liststore = new ListStore (typeof (Function));
@@ -229,7 +247,9 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             functions_liststore.append (func);
         }
 
-        var func_selection_model = new Gtk.NoSelection (functions_liststore);
+        var func_filter_model = new Gtk.FilterListModel (functions_liststore, func_filter);
+
+        var func_selection_model = new Gtk.NoSelection (func_filter_model);
 
         var func_factory = new Gtk.SignalListItemFactory ();
         func_factory.setup.connect (func_item_setup);
@@ -284,14 +304,9 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         expression.activate.connect (update_formula);
 
-        //function_list.set_filter_func ((list_box_row) => {
-        //    var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
-        //    return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
-        //});
-
-        //function_list_search_entry.search_changed.connect (() => {
-        //    function_list.invalidate_filter ();
-        //});
+        function_list_search_entry.search_changed.connect (() => {
+            func_filter.search = function_list_search_entry.text;
+        });
 
         style_popup = new Gtk.Popover () {
             position = Gtk.PositionType.BOTTOM

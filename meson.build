@@ -60,7 +60,6 @@ sources = files(
     'src/Services/Formula/AST/TextExpression.vala',
     'src/Services/Formula/FormulaGrammar.vala',
     'src/Services/Formula/FormulaParser.vala',
-    'src/Services/FuncSearchList.vala',
     'src/Services/FunctionManager.vala',
     'src/Services/HistoryManager.vala',
     'src/Services/Parsing/Evaluator.vala',
