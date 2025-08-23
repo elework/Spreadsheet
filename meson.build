@@ -72,7 +72,7 @@ sources = files(
     'src/UI/WelcomeView.vala',
     'src/Widgets/ActionBar.vala',
     'src/Widgets/FunctionListRow.vala',
-    'src/Widgets/IconLabelRow.vala',
+    'src/Widgets/RecentListRow.vala',
     'src/Widgets/RoundedSquare.vala',
     'src/Widgets/Sheet.vala',
     'src/Widgets/StyleModal.vala',

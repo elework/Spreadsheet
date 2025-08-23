@@ -3,10 +3,10 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
+public class Spreadsheet.Widgets.RecentListRow : Gtk.Grid {
     public string icon_name { get; set; }
-    public string primary_text { get; set; }
-    public string secondary_text { get; set; }
+    public string filename { get; set; }
+    public string path { get; set; }
 
     construct {
         margin_top = 6;
@@ -15,8 +15,8 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
         margin_end = 6;
 
         icon_name = "image-missing";
-        primary_text = "";
-        secondary_text = "";
+        filename = "";
+        path = "";
 
         var icon = new Gtk.Image.from_icon_name (icon_name) {
             halign = Gtk.Align.CENTER,
@@ -25,26 +25,26 @@ public class Spreadsheet.Widgets.IconLabelRow : Gtk.Grid {
             icon_size = Gtk.IconSize.LARGE
         };
 
-        var primary_label = new Gtk.Label (primary_text) {
+        var filename_label = new Gtk.Label (filename) {
             halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
         };
-        primary_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
+        filename_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
 
-        var secondary_label = new Gtk.Label (secondary_text) {
+        var path_label = new Gtk.Label (path) {
             halign = Gtk.Align.START,
             wrap = true,
             wrap_mode = Pango.WrapMode.WORD
         };
-        secondary_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+        path_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
 
         attach (icon, 0, 0, 1, 2);
-        attach (primary_label, 1, 0, 1, 1);
-        attach (secondary_label, 1, 1, 1, 1);
+        attach (filename_label, 1, 0, 1, 1);
+        attach (path_label, 1, 1, 1, 1);
 
         bind_property ("icon_name", icon, "icon_name", BindingFlags.DEFAULT);
-        bind_property ("primary_text", primary_label, "label", BindingFlags.DEFAULT);
-        bind_property ("secondary_text", secondary_label, "label", BindingFlags.DEFAULT);
+        bind_property ("filename", filename_label, "label", BindingFlags.DEFAULT);
+        bind_property ("path", path_label, "label", BindingFlags.DEFAULT);
     }
 }

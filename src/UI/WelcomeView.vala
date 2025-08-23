@@ -104,7 +104,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     private void recents_setup (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var row = new IconLabelRow ();
+        var row = new RecentListRow ();
         list_item.child = row;
     }
 
@@ -120,9 +120,9 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (Environment.get_home_dir (), "~");
         }
 
-        var row = list_item.child as IconLabelRow;
+        var row = list_item.child as RecentListRow;
         row.icon_name = "x-office-spreadsheet";
-        row.primary_text = basename;
-        row.secondary_text = display_path;
+        row.filename = basename;
+        row.path = display_path;
     }
 }
