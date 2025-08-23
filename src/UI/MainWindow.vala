@@ -207,20 +207,23 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
         };
 
-        var function_list = new Gtk.ListBox ();
-        var functions_liststore = new ListStore (Type.OBJECT);
-        foreach (var func in FunctionManager.get_default ().functions) {
-            functions_liststore.append (new FuncSearchList (func.name, func.doc));
+        var func_factory = new Gtk.SignalListItemFactory ();
+        func_factory.setup.connect (func_item_setup);
+        func_factory.bind.connect (func_item_bind);
 
-            var row = new FunctionListRow (func);
-            function_list.append (row);
-        }
+        unowned var func_manager = FunctionManager.get_default ();
 
-        function_list.row_activated.connect ((row) => {
-            var func_row = row as FunctionListRow;
+        var func_selection_model = new Gtk.NoSelection (func_manager.filter_model);
+
+        var function_list = new Gtk.ListView (func_selection_model, func_factory) {
+            single_click_activate = true
+        };
+
+        function_list.activate.connect ((pos) => {
+            var func = func_manager.filter_model.get_item (pos) as Function;
 
             expression.text += ")";
-            expression.buffer.insert_text (expression.get_position (), (func_row.function.name + "(").data);
+            expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
         });
 
         var function_list_search_entry = new Gtk.SearchEntry () {
@@ -261,13 +264,8 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         expression.activate.connect (update_formula);
 
-        function_list.set_filter_func ((list_box_row) => {
-            var item = (FuncSearchList) functions_liststore.get_item (list_box_row.get_index ());
-            return function_list_search_entry.text.down () in item.funcsearchlist_item.down ();
-        });
-
         function_list_search_entry.search_changed.connect (() => {
-            function_list.invalidate_filter ();
+            func_manager.filter (function_list_search_entry.text);
         });
 
         style_popup = new Gtk.Popover () {
@@ -556,6 +554,23 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         expression.text = "";
 
         app_stack.visible_child = welcome_view;
+    }
+
+    private static void func_item_setup (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var row = new FunctionListRow ();
+        list_item.child = row;
+    }
+
+    private static void func_item_bind (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var func = list_item.item as Function;
+        var row = list_item.child as FunctionListRow;
+
+        row.name_text = func.name;
+        row.doc_text = func.doc;
     }
 
     private void update_formula () {
