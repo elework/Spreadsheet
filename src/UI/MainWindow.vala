@@ -175,7 +175,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         child = app_stack;
 
-        window_title.bind_property ("label",
+        window_title.bind_property ("title",
             this, "title",
             BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE);
 
