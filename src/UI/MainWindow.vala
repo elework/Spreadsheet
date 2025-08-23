@@ -28,7 +28,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     private WelcomeView welcome_view;
     private Gtk.Box edit_view;
     private Gtk.Stack app_stack;
-    private Gtk.MenuButton function_list_bt;
+    private Gtk.MenuButton func_button;
     private Gtk.Entry expression;
     private Gtk.MenuButton style_button;
     private Gtk.Popover style_popup;
@@ -75,13 +75,13 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
                 sheet.selection_changed.connect ((cell) => {
                     if (cell != null) {
                         expression.text = cell.formula;
-                        function_list_bt.sensitive = true;
+                        func_button.sensitive = true;
                         expression.sensitive = true;
                         style_button.sensitive = true;
                         style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                     } else {
                         expression.text = "";
-                        function_list_bt.sensitive = false;
+                        func_button.sensitive = false;
                         expression.sensitive = false;
                         style_button.sensitive = false;
                     }
@@ -215,57 +215,57 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         var func_selection_model = new Gtk.NoSelection (func_manager.filter_model);
 
-        var function_list = new Gtk.ListView (func_selection_model, func_factory) {
+        var func_listview = new Gtk.ListView (func_selection_model, func_factory) {
             single_click_activate = true
         };
 
-        function_list.activate.connect ((pos) => {
+        func_listview.activate.connect ((pos) => {
             var func = func_manager.filter_model.get_item (pos) as Function;
 
             expression.text += ")";
             expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
         });
 
-        var function_list_search_entry = new Gtk.SearchEntry () {
+        var func_search_entry = new Gtk.SearchEntry () {
             margin_bottom = 6,
             placeholder_text = _("Search functions")
         };
 
-        var function_list_scrolled = new Gtk.ScrolledWindow () {
+        var func_scrolled = new Gtk.ScrolledWindow () {
             vexpand = true,
             hexpand = true,
-            child = function_list
+            child = func_listview
         };
 
-        var function_list_grid = new Gtk.Grid () {
+        var func_popover_content = new Gtk.Grid () {
             orientation = Gtk.Orientation.HORIZONTAL,
             margin_top = 10,
             margin_bottom = 10,
             margin_start = 10,
             margin_end = 10
         };
-        function_list_grid.attach (function_list_search_entry, 0, 0, 1, 1);
-        function_list_grid.attach (function_list_scrolled, 0, 1, 1, 1);
+        func_popover_content.attach (func_search_entry, 0, 0, 1, 1);
+        func_popover_content.attach (func_scrolled, 0, 1, 1, 1);
 
-        var popup = new Gtk.Popover () {
+        var func_popover = new Gtk.Popover () {
             width_request = 320,
             height_request = 600,
             position = Gtk.PositionType.BOTTOM,
-            child = function_list_grid
+            child = func_popover_content
         };
 
-        function_list_bt = new Gtk.MenuButton () {
+        func_button = new Gtk.MenuButton () {
             label = "f(x)",
             tooltip_text = _("Insert functions to a selected cell"),
-            popover = popup,
+            popover = func_popover,
             direction = Gtk.ArrowType.NONE
         };
-        function_list_bt.add_css_class ("func-list-button");
+        func_button.add_css_class ("func-list-button");
 
         expression.activate.connect (update_formula);
 
-        function_list_search_entry.search_changed.connect (() => {
-            func_manager.filter (function_list_search_entry.text);
+        func_search_entry.search_changed.connect (() => {
+            func_manager.filter (func_search_entry.text);
         });
 
         style_popup = new Gtk.Popover () {
@@ -297,7 +297,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             margin_end = 10,
             column_spacing = 10
         };
-        toolbar.attach (function_list_bt, 0, 0, 1, 1);
+        toolbar.attach (func_button, 0, 0, 1, 1);
         toolbar.attach (expression, 1, 0);
         toolbar.attach (style_button, 2, 0);
 
