@@ -61,8 +61,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     }
 
     private bool prepend_internal (string path) {
-        var file = File.new_for_path (path);
-        if (!file.query_exists ()) {
+        if (!FileUtils.test (path, FileTest.EXISTS)) {
             warning ("Invalid path. path=%s", path);
             return false;
         }
