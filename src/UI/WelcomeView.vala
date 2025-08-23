@@ -22,8 +22,18 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         var welcome = new Granite.Placeholder (_("Spreadsheet")) {
             description = _("Start something new, or continue what you have been working on.")
         };
-        var new_button = welcome.append_button (new ThemedIcon ("document-new"), _("New Sheet"), _("Create an empty sheet"));
-        var open_button = welcome.append_button (new ThemedIcon ("document-open"), _("Open File"), _("Choose a saved file"));
+
+        var new_button = welcome.append_button (
+            new ThemedIcon ("document-new"),
+            _("New Sheet"),
+            _("Create an empty sheet")
+        );
+
+        var open_button = welcome.append_button (
+            new ThemedIcon ("document-open"),
+            _("Open File"),
+            _("Choose a saved file")
+        );
 
         var recent_title = new Gtk.Label (_("Recent files")) {
             halign = Gtk.Align.CENTER,
