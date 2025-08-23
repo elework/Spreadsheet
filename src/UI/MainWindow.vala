@@ -201,7 +201,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         show_welcome ();
     }
 
-    private Gtk.Grid toolbar () {
+    private Gtk.Box toolbar () {
         expression = new Gtk.Entry () {
             hexpand = true,
             tooltip_text = _("Click to insert numbers or functions to a selected cell")
@@ -237,15 +237,14 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             child = func_listview
         };
 
-        var func_popover_content = new Gtk.Grid () {
-            orientation = Gtk.Orientation.HORIZONTAL,
+        var func_popover_content = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
             margin_top = 10,
             margin_bottom = 10,
             margin_start = 10,
             margin_end = 10
         };
-        func_popover_content.attach (func_search_entry, 0, 0, 1, 1);
-        func_popover_content.attach (func_scrolled, 0, 1, 1, 1);
+        func_popover_content.append (func_search_entry);
+        func_popover_content.append (func_scrolled);
 
         var func_popover = new Gtk.Popover () {
             width_request = 320,
@@ -290,16 +289,15 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             direction = Gtk.ArrowType.NONE
         };
 
-        var toolbar = new Gtk.Grid () {
+        var toolbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 10) {
             margin_top = 10,
             margin_bottom = 10,
             margin_start = 10,
-            margin_end = 10,
-            column_spacing = 10
+            margin_end = 10
         };
-        toolbar.attach (func_button, 0, 0, 1, 1);
-        toolbar.attach (expression, 1, 0);
-        toolbar.attach (style_button, 2, 0);
+        toolbar.append (func_button);
+        toolbar.append (expression);
+        toolbar.append (style_button);
 
         return toolbar;
     }
