@@ -401,35 +401,37 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     }
 
     private void new_sheet () {
-        int id = 1;
-        string file_name = "";
-        string suffix = "";
-        string documents = "";
-        File? path = null;
-
         set_header_buttons_visibility (true);
 
-        do {
-            file_name = _("Untitled Spreadsheet %i").printf (id++);
-            suffix = ".csv";
+        unowned string documents_dir = Environment.get_user_special_dir (UserDirectory.DOCUMENTS);
 
-            documents = Environment.get_user_special_dir (UserDirectory.DOCUMENTS);
-            path = File.new_for_path ("%s/%s%s".printf (documents, file_name, suffix));
-        } while (path.query_exists ());
+        bool used_filename = true;
+        int id = 1;
+        string? filename = null;
+        string? path = null;
+        while (used_filename) {
+            filename = "%s%s".printf (_("Untitled Spreadsheet %i").printf (id), Util.FILE_SUFFIX);
+            path = Path.build_filename (documents_dir, filename);
 
-        var page = new Page.empty ();
-        page.title = _("Sheet 1");
+            id++;
+            used_filename = FileUtils.test (path, FileTest.EXISTS);
+        }
 
-        var file = new SpreadSheet ();
-        file.file_path = path.get_path ();
-        file.title = Path.get_basename (file.file_path);
+        var page = new Page.empty () {
+            title = _("Sheet 1")
+        };
+
+        var file = new SpreadSheet () {
+            title = filename,
+            file_path = path
+        };
         file.add_page (page);
+
         this.file = file;
 
         save_sheet ();
 
         app_stack.visible_child = edit_view;
-        id++;
     }
 
     private async void open_sheet_choose () {
@@ -519,8 +521,8 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         }
 
         string path = file.get_path ();
-        if (!path.has_suffix (".csv")) {
-            path += ".csv";
+        if (!path.has_suffix (Util.FILE_SUFFIX)) {
+            path += Util.FILE_SUFFIX;
         }
 
         new CSVWriter (active_sheet.page).write_to_file (path);

@@ -4,6 +4,8 @@
  */
 
 namespace Spreadsheet.Util {
+    public const string FILE_SUFFIX = ".csv";
+
     // From http://stackoverflow.com/questions/4183546/how-can-i-draw-image-with-rounded-corners-in-cairo-gtk
     public static void draw_rounded_path (Cairo.Context ctx, double x, double y, double width, double height, double radius) {
         double degrees = Math.PI / 180.0;
