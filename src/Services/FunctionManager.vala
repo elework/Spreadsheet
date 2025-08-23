@@ -7,7 +7,7 @@ using Spreadsheet.Models;
 
 public class Spreadsheet.Services.FunctionManager : Object {
     public Gee.ArrayList<Function> functions { get; private set; }
-    public Gtk.SelectionModel func_selection_model { get; private set; }
+    public Gtk.FilterListModel filter_model { get; private set; }
 
     public static unowned FunctionManager get_default () {
         if (instance == null) {
@@ -66,9 +66,7 @@ public class Spreadsheet.Services.FunctionManager : Object {
             func_liststore.append (func);
         }
 
-        var func_filter_model = new Gtk.FilterListModel (func_liststore, func_filter);
-
-        func_selection_model = new Gtk.NoSelection (func_filter_model);
+        filter_model = new Gtk.FilterListModel (func_liststore, func_filter);
     }
 
     public void filter (string term) {

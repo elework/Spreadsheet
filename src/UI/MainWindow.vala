@@ -201,23 +201,6 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         show_welcome ();
     }
 
-    private void func_item_setup (Object obj) {
-        var list_item = obj as Gtk.ListItem;
-
-        var row = new FunctionListRow ();
-        list_item.child = row;
-    }
-
-    private void func_item_bind (Object obj) {
-        var list_item = obj as Gtk.ListItem;
-
-        var func = list_item.item as Function;
-        var row = list_item.child as FunctionListRow;
-
-        row.name_text = func.name;
-        row.doc_text = func.doc;
-    }
-
     private Gtk.Grid toolbar () {
         expression = new Gtk.Entry () {
             hexpand = true,
@@ -230,12 +213,14 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
         unowned var func_manager = FunctionManager.get_default ();
 
-        var function_list = new Gtk.ListView (func_manager.func_selection_model, func_factory) {
+        var func_selection_model = new Gtk.NoSelection (func_manager.filter_model);
+
+        var function_list = new Gtk.ListView (func_selection_model, func_factory) {
             single_click_activate = true
         };
 
         function_list.activate.connect ((pos) => {
-            var func = func_manager.func_selection_model.get_item (pos) as Function;
+            var func = func_manager.filter_model.get_item (pos) as Function;
 
             expression.text += ")";
             expression.buffer.insert_text (expression.get_position (), (func.name + "(").data);
@@ -569,6 +554,23 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         expression.text = "";
 
         app_stack.visible_child = welcome_view;
+    }
+
+    private static void func_item_setup (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var row = new FunctionListRow ();
+        list_item.child = row;
+    }
+
+    private static void func_item_bind (Object obj) {
+        var list_item = obj as Gtk.ListItem;
+
+        var func = list_item.item as Function;
+        var row = list_item.child as FunctionListRow;
+
+        row.name_text = func.name;
+        row.doc_text = func.doc;
     }
 
     private void update_formula () {
