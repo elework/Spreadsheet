@@ -19,24 +19,29 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private const string BLUEBERRY_500 = "#3689e6";
     private const string BLACK_500 = "#333333";
 
-    // Cell dimensions
+    /*
+     * Cell dimensions:
+     *
+     *        <--------->  width
+     *       |     A     |
+     *  -----|-----------|-- < border
+     *       |           |   ) padding    |
+     *    1  |     foo   |                | height
+     *       |           |   ) padding    |
+     *  -----|-----------|-- < border
+     *                <->
+     *       ^   padding ^
+     *       border      border
+     */
     private const double DEFAULT_WIDTH = 70;
     private const double DEFAULT_HEIGHT = 25;
     private const double DEFAULT_PADDING = 5;
     private const double DEFAULT_BORDER = 0.5;
 
-    /*
-     *        <--------->  width
-     *       |     A     |
-     *  -----|-----------|--            <-
-     *       |           |   ) padding    |
-     *    1  |      foo  |                | height
-     *       |           |   ) padding    |
-     *  -----|-----------|--            <-
-     *
-     *       ^
-     *     border
-     */
+    private const int UNDERLINE_PADDING = 3;
+    private const int UNDERLINE_STROKE_WIDTH = 1;
+    private const int STRIKETHROUGH_STROKE_WIDTH = 1;
+
     private double width;
     private double height;
     private double padding;
@@ -178,11 +183,11 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
          *  linenum_width   width       (x, y)
          *  <->             <--->       |
          *  ___|__A__|__B__|__C__|__D__||_E__|__ ) columnid_height
-         *  _1_|_____|_____|_____|_____|*____|__ ) height
-         *  _2_|_____|_____|_____|_____|_____|__
+         *  _1_|_____|_____|_____|_____||____|__
+         *  _2_|_____|_____|_____|_____|*____|__ ) height
          */
-        var column = (int) ((x - linenum_width) / width);
-        var line = (int) ((y - columnid_height) / height);
+        var column = (int) ((x - linenum_width) / (width + border));
+        var line = (int) ((y - columnid_height) / (height + border));
 
         select (line, column);
         grab_focus ();
@@ -278,6 +283,9 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         cr.set_font_size (height - padding * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
+        Cairo.TextExtents linenum_ext;
+        cr.text_extents (linenum_max.to_string (), out linenum_ext);
+
         /*
          *  Calculate this
          *  <------->
@@ -288,9 +296,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
          *  <->   <->
          *  padding
          */
-        Cairo.TextExtents linenum_ext;
-        cr.text_extents (linenum_max.to_string (), out linenum_ext);
-
         return linenum_ext.width + (padding * 2);
     }
 
@@ -305,8 +310,8 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         double linenum_width = calc_linenum_width (page.lines, height, padding);
         double columnid_height = height;
 
-        double page_width = linenum_width + (width * page.columns);
-        double page_height = columnid_height + (height * page.lines);
+        double page_width = linenum_width + ((width + border) * page.columns);
+        double page_height = columnid_height + ((height + border) * page.lines);
         set_size_request ((int) page_width, (int) page_height);
 
         queue_draw ();
@@ -337,67 +342,121 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         Gdk.RGBA selected_font_color = { 0 };
         selected_font_color.parse (BLACK_500);
 
+        const double SELECTED_STROKE_WIDTH = 3.0;
+
         cr.set_font_size (height - padding * 2);
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
         double linenum_width = calc_linenum_width (page.lines, height, padding);
+        double columnid_height = height;
+        double cellarea_width = ((width + border) * page.columns);
+        double cellarea_height = ((height + border) * page.lines);
 
         // white background
         cr.set_source_rgb (1, 1, 1);
-        cr.rectangle (linenum_width, height, get_width () - linenum_width, get_height () - height);
+        cr.rectangle (linenum_width, columnid_height, cellarea_width, cellarea_height);
         cr.fill ();
 
         // draw the letters and the numbers on the side
         cr.set_line_width (border);
 
-        // numbers on the left side
+        // numbers on the left side (1, 2, ...)
         for (int i = 0; i < page.lines; i++) {
+            /*
+             *                     <---> linenum_width
+             *                          |  ) columnid_height
+             *                     -----|- < border
+             *                       1  |  ) height
+             * (cell_x, cell_y) -> *----|-
+             *                       2  |
+             *                     -----|-
+             */
             Gdk.cairo_set_source_rgba (cr, style_bg_color);
-            cr.rectangle (0, height + border + i * height, linenum_width, height);
+            double cell_x = 0;
+            double cell_y = columnid_height + ((border + height) * i);
+            cr.rectangle (cell_x, cell_y, linenum_width, height);
             cr.stroke ();
 
-            if (selected_cell != null && selected_cell.line == i) {
-                cr.save ();
-                Gdk.cairo_set_source_rgba (cr, selected_fill);
-                cr.rectangle (0, height + border + i * height, linenum_width, height);
-                cr.fill ();
-                cr.restore ();
+            if (selected_cell != null) {
+                if (selected_cell.line == i) {
+                    cr.save ();
+                    Gdk.cairo_set_source_rgba (cr, selected_fill);
+                    cr.rectangle (cell_x, cell_y, linenum_width, height);
+                    cr.fill ();
+                    cr.restore ();
 
-                Gdk.cairo_set_source_rgba (cr, selected_font_color);
+                    Gdk.cairo_set_source_rgba (cr, selected_font_color);
+                }
             }
 
             string linenum_str = "%d".printf (i + 1);
             Cairo.TextExtents extents;
             cr.text_extents (linenum_str, out extents);
-            double x = linenum_width / 2 - extents.width / 2;
-            double y = height + border + height * i + height / 2 + extents.height / 2;
+            /*
+             *                     <---------> linenum_width
+             *                                |
+             * (cell_x, cell_y) -> *----------|--
+             *                        <---> extents.width          |
+             *                        _____   |                    |
+             *                       |     |  |  |                 |
+             *                       |  2  |  |  | extents.height  | height
+             * (text_x, text_y) ->   *_____|  |  |                 |
+             *                                |                    |
+             *                     -----------|--
+             */
+            double text_x = cell_x + (linenum_width / 2 - extents.width / 2);
+            double text_y = cell_y + (height / 2 + extents.height / 2);
 
-            cr.move_to (x, y);
+            cr.move_to (text_x, text_y);
             cr.show_text (linenum_str);
         }
 
         // letters on the top
         int i = 0;
         foreach (string letter in new AlphabetGenerator (page.columns)) {
+            /*
+             *                          * <-  (cell_x, cell_y)
+             *      |    A    |    B    |   ) columnid_height
+             * -----|---------|---------|--
+             * <---> <------->
+             *  |   ^  width
+             *  |   border
+             * linenum_width
+             */
             Gdk.cairo_set_source_rgba (cr, style_bg_color);
-            cr.rectangle (linenum_width + border + i * width, 0, width, height);
+            double cell_x = linenum_width + ((border + width) * i);
+            double cell_y = 0;
+            cr.rectangle (cell_x, cell_y, width, columnid_height);
             cr.stroke ();
 
-            if (selected_cell != null && selected_cell.column == i) {
-                cr.save ();
-                Gdk.cairo_set_source_rgba (cr, selected_fill);
-                cr.rectangle (linenum_width + border + i * width, 0, width, height);
-                cr.fill ();
-                cr.restore ();
+            if (selected_cell != null) {
+                if (selected_cell.column == i) {
+                    cr.save ();
+                    Gdk.cairo_set_source_rgba (cr, selected_fill);
+                    cr.rectangle (cell_x, cell_y, width, height);
+                    cr.fill ();
+                    cr.restore ();
 
-                Gdk.cairo_set_source_rgba (cr, selected_font_color);
+                    Gdk.cairo_set_source_rgba (cr, selected_font_color);
+                }
             }
 
             Cairo.TextExtents extents;
             cr.text_extents (letter, out extents);
-            double x = linenum_width + border + width * i + width / 2 - extents.width / 2;
-            double y = height / 2 + extents.height / 2;
-            cr.move_to (x, y);
+            /*
+             *                      <---------> width
+             * (cell_x, cell_y) -> *   <---> extents.width
+             *                     |   _____   |                    |
+             *                     |  |     |  |  |                 |
+             *                     |  |  B  |  |  | extents.height  | height
+             * (text_x, text_y) -> |  *_____|  |  |                 |
+             *                     |           |                    |
+             *                    -|-----------|--
+             */
+            double text_x = cell_x + (width / 2 - extents.width / 2);
+            double text_y = cell_y + (height / 2 + extents.height / 2);
+
+            cr.move_to (text_x, text_y);
             cr.show_text (letter);
 
             i++;
@@ -405,92 +464,110 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // draw the cells
         foreach (var cell in page.cells) {
-            Gdk.RGBA bg = cell.cell_style.bg_color;
-            Gdk.RGBA bg_default = { 1, 1, 1, 1 };
+            /*
+             *      |    A    |    B    |   ) columnid_height
+             * -----|---------|---------|-- < border
+             *   1  |         |         |   ) height
+             * -----|---------*---------|--
+             *   2  |         | (cell_x, cell_y)
+             * -----|---------|---------|--
+             * <---> <------->
+             *  |      width
+             *  |   ^
+             *  |   border
+             * linenum_width
+             */
+            double cell_x = linenum_width + (border + width) * cell.column;
+            double cell_y = columnid_height + (border + height) * cell.line;
 
+            Gdk.RGBA bg = cell.cell_style.bg_color;
             if (cell.selected) {
                 bg = selected_fill;
             }
 
-            if (bg != bg_default) {
+            if (bg != CellStyle.BG_COLOR_DEFAULT) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, bg);
-                cr.rectangle (linenum_width + border + cell.column * width, height + border + cell.line * height, width, height);
+                cr.rectangle (cell_x, cell_y, width, height);
                 cr.fill ();
                 cr.restore ();
             }
 
             Gdk.RGBA sr = cell.cell_style.stroke_color;
-            Gdk.RGBA sr_default = { 0, 0, 0, 1 };
             double sr_w = cell.cell_style.stroke_width;
-            cr.save ();
-
-            if (sr_w != 1.0) {
-                cr.set_line_width (sr_w);
-            } else {
-                cr.set_line_width (1.0);
-            }
-
             if (cell.selected) {
                 sr = selected_stroke;
-                cr.set_line_width (3.0);
+                sr_w = SELECTED_STROKE_WIDTH;
             }
 
-            if (sr != sr_default) {
-                Gdk.cairo_set_source_rgba (cr, sr);
-            } else {
-                Gdk.cairo_set_source_rgba (cr, default_cell_stroke);
+            if (sr == CellStyle.STROKE_COLOR_DEFAULT) {
+                sr = default_cell_stroke;
             }
 
-            cr.rectangle (linenum_width + border + cell.column * width, height + border + cell.line * height, width, height);
+            cr.save ();
+            cr.set_line_width (sr_w);
+            Gdk.cairo_set_source_rgba (cr, sr);
+            cr.rectangle (cell_x, cell_y, width, height);
             cr.stroke ();
             cr.restore ();
 
             // display the text
             Gdk.RGBA color = cell.font_style.font_color;
-            Gdk.RGBA color_default = { 0, 0, 0, 1 };
-            cr.save ();
-
             if (cell.selected) {
                 color = selected_font_color;
             }
 
-            if (color != color_default) {
-                Gdk.cairo_set_source_rgba (cr, color);
-            } else {
-                Gdk.cairo_set_source_rgba (cr, default_font_color);
+            if (color == FontStyle.FONT_COLOR_DEFAULT) {
+                color = default_font_color;
             }
 
+            cr.save ();
+            Gdk.cairo_set_source_rgba (cr, color);
+
+            /*
+             *                      <-----------> width
+             *                     |             |
+             * (cell_x, cell_y) -> *-------------|--
+             *                     |    <---> extents.width           |
+             *                     |    _____    |                    |
+             *                     |   |     |   |   |                |
+             *                     |   | foo |   |   | extents.height | height
+             * (text_x, text_y) -> |   *_____|   |   |                |
+             *                     |             |   ) padding        |
+             *                     |-------------|-- < border
+             *                                <->
+             *                           padding ^
+             *                                   border
+             */
             Cairo.TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
-            double x = linenum_width + ((cell.column + 1) * width - (padding + border + extents.width));
-            double y = height + ((cell.line + 1) * height - (padding + border));
+            double text_x = cell_x + (width - (extents.width + padding + border));
+            double text_y = cell_y + (height - (padding + border));
 
             if (cell.font_style.is_underline) {
-                const int UNDERLINE_PADDING = 3;
-                cr.move_to (x, y + UNDERLINE_PADDING);
-                cr.set_line_width (1);
+                cr.move_to (text_x, text_y + UNDERLINE_PADDING);
+                cr.set_line_width (UNDERLINE_STROKE_WIDTH);
                 cr.rel_line_to (extents.width, 0);
                 cr.stroke ();
             }
 
             if (cell.font_style.is_strikethrough) {
-                cr.move_to (x, y - extents.height / 2);
-                cr.set_line_width (1);
+                cr.move_to (text_x, text_y - (extents.height / 2));
+                cr.set_line_width (STRIKETHROUGH_STROKE_WIDTH);
                 cr.rel_line_to (extents.width, 0);
                 cr.stroke ();
             }
 
-            cr.move_to (x, y);
-            var font_weight = Cairo.FontWeight.NORMAL;
+            cr.move_to (text_x, text_y);
+
             var font_slant = Cairo.FontSlant.NORMAL;
-
-            if (cell.font_style.is_bold) {
-                font_weight = Cairo.FontWeight.BOLD;
-            }
-
             if (cell.font_style.is_italic) {
                 font_slant = Cairo.FontSlant.ITALIC;
+            }
+
+            var font_weight = Cairo.FontWeight.NORMAL;
+            if (cell.font_style.is_bold) {
+                font_weight = Cairo.FontWeight.BOLD;
             }
 
             cr.select_font_face ("Open Sans", font_slant, font_weight);
