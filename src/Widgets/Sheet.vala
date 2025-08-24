@@ -29,6 +29,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     public Page page { get; set; }
 
     private MainWindow window;
+    private bool is_holding_ctrl = false;
 
     public Cell? selected_cell { get; set; }
 
@@ -75,11 +76,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             update_zoom_level ();
         });
 
-        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
-            // Scroll event handler is not active in Sheet without Ctrl key press
-            // so that scrolling the viewport by Gtk.ScrolledWindow works
-            propagation_phase = Gtk.PropagationPhase.NONE
-        };
+        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL);
         scroll_controller.scroll.connect (on_scroll);
         add_controller (scroll_controller);
 
@@ -128,7 +125,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 case Gdk.Key.Control_L:
                 case Gdk.Key.Control_R:
                     // Activate the scroll event handler
-                    scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
+                    is_holding_ctrl = true;
                     return true;
                 default:
                     // Check if the keyval corresponds to a character key or modifier key that we don't handle
@@ -150,7 +147,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         });
         key_press_controller.key_released.connect ((keyval, keycode, state) => {
             // Deactivate the scroll event handler
-            scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
+            is_holding_ctrl = false;
         });
         add_controller (key_press_controller);
     }
@@ -224,6 +221,10 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     private bool on_scroll (double x_delta, double y_delta) {
+        if (!is_holding_ctrl) {
+            return false;
+        }
+
         if (y_delta > 0) {
             window.action_bar.zoom_level -= 10;
             return true;
