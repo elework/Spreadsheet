@@ -48,7 +48,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private double border;
 
     private MainWindow window;
-    private Gtk.EventControllerScroll scroll_controller;
+    private bool is_holding_ctrl = false;
 
     public Sheet (Page page, MainWindow window) {
         Object (
@@ -92,11 +92,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             update_zoom_level ();
         });
 
-        scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL) {
-            // Scroll event handler is not active in Sheet without Ctrl key press
-            // so that scrolling the viewport by Gtk.ScrolledWindow works
-            propagation_phase = Gtk.PropagationPhase.NONE
-        };
+        var scroll_controller = new Gtk.EventControllerScroll (Gtk.EventControllerScrollFlags.VERTICAL);
         scroll_controller.scroll.connect (on_scroll);
         add_controller (scroll_controller);
 
@@ -199,6 +195,10 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     private bool on_scroll (double x_delta, double y_delta) {
+        if (!is_holding_ctrl) {
+            return false;
+        }
+
         // Only sensitive for horizontal scroll
         if (y_delta > 0) {
             window.action_bar.zoom_level -= 10;
@@ -257,7 +257,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             case Gdk.Key.Control_L:
             case Gdk.Key.Control_R:
                 // Activate the scroll event handler
-                scroll_controller.propagation_phase = Gtk.PropagationPhase.BUBBLE;
+                is_holding_ctrl = true;
                 return true;
             default:
                 // Check if the keyval corresponds to a character key or modifier key that we don't handle
@@ -280,7 +280,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     private void on_key_release (uint keyval, uint keycode, Gdk.ModifierType state) {
         // Deactivate the scroll event handler
-        scroll_controller.propagation_phase = Gtk.PropagationPhase.NONE;
+        is_holding_ctrl = false;
     }
 
     private static double calc_linenum_width (int linenum_max, double height, double padding) {
