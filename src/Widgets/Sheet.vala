@@ -262,7 +262,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private void update_zoom_level () {
         double zoom_level = window.action_bar.zoom_level * 0.01;
 
-        set_size_request ((int) ((get_initial_left_margin () + DEFAULT_WIDTH * page.columns) * zoom_level), (int) (DEFAULT_HEIGHT * page.lines * zoom_level));
+        set_size_request ((int) ((get_initial_left_margin () + DEFAULT_WIDTH * page.columns) * zoom_level), (int) (DEFAULT_HEIGHT + DEFAULT_HEIGHT * page.lines * zoom_level));
         width = DEFAULT_WIDTH * zoom_level;
         height = DEFAULT_HEIGHT * zoom_level;
         padding = DEFAULT_PADDING * zoom_level;
