@@ -483,33 +483,33 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             double cell_x = linenum_width + (border + width) * cell.column;
             double cell_y = columnid_height + (border + height) * cell.line;
 
-            Gdk.RGBA bg = cell.cell_style.bg_color;
+            Gdk.RGBA bg_color = cell.cell_style.bg_color;
             if (cell.selected) {
-                bg = selected_fill;
+                bg_color = selected_fill;
             }
 
-            if (bg != CellStyle.BG_COLOR_DEFAULT) {
+            if (bg_color != CellStyle.BG_COLOR_DEFAULT) {
                 cr.save ();
-                Gdk.cairo_set_source_rgba (cr, bg);
+                Gdk.cairo_set_source_rgba (cr, bg_color);
                 cr.rectangle (cell_x, cell_y, width, height);
                 cr.fill ();
                 cr.restore ();
             }
 
-            Gdk.RGBA sr = cell.cell_style.stroke_color;
-            double sr_w = cell.cell_style.stroke_width;
+            Gdk.RGBA stroke_color = cell.cell_style.stroke_color;
+            double stroke_width = cell.cell_style.stroke_width;
             if (cell.selected) {
-                sr = selected_stroke;
-                sr_w = SELECTED_STROKE_WIDTH;
+                stroke_color = selected_stroke;
+                stroke_width = SELECTED_STROKE_WIDTH;
             }
 
-            if (sr == CellStyle.STROKE_COLOR_DEFAULT) {
-                sr = default_cell_stroke;
+            if (stroke_color == CellStyle.STROKE_COLOR_DEFAULT) {
+                stroke_color = default_cell_stroke;
             }
 
             cr.save ();
-            cr.set_line_width (sr_w);
-            Gdk.cairo_set_source_rgba (cr, sr);
+            cr.set_line_width (stroke_width);
+            Gdk.cairo_set_source_rgba (cr, stroke_color);
             cr.rectangle (cell_x, cell_y, width, height);
             cr.stroke ();
             cr.restore ();
