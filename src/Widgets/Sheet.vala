@@ -104,12 +104,28 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         add_controller (key_press_controller);
     }
 
+    private bool is_selected (int line, int column) {
+        if (selected_cell == null) {
+            // No cell is selected, so the given cell is not selected too
+            return false;
+        }
+
+        if (line != selected_cell.line) {
+            return false;
+        }
+
+        if (column != selected_cell.column) {
+            return false;
+        }
+
+        return true;
+    }
+
     private void select (int line, int column) {
-        // Do nothing if the new selected cell are the same with the currently selected
-        if (line == selected_cell.line) {
-            if (column == selected_cell.column) {
-                return;
-            }
+        bool ret = is_selected (line, column);
+        if (ret) {
+            // Do nothing if the given cell is already selected
+            return;
         }
 
         foreach (var cell in page.cells) {
