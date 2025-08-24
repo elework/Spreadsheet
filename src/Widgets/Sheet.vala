@@ -357,10 +357,9 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         cr.rectangle (linenum_width, columnid_height, cellarea_width, cellarea_height);
         cr.fill ();
 
-        // draw the letters and the numbers on the side
         cr.set_line_width (border);
 
-        // numbers on the left side (1, 2, ...)
+        // numbers on the left (1, 2, ...)
         for (int i = 0; i < page.lines; i++) {
             /*
              *                     <---> linenum_width
@@ -411,7 +410,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             cr.show_text (linenum_str);
         }
 
-        // letters on the top
+        // letters on the top (A, B, ...)
         int i = 0;
         foreach (string letter in new AlphabetGenerator (page.columns)) {
             /*
