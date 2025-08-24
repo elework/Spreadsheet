@@ -180,14 +180,19 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         double columnid_height = height;
 
         /*
-         *  linenum_width   width       (x, y)
-         *  <->             <--->       |
-         *  ___|__A__|__B__|__C__|__D__||_E__|__ ) columnid_height
-         *  _1_|_____|_____|_____|_____||____|__
-         *  _2_|_____|_____|_____|_____|*____|__ ) height
+         *      |    A    |    B    |   ) columnid_height
+         * -----|---------|---------|-- < border
+         *   1  |         |         |   ) height
+         * -----|---------|---------|--
+         *   2  |         | *<----------- (x, y)
+         * -----|---------|---------|--
+         * <---> <------->
+         *  |   ^  width
+         *  |   border
+         * linenum_width
          */
-        var column = (int) ((x - linenum_width) / (width + border));
-        var line = (int) ((y - columnid_height) / (height + border));
+        var column = (int) ((x - linenum_width) / (border + width));
+        var line = (int) ((y - columnid_height) / (border + height));
 
         select (line, column);
         grab_focus ();
@@ -280,7 +285,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
     private static double calc_linenum_width (int linenum_max, double height, double padding) {
         var cr = new Cairo.Context (new Cairo.ImageSurface (Cairo.Format.ARGB32, 0, 0));
-        cr.set_font_size (height - padding * 2);
+        cr.set_font_size (height - (padding * 2));
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
         Cairo.TextExtents linenum_ext;
@@ -310,8 +315,8 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         double linenum_width = calc_linenum_width (page.lines, height, padding);
         double columnid_height = height;
 
-        double page_width = linenum_width + ((width + border) * page.columns);
-        double page_height = columnid_height + ((height + border) * page.lines);
+        double page_width = linenum_width + ((border + width) * page.columns);
+        double page_height = columnid_height + ((border + height) * page.lines);
         set_size_request ((int) page_width, (int) page_height);
 
         queue_draw ();
@@ -344,13 +349,13 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         const double SELECTED_STROKE_WIDTH = 3.0;
 
-        cr.set_font_size (height - padding * 2);
+        cr.set_font_size (height - (padding * 2));
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
         double linenum_width = calc_linenum_width (page.lines, height, padding);
         double columnid_height = height;
-        double cellarea_width = ((width + border) * page.columns);
-        double cellarea_height = ((height + border) * page.lines);
+        double cellarea_width = ((border + width) * page.columns);
+        double cellarea_height = ((border + height) * page.lines);
 
         // white background
         cr.set_source_rgb (1, 1, 1);
@@ -541,7 +546,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             Cairo.TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
             double text_x = cell_x + (width - (extents.width + padding + border));
-            double text_y = cell_y + (height - (padding + border));
+            double text_y = cell_y + (height - (border + padding));
 
             if (cell.font_style.is_underline) {
                 cr.move_to (text_x, text_y + UNDERLINE_PADDING);
