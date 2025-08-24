@@ -179,17 +179,24 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         queue_draw ();
     }
 
-    private void move (int line_add, int col_add) {
-        // Ignore key press to the outside of the sheet
-        if (selected_cell.line + line_add < 0 || selected_cell.column + col_add < 0) {
+    private void move (int line_add, int column_add) {
+        if (selected_cell == null) {
+            select (0, 0);
             return;
         }
 
-        if (selected_cell != null) {
-            select (selected_cell.line + line_add, selected_cell.column + col_add);
-        } else {
-            select (0, 0);
+        int line_after = selected_cell.line + line_add;
+        int column_after = selected_cell.column + column_add;
+
+        // Ignore key press to the outside of the sheet
+        if (line_after < 0 || line_after >= page.lines) {
+            return;
         }
+        if (column_after < 0 || column_after >= page.columns) {
+            return;
+        }
+
+        select (line_after, column_after);
     }
 
     public void move_top () {
