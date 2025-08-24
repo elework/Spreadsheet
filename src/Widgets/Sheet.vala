@@ -81,74 +81,8 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         add_controller (scroll_controller);
 
         var key_press_controller = new Gtk.EventControllerKey ();
-        key_press_controller.key_pressed.connect ((keyval, keycode, state) => {
-            if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                switch (keyval) {
-                    case Gdk.Key.plus:
-                        window.action_bar.zoom_level += 10;
-                        return true;
-                    case Gdk.Key.minus:
-                        window.action_bar.zoom_level -= 10;
-                        return true;
-                    case Gdk.Key.@0:
-                        window.action_bar.zoom_level = 100;
-                        return true;
-                    case Gdk.Key.Home:
-                        select (0, 0);
-                        return true;
-                    default:
-                        break;
-                }
-            }
-
-            switch (keyval) {
-                case Gdk.Key.Tab:
-                    move_right ();
-                    return true;
-                case Gdk.Key.Right:
-                    move_right ();
-                    return true;
-                case Gdk.Key.Down:
-                case Gdk.Key.Return:
-                    move_bottom ();
-                    return true;
-                case Gdk.Key.Up:
-                    move_top ();
-                    return true;
-                case Gdk.Key.Left:
-                    move_left ();
-                    return true;
-                case Gdk.Key.BackSpace:
-                case Gdk.Key.Delete:
-                    selection_cleared ();
-                    return true;
-                case Gdk.Key.Control_L:
-                case Gdk.Key.Control_R:
-                    // Activate the scroll event handler
-                    is_holding_ctrl = true;
-                    return true;
-                default:
-                    // Check if the keyval corresponds to a character key or modifier key that we don't handle
-                    if (Gdk.keyval_to_unicode (keyval) == 0) {
-                        // Do nothing if the button pressed is ONLY a modifier. If a combination
-                        // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
-                        // instead be checked with the state parameter before here.
-                        return true;
-                    }
-
-                    break;
-            }
-
-            // No special key is used, thus the intent is user input
-            string input_text = Util.keyval_to_utf8 (keyval);
-            forward_input_text (input_text);
-
-            return true;
-        });
-        key_press_controller.key_released.connect ((keyval, keycode, state) => {
-            // Deactivate the scroll event handler
-            is_holding_ctrl = false;
-        });
+        key_press_controller.key_pressed.connect (on_key_press);
+        key_press_controller.key_released.connect (on_key_release);
         add_controller (key_press_controller);
     }
 
@@ -236,6 +170,76 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         }
 
         return false;
+    }
+
+    private bool on_key_press (uint keyval, uint keycode, Gdk.ModifierType state) {
+        if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+            switch (keyval) {
+                case Gdk.Key.plus:
+                    window.action_bar.zoom_level += 10;
+                    return true;
+                case Gdk.Key.minus:
+                    window.action_bar.zoom_level -= 10;
+                    return true;
+                case Gdk.Key.@0:
+                    window.action_bar.zoom_level = 100;
+                    return true;
+                case Gdk.Key.Home:
+                    select (0, 0);
+                    return true;
+                default:
+                    break;
+            }
+        }
+
+        switch (keyval) {
+            case Gdk.Key.Tab:
+                move_right ();
+                return true;
+            case Gdk.Key.Right:
+                move_right ();
+                return true;
+            case Gdk.Key.Down:
+            case Gdk.Key.Return:
+                move_bottom ();
+                return true;
+            case Gdk.Key.Up:
+                move_top ();
+                return true;
+            case Gdk.Key.Left:
+                move_left ();
+                return true;
+            case Gdk.Key.BackSpace:
+            case Gdk.Key.Delete:
+                selection_cleared ();
+                return true;
+            case Gdk.Key.Control_L:
+            case Gdk.Key.Control_R:
+                // Activate the scroll event handler
+                is_holding_ctrl = true;
+                return true;
+            default:
+                // Check if the keyval corresponds to a character key or modifier key that we don't handle
+                if (Gdk.keyval_to_unicode (keyval) == 0) {
+                    // Do nothing if the button pressed is ONLY a modifier. If a combination
+                    // is pressed, e.g. Shift+Tab, it is not treated as a modifier, and should
+                    // instead be checked with the state parameter before here.
+                    return true;
+                }
+
+                break;
+        }
+
+        // No special key is used, thus the intent is user input
+        string input_text = Util.keyval_to_utf8 (keyval);
+        forward_input_text (input_text);
+
+        return true;
+    }
+
+    private void on_key_release (uint keyval, uint keycode, Gdk.ModifierType state) {
+        // Deactivate the scroll event handler
+        is_holding_ctrl = false;
     }
 
     private double get_left_margin () {
