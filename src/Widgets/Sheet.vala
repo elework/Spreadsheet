@@ -22,22 +22,24 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     /*
      * Cell dimensions:
      *
-     *        <--------->  width
-     *       |     A     |
-     *  -----|-----------|-- < border
-     *       |           |   ) padding    |
-     *    1  |     foo   |                | height
-     *       |           |   ) padding    |
-     *  -----|-----------|-- < border
-     *                <->
-     *       ^   padding ^
-     *       border      border
+     *   ---> x
+     *  |        <--------->  width
+     *  v       |     A     |
+     *  y  -----|-----------|-- < border
+     *          |           |   ) padding  ^
+     *       1  |     foo   |              | height
+     *          |           |   ) padding  v
+     *     -----|-----------|-- < border
+     *                   <->
+     *          ^   padding ^
+     *          border      border
      */
     private const double DEFAULT_WIDTH = 70;
     private const double DEFAULT_HEIGHT = 25;
     private const double DEFAULT_PADDING = 5;
     private const double DEFAULT_BORDER = 0.5;
 
+    private const int SELECTED_STROKE_WIDTH = 3;
     private const int UNDERLINE_PADDING = 3;
     private const int UNDERLINE_STROKE_WIDTH = 1;
     private const int STRIKETHROUGH_STROKE_WIDTH = 1;
@@ -102,10 +104,10 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         add_controller (key_press_controller);
     }
 
-    private void select (int line, int col) {
+    private void select (int line, int column) {
         // Do nothing if the new selected cell are the same with the currently selected
         if (line == selected_cell.line) {
-            if (col == selected_cell.column) {
+            if (column == selected_cell.column) {
                 return;
             }
         }
@@ -123,7 +125,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             }
 
             if (cell.line == line) {
-                if (cell.column == col) {
+                if (cell.column == column) {
                     // Select the new cell
                     cell.selected = true;
                     selected_cell = cell;
@@ -176,16 +178,16 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         double columnid_height = height;
 
         /*
-         *      |    A    |    B    |   ) columnid_height
-         * -----|---------|---------|-- < border
-         *   1  |         |         |   ) height
-         * -----|---------|---------|--
-         *   2  |         | * <---------- (x, y)
-         * -----|---------|---------|--
-         * <---> <------->
-         *  |   ^  width
-         *  |   border
-         * linenum_width
+         *       |    A    |    B    |   ) columnid_height
+         *  -----|---------|---------|-- < border
+         *    1  |         |         |   ) height
+         *  -----|---------|---------|--
+         *    2  |         | * <---------- (x, y)
+         *  -----|---------|---------|--
+         *  <---> <------->
+         *   |   ^  width
+         *   |   border
+         *  linenum_width
          */
         var column = (int) ((x - linenum_width) / (border + width));
         var line = (int) ((y - columnid_height) / (border + height));
@@ -347,8 +349,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         Gdk.RGBA selected_font_color = { 0 };
         selected_font_color.parse (BLACK_500);
 
-        const double SELECTED_STROKE_WIDTH = 3.0;
-
         cr.set_font_size (height - (padding * 2));
         cr.select_font_face ("Open Sans", Cairo.FontSlant.NORMAL, Cairo.FontWeight.NORMAL);
 
@@ -367,13 +367,13 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         // numbers on the left (1, 2, ...)
         for (int i = 0; i < page.lines; i++) {
             /*
-             *                     <---> linenum_width
-             *                          |  ) columnid_height
-             *                     -----|- < border
-             *                       1  |  ) height
-             * (cell_x, cell_y) -> *----|-
-             *                       2  |
-             *                     -----|-
+             *                      <---> linenum_width
+             *                           |  ) columnid_height
+             *                      -----|- < border
+             *                        1  |  ) height
+             *  (cell_x, cell_y) -> *----|-
+             *                        2  |
+             *                      -----|-
              */
             Gdk.cairo_set_source_rgba (cr, style_bg_color);
             double cell_x = 0;
@@ -397,16 +397,16 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             Cairo.TextExtents extents;
             cr.text_extents (linenum_str, out extents);
             /*
-             *                     <---------> linenum_width
-             *                                |
-             * (cell_x, cell_y) -> *----------|--
-             *                        <---> extents.width          |
-             *                        _____   |                    |
-             *                       |     |  |  |                 |
-             *                       |  2  |  |  | extents.height  | height
-             * (text_x, text_y) ->   *_____|  |  |                 |
-             *                                |                    |
-             *                     -----------|--
+             *                      <---------> linenum_width
+             *                                 |
+             *  (cell_x, cell_y) -> *----------|--
+             *                         <---> extents.width          ^
+             *                         _____   |                    |
+             *                        |     |  |  ^                 |
+             *                        |  2  |  |  | extents.height  | height
+             *  (text_x, text_y) ---> *_____|  |  v                 |
+             *                                 |                    v
+             *                      -----------|--
              */
             double text_x = cell_x + (linenum_width / 2 - extents.width / 2);
             double text_y = cell_y + (height / 2 + extents.height / 2);
@@ -419,13 +419,13 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         int i = 0;
         foreach (string letter in new AlphabetGenerator (page.columns)) {
             /*
-             *                          * <-  (cell_x, cell_y)
-             *      |    A    |    B    |   ) columnid_height
-             * -----|---------|---------|--
-             * <---> <------->
-             *  |   ^  width
-             *  |   border
-             * linenum_width
+             *                           * <-- (cell_x, cell_y)
+             *       |    A    |    B    |   ) columnid_height
+             *  -----|---------|---------|--
+             *  <---> <------->
+             *   |   ^  width
+             *   |   border
+             *  linenum_width
              */
             Gdk.cairo_set_source_rgba (cr, style_bg_color);
             double cell_x = linenum_width + ((border + width) * i);
@@ -448,14 +448,14 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             Cairo.TextExtents extents;
             cr.text_extents (letter, out extents);
             /*
-             *                      <---------> width
-             * (cell_x, cell_y) -> *   <---> extents.width
-             *                     |   _____   |                    |
-             *                     |  |     |  |  |                 |
-             *                     |  |  B  |  |  | extents.height  | height
-             * (text_x, text_y) -> |  *_____|  |  |                 |
-             *                     |           |                    |
-             *                    -|-----------|--
+             *                       <---------> width
+             *  (cell_x, cell_y) -> *   <---> extents.width
+             *                      |   _____   |                    ^
+             *                      |  |     |  |  ^                 |
+             *                      |  |  B  |  |  | extents.height  | height
+             *  (text_x, text_y) ----> *_____|  |  v                 |
+             *                      |           |                    v
+             *                     -|-----------|--
              */
             double text_x = cell_x + (width / 2 - extents.width / 2);
             double text_y = cell_y + (height / 2 + extents.height / 2);
@@ -469,17 +469,16 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         // draw the cells
         foreach (var cell in page.cells) {
             /*
-             *      |    A    |    B    |   ) columnid_height
-             * -----|---------|---------|-- < border
-             *   1  |         |         |   ) height
-             * -----|---------*---------|--
-             *   2  |         | (cell_x, cell_y)
-             * -----|---------|---------|--
-             * <---> <------->
-             *  |      width
-             *  |   ^
-             *  |   border
-             * linenum_width
+             *       |    A    |    B    |   ) columnid_height
+             *  -----|---------|---------|-- < border
+             *    1  |         |         |   ) height
+             *  -----|---------*---------|--
+             *    2  |         | (cell_x, cell_y)
+             *  -----|---------|---------|--
+             *  <---> <------->
+             *   |   ^  width
+             *   |   border
+             *  linenum_width
              */
             double cell_x = linenum_width + (border + width) * cell.column;
             double cell_y = columnid_height + (border + height) * cell.line;
@@ -529,19 +528,19 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
             Gdk.cairo_set_source_rgba (cr, color);
 
             /*
-             *                      <-----------> width
-             *                     |             |
-             * (cell_x, cell_y) -> *-------------|--
-             *                     |    <---> extents.width           |
-             *                     |    _____    |                    |
-             *                     |   |     |   |   |                |
-             *                     |   | foo |   |   | extents.height | height
-             * (text_x, text_y) -> |   *_____|   |   |                |
-             *                     |             |   ) padding        |
-             *                     |-------------|-- < border
-             *                                <->
-             *                           padding ^
-             *                                   border
+             *                       <-----------> width
+             *                      |             |
+             *  (cell_x, cell_y) -> *-------------|--
+             *                      |    <---> extents.width           ^
+             *                      |    _____    |                    |
+             *                      |   |     |   |   ^                |
+             *                      |   | foo |   |   | extents.height | height
+             *  (text_x, text_y) -----> *_____|   |   v                |
+             *                      |             |   ) padding        v
+             *                      |-------------|-- < border
+             *                                 <->
+             *                            padding ^
+             *                                    border
              */
             Cairo.TextExtents extents;
             cr.text_extents (cell.display_content, out extents);
