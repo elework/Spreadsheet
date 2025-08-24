@@ -95,7 +95,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
                     formula_entry.set_position (-1);
                 });
 
-                sheet.selection_cleared.connect (() => {
+                sheet.clear_cell.connect (() => {
                     clear_formula ();
                 });
 
