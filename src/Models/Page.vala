@@ -17,7 +17,7 @@ public class Spreadsheet.Models.Page : Object {
     public Gee.ArrayList<Cell> cells { get; set; default = new Gee.ArrayList<Cell> (); }
     public int lines { get; private set; default = 0; }
     public int columns { get; private set; default = 0; }
-    public int zoom_level { get; set; default = 100; }
+    public int zoom_level { get; set; default = ZOOM_LEVEL_DEFAULT; }
 
     construct {
         App.settings.bind ("zoom-level", this, "zoom_level", SettingsBindFlags.DEFAULT);
