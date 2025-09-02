@@ -48,4 +48,26 @@ public class Spreadsheet.Models.Page : Object {
             columns = c.column + 1;
         }
     }
+
+    public void zoom_out () {
+        int level = zoom_level - ZOOM_LEVEL_STEP;
+        if (level < ZOOM_LEVEL_MIN) {
+            return;
+        }
+
+        zoom_level = level;
+    }
+
+    public void zoom_in () {
+        int level = zoom_level + ZOOM_LEVEL_STEP;
+        if (level > ZOOM_LEVEL_MAX) {
+            return;
+        }
+
+        zoom_level = level;
+    }
+
+    public void zoom_reset () {
+        zoom_level = ZOOM_LEVEL_DEFAULT;
+    }
 }

@@ -212,24 +212,6 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         grab_focus ();
     }
 
-    private void zoom_out () {
-        int level = page.zoom_level - Page.ZOOM_LEVEL_STEP;
-        if (level < Page.ZOOM_LEVEL_MIN) {
-            return;
-        }
-
-        page.zoom_level = level;
-    }
-
-    private void zoom_in () {
-        int level = page.zoom_level + Page.ZOOM_LEVEL_STEP;
-        if (level > Page.ZOOM_LEVEL_MAX) {
-            return;
-        }
-
-        page.zoom_level = level;
-    }
-
     private bool on_scroll (double x_delta, double y_delta) {
         if (!is_holding_ctrl) {
             return false;
@@ -237,12 +219,12 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // Only sensitive for horizontal scroll
         if (y_delta > 0) {
-            zoom_out ();
+            page.zoom_out ();
             return true;
         }
 
         if (y_delta < 0) {
-            zoom_in ();
+            page.zoom_in ();
             return true;
         }
 
@@ -253,13 +235,13 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
             switch (keyval) {
                 case Gdk.Key.plus:
-                    zoom_in ();
+                    page.zoom_in ();
                     return true;
                 case Gdk.Key.minus:
-                    zoom_out ();
+                    page.zoom_out ();
                     return true;
                 case Gdk.Key.@0:
-                    page.zoom_level = Page.ZOOM_LEVEL_DEFAULT;
+                    page.zoom_reset ();
                     return true;
                 case Gdk.Key.Home:
                     select (0, 0);
