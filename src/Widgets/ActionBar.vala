@@ -63,7 +63,7 @@ public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
         child = action_bar;
 
         zoom_level_button.clicked.connect (() => {
-            active_page.zoom_level = Page.ZOOM_LEVEL_DEFAULT;
+            active_page.zoom_reset ();
         });
     }
 }
