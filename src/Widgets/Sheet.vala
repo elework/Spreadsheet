@@ -50,16 +50,14 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private double padding;
     private double border;
 
-    private MainWindow window;
     private unowned ZoomManager zoom_manager;
     private bool is_holding_ctrl = false;
 
-    public Sheet (Page page, MainWindow window) {
+    public Sheet (Page page) {
         Object (
             page: page
         );
 
-        this.window = window;
         zoom_manager = ZoomManager.get_default ();
 
         focusable = true;
@@ -73,15 +71,12 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
             cell.notify["display-content"].connect (() => {
                 queue_draw ();
-                window.save_sheet ();
             });
             cell.font_style.notify.connect (() => {
                 queue_draw ();
-                window.save_sheet ();
             });
             cell.cell_style.notify.connect (() => {
                 queue_draw ();
-                window.save_sheet ();
             });
         }
 

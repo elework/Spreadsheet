@@ -64,13 +64,26 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
             Sheet? last_sheet = null;
             foreach (var page in value.pages) {
-                var sheet = new Sheet (page, this);
+                var sheet = new Sheet (page);
                 foreach (var cell in page.cells) {
                     if (cell.selected) {
                         style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
                         break;
                     }
                 }
+
+                foreach (var cell in page.cells) {
+                    cell.notify["display-content"].connect (() => {
+                        save_sheet ();
+                    });
+                    cell.font_style.notify.connect (() => {
+                        save_sheet ();
+                    });
+                    cell.cell_style.notify.connect (() => {
+                        save_sheet ();
+                    });
+                }
+
                 sheet.selection_changed.connect ((cell) => {
                     if (cell != null) {
                         formula_entry.text = cell.formula;
