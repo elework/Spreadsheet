@@ -7,7 +7,6 @@ using Spreadsheet.Services;
 
 public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
     private Gtk.Adjustment zoom_scale_adj;
-    private Gtk.Button zoom_level_button;
 
     construct {
         unowned var zoom_manager = ZoomManager.get_default ();
@@ -31,7 +30,7 @@ public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
         };
         zoom_scale.set_size_request (100, 0);
 
-        zoom_level_button = new Gtk.Button () {
+        var zoom_level_button = new Gtk.Button () {
             tooltip_text = _("Reset to the default zoom level"),
             margin_end = 12
         };
