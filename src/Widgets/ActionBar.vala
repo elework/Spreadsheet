@@ -3,41 +3,21 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
+using Spreadsheet.Services;
 
 public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
-    public Page active_page {
-        get {
-            return _active_page;
-        }
-        set {
-            _active_page = value;
-
-            active_page.bind_property ("zoom_level",
-                zoom_scale_adj, "value",
-                BindingFlags.BIDIRECTIONAL | BindingFlags.SYNC_CREATE);
-
-            active_page.bind_property ("zoom_level",
-                zoom_level_button, "label",
-                BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
-                (binding, _zoom_level, ref _label) => {
-                    _label = "%i %%".printf ((int) _zoom_level);
-                    return true;
-                });
-        }
-    }
-    private Page _active_page;
-
     private Gtk.Adjustment zoom_scale_adj;
     private Gtk.Button zoom_level_button;
 
     construct {
+        unowned var zoom_manager = ZoomManager.get_default ();
+
         zoom_scale_adj = new Gtk.Adjustment (
-            Page.ZOOM_LEVEL_DEFAULT,
-            Page.ZOOM_LEVEL_MIN,
-            Page.ZOOM_LEVEL_MAX,
-            Page.ZOOM_LEVEL_STEP,
-            Page.ZOOM_LEVEL_STEP,
+            ZoomManager.ZOOM_LEVEL_DEFAULT,
+            ZoomManager.ZOOM_LEVEL_MIN,
+            ZoomManager.ZOOM_LEVEL_MAX,
+            ZoomManager.ZOOM_LEVEL_STEP,
+            ZoomManager.ZOOM_LEVEL_STEP,
             0.0
         );
 
@@ -62,8 +42,22 @@ public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
 
         child = action_bar;
 
+        zoom_manager.bind_property ("zoom_level",
+            zoom_scale_adj, "value",
+            BindingFlags.BIDIRECTIONAL | BindingFlags.SYNC_CREATE);
+
+        zoom_scale_adj.bind_property ("value",
+            zoom_level_button, "label",
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
+            (binding, _value, ref _label) => {
+                var zoom_level = (double) _value;
+                // Display as integer because we don't need precise zoom level
+                _label = "%i %%".printf ((int) zoom_level);
+                return true;
+            });
+
         zoom_level_button.clicked.connect (() => {
-            active_page.zoom_reset ();
+            zoom_manager.zoom_reset ();
         });
     }
 }

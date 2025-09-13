@@ -327,10 +327,6 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         layout.append (tab_view);
         layout.append (action_bar);
 
-        tab_view.notify["selected-page"].connect (() => {
-            action_bar.active_page = active_sheet.page;
-        });
-
         return layout;
     }
 

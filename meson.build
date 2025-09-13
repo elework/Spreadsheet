@@ -68,6 +68,7 @@ sources = files(
     'src/Services/Parsing/Parser.vala',
     'src/Services/Parsing/Token.vala',
     'src/Services/RecentsManager.vala',
+    'src/Services/ZoomManager.vala',
     'src/UI/MainWindow.vala',
     'src/UI/WelcomeView.vala',
     'src/Widgets/ActionBar.vala',

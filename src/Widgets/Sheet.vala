@@ -4,6 +4,7 @@
  */
 
 using Spreadsheet.Models;
+using Spreadsheet.Services;
 using Spreadsheet.UI;
 
 public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
@@ -50,6 +51,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private double border;
 
     private MainWindow window;
+    private unowned ZoomManager zoom_manager;
     private bool is_holding_ctrl = false;
 
     public Sheet (Page page, MainWindow window) {
@@ -58,6 +60,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         );
 
         this.window = window;
+        zoom_manager = ZoomManager.get_default ();
 
         focusable = true;
         focus_on_click = true;
@@ -90,7 +93,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         update_zoom_level ();
 
-        page.notify["zoom-level"].connect (() => {
+        zoom_manager.notify["zoom-level"].connect (() => {
             update_zoom_level ();
         });
 
@@ -219,12 +222,12 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
 
         // Only sensitive for horizontal scroll
         if (y_delta > 0) {
-            page.zoom_out ();
+            zoom_manager.zoom_out ();
             return true;
         }
 
         if (y_delta < 0) {
-            page.zoom_in ();
+            zoom_manager.zoom_in ();
             return true;
         }
 
@@ -235,13 +238,13 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
         if ((state & Gdk.ModifierType.CONTROL_MASK) != 0) {
             switch (keyval) {
                 case Gdk.Key.plus:
-                    page.zoom_in ();
+                    zoom_manager.zoom_in ();
                     return true;
                 case Gdk.Key.minus:
-                    page.zoom_out ();
+                    zoom_manager.zoom_out ();
                     return true;
                 case Gdk.Key.@0:
-                    page.zoom_reset ();
+                    zoom_manager.zoom_reset ();
                     return true;
                 case Gdk.Key.Home:
                     select (0, 0);
@@ -323,7 +326,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     }
 
     private void update_zoom_level () {
-        double zoom_level = page.zoom_level * 0.01;
+        double zoom_level = zoom_manager.zoom_level * 0.01;
 
         width = DEFAULT_WIDTH * zoom_level;
         height = DEFAULT_HEIGHT * zoom_level;
