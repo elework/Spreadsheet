@@ -3,44 +3,25 @@
  * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
  */
 
+using Spreadsheet.Services;
+
 public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
-    public signal void zoom_level_changed ();
-
-    private const double ZOOM_LEVEL_MIN = 10.0;
-    private const double ZOOM_LEVEL_MAX = 400.0;
-    private const double ZOOM_LEVEL_STEP = 10.0;
-    private const double ZOOM_LEVEL_DEFAULT = 100.0;
-
     private Gtk.Adjustment zoom_scale_adj;
 
-    public int zoom_level {
-        get {
-            return App.settings.get_int ("zoom-level");
-        }
-        set {
-            zoom_scale_adj.value = value;
-            App.settings.set_int ("zoom-level", value);
-        }
-    }
-
-    public string zoom_level_text {
-        owned get {
-            return "%i %%".printf (zoom_level);
-        }
-    }
-
     construct {
+        unowned var zoom_manager = ZoomManager.get_default ();
+
         zoom_scale_adj = new Gtk.Adjustment (
-            zoom_level,
-            ZOOM_LEVEL_MIN,
-            ZOOM_LEVEL_MAX,
-            ZOOM_LEVEL_STEP,
-            ZOOM_LEVEL_STEP,
+            ZoomManager.ZOOM_LEVEL_DEFAULT,
+            ZoomManager.ZOOM_LEVEL_MIN,
+            ZoomManager.ZOOM_LEVEL_MAX,
+            ZoomManager.ZOOM_LEVEL_STEP,
+            ZoomManager.ZOOM_LEVEL_STEP,
             0.0
         );
 
         var zoom_scale = new Gtk.Scale (Gtk.Orientation.HORIZONTAL, zoom_scale_adj) {
-            tooltip_text = (_("Zoom in/out the sheet")),
+            tooltip_text = _("Zoom in/out the sheet"),
             draw_value = false,
             margin_top = 3,
             margin_bottom = 3,
@@ -49,8 +30,8 @@ public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
         };
         zoom_scale.set_size_request (100, 0);
 
-        var zoom_level_button = new Gtk.Button.with_label (zoom_level_text) {
-            tooltip_text = (_("Reset to the default zoom level")),
+        var zoom_level_button = new Gtk.Button () {
+            tooltip_text = _("Reset to the default zoom level"),
             margin_end = 12
         };
 
@@ -60,14 +41,22 @@ public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
 
         child = action_bar;
 
-        zoom_scale_adj.value_changed.connect (() => {
-            zoom_level = (int) zoom_scale_adj.value;
-            zoom_level_button.label = zoom_level_text;
-            zoom_level_changed ();
-        });
+        zoom_manager.bind_property ("zoom_level",
+            zoom_scale_adj, "value",
+            BindingFlags.BIDIRECTIONAL | BindingFlags.SYNC_CREATE);
 
-        zoom_level_button.clicked.connect ((event) => {
-            zoom_level = (int) ZOOM_LEVEL_DEFAULT;
+        zoom_scale_adj.bind_property ("value",
+            zoom_level_button, "label",
+            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
+            (binding, _value, ref _label) => {
+                var zoom_level = (double) _value;
+                // Display as integer because we don't need precise zoom level
+                _label = "%i %%".printf ((int) zoom_level);
+                return true;
+            });
+
+        zoom_level_button.clicked.connect (() => {
+            zoom_manager.zoom_reset ();
         });
     }
 }
