@@ -88,7 +88,7 @@ executable(meson.project_name(),
         dependency('gio-2.0', version: '>= 2.74'), # GLib.ListStore.n_items
         dependency('glib-2.0'),
         dependency('gobject-2.0'),
-        dependency('granite-7'),
+        dependency('granite-7', version: '>= 7.7.0'),
         dependency('gtk4', version: '>= 4.10'), # Gtk.FileDialog
         dependency('libadwaita-1'),
         dependency('pango')
