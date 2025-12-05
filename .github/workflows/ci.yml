@@ -15,7 +15,7 @@ jobs:
 
     container:
       # TODO Use stable version of runtime with granite-7 >= 7.7.0 when released
-      #image: ghcr.io/elementary/flatpak-platform/runtime:8.2-${{ matrix.arch }}
+      #image: ghcr.io/elementary/flatpak-platform/runtime:8.3-${{ matrix.arch }}
       image: ghcr.io/elementary/flatpak-platform/runtime:daily-${{ matrix.arch }}
       options: --privileged
 
