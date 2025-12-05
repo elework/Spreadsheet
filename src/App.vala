@@ -42,17 +42,7 @@ public class Spreadsheet.App : Gtk.Application {
     protected override void startup () {
         base.startup ();
 
-        // Follow OS-wide dark preference
-        unowned var granite_settings = Granite.Settings.get_default ();
-        unowned var gtk_settings = Gtk.Settings.get_default ();
-
-        granite_settings.bind_property ("prefers-color-scheme", gtk_settings, "gtk-application-prefer-dark-theme",
-            BindingFlags.DEFAULT | BindingFlags.SYNC_CREATE,
-            (binding, granite_prop, ref gtk_prop) => {
-                gtk_prop = (Granite.Settings.ColorScheme) granite_prop == Granite.Settings.ColorScheme.DARK;
-                return true;
-            }
-        );
+        Granite.init ();
 
         add_action_entries (ACTION_ENTRIES, this);
         set_accels_for_action (ACTION_PREFIX + ACTION_NAME_NEW, ACTION_ACCELS_NEW);
