@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: MIT
- * SPDX-FileCopyrightText: 2017-2025 Spreadsheet Developers
+ * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
 using Spreadsheet.Services.Formula.AST;
