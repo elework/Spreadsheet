@@ -5,29 +5,25 @@ on: [pull_request]
 jobs:
   flatpak:
     name: Flatpak
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.runs-on }}
 
     strategy:
       matrix:
-        arch: [x86_64, aarch64]
+        include:
+          - arch: x86_64
+            runs-on: ubuntu-latest
+          - arch: aarch64
+            runs-on: ubuntu-24.04-arm
       # Don't fail the whole workflow if one architecture fails
       fail-fast: false
 
     container:
-      # TODO Use stable version of runtime with granite-7 >= 7.7.0 when released
-      #image: ghcr.io/elementary/flatpak-platform/runtime:8.3-${{ matrix.arch }}
-      image: ghcr.io/elementary/flatpak-platform/runtime:daily-${{ matrix.arch }}
+      image: ghcr.io/elementary/flatpak-platform/runtime:9-${{ matrix.arch }}
       options: --privileged
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Set up QEMU for aarch64 emulation
-        if: ${{ matrix.arch != 'x86_64' }}
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
+        uses: actions/checkout@v7
 
       - name: Build
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
@@ -42,14 +38,14 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     container:
       image: valalang/lint
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Lint
         run: io.elementary.vala-lint -d .
