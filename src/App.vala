@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.UI;
-
 public class Spreadsheet.App : Gtk.Application {
     public static Settings settings { get; private set; }
 
@@ -74,8 +72,8 @@ public class Spreadsheet.App : Gtk.Application {
         active_window.destroy ();
     }
 
-    private MainWindow new_window () {
-        var window = new MainWindow (this);
+    private UI.MainWindow new_window () {
+        var window = new UI.MainWindow (this);
 
         /*
          * Don't bind Settings to windows because state change in one window

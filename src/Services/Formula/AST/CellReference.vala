@@ -3,15 +3,13 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Services.Formula.AST.CellReference : Expression {
     public string cell_name { get; set; }
 
     public CellReference () {
     }
 
-    public override Value eval (Page sheet) {
+    public override Value eval (Models.Page sheet) {
         string letters = cell_name;
         letters.canon ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", '?');
         string _num = cell_name;

@@ -3,10 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-using Spreadsheet.Services;
-using Spreadsheet.Widgets;
-
 public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     public signal void new_activated ();
     public signal void open_choose_activated ();
@@ -44,7 +40,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         };
         recent_title.add_css_class (Granite.STYLE_CLASS_H2_LABEL);
 
-        var recents_manager = RecentsManager.get_default ();
+        var recents_manager = Services.RecentsManager.get_default ();
 
         var recents_selection_model = new Gtk.NoSelection (recents_manager.recents_liststore);
 
@@ -92,7 +88,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
         });
 
         recents_list.activate.connect ((pos) => {
-            var recent_item = recents_manager.recents_liststore.get_item (pos) as RecentItem;
+            var recent_item = recents_manager.recents_liststore.get_item (pos) as Models.RecentItem;
             open_activated (recent_item.path);
         });
 
@@ -104,14 +100,14 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
     private void recents_setup (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var row = new RecentListRow ();
+        var row = new Widgets.RecentListRow ();
         list_item.child = row;
     }
 
     private void recents_bind (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var recent_item = list_item.item as RecentItem;
+        var recent_item = list_item.item as Models.RecentItem;
         var path = recent_item.path;
 
         string basename = Path.get_basename (path);
@@ -120,7 +116,7 @@ public class Spreadsheet.UI.WelcomeView : Gtk.Box {
             display_path = path.replace (Environment.get_home_dir (), "~");
         }
 
-        var row = list_item.child as RecentListRow;
+        var row = list_item.child as Widgets.RecentListRow;
         row.icon_name = "x-office-spreadsheet";
         row.filename = basename;
         row.path = display_path;

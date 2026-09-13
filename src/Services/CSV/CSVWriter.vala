@@ -3,12 +3,10 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Services.CSV.CSVWriter : Object {
-    public Page page { get; construct set; }
+    public Models.Page page { get; construct set; }
 
-    public CSVWriter (Page page) {
+    public CSVWriter (Models.Page page) {
         Object (page: page);
     }
 

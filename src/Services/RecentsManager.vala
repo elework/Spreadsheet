@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 /**
  * Remembers recently opened files.
  */
@@ -26,7 +24,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
     }
 
     construct {
-        recents_liststore = new ListStore (typeof (RecentItem));
+        recents_liststore = new ListStore (typeof (Models.RecentItem));
         load ();
         sync ();
     }
@@ -47,7 +45,7 @@ public class Spreadsheet.Services.RecentsManager : Object {
 
         uint recents_num = uint.min (recents_liststore.n_items, RECENTS_NUM_MAX);
         for (uint i = 0; i < recents_num; i++) {
-            var obj = ((RecentItem) recents_liststore.get_item (i));
+            var obj = ((Models.RecentItem) recents_liststore.get_item (i));
             new_recents.append_val (obj.path);
         }
 
@@ -66,13 +64,13 @@ public class Spreadsheet.Services.RecentsManager : Object {
             return false;
         }
 
-        var recent_item = new RecentItem (path);
+        var recent_item = new Models.RecentItem (path);
 
         uint pos;
         bool dup_exists = recents_liststore.find_with_equal_func (
             recent_item,
             ((a, b) => {
-                return ((RecentItem) a).path == ((RecentItem) b).path;
+                return ((Models.RecentItem) a).path == ((Models.RecentItem) b).path;
             }),
             out pos
         );

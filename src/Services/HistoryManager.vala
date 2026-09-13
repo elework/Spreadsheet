@@ -3,14 +3,12 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Services.HistoryManager : Object {
 
     private const int HISTORY_LIMIT = 20; // TODO: make it configurable?
 
-    public Queue<HistoryAction> undo_history = new Queue<HistoryAction> ();
-    public Queue<HistoryAction> redo_history = new Queue<HistoryAction> ();
+    public Queue<Models.HistoryAction> undo_history = new Queue<Models.HistoryAction> ();
+    public Queue<Models.HistoryAction> redo_history = new Queue<Models.HistoryAction> ();
 
     public bool can_undo () {
         return !undo_history.is_empty ();
@@ -20,7 +18,7 @@ public class Spreadsheet.Services.HistoryManager : Object {
         return !redo_history.is_empty ();
     }
 
-    public void do_action (HistoryAction act) {
+    public void do_action (Models.HistoryAction act) {
         redo_history.clear ();
 
         undo_history.push_head (act);

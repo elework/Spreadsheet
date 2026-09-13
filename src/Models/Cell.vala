@@ -3,9 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Services.Formula;
-using Spreadsheet.Services.Parsing;
-
 public class Spreadsheet.Models.Cell : Object {
 
     public weak Page page { get; set; }
@@ -25,7 +22,9 @@ public class Spreadsheet.Models.Cell : Object {
             }
 
             try {
-                var parser = new FormulaParser (new Lexer (new FormulaGrammar ()).tokenize (value));
+                var grammar = new Services.Formula.FormulaGrammar ();
+                var lexer = new Services.Parsing.Lexer (grammar);
+                var parser = new Services.Formula.FormulaParser (lexer.tokenize (value));
                 var expression = parser.parse ();
 
                 var eval = expression.eval (page);
@@ -34,7 +33,7 @@ public class Spreadsheet.Models.Cell : Object {
                 } else if (eval.type () == typeof (string)) {
                     display_content = (string)eval;
                 }
-            } catch (ParserError err) {
+            } catch (Services.Parsing.ParserError err) {
                 debug ("Error: " + err.message);
                 display_content = "Error";
             }
