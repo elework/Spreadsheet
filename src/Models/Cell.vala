@@ -22,8 +22,8 @@ public class Spreadsheet.Models.Cell : Object {
             }
 
             try {
-                var grammer = new Services.Formula.FormulaGrammar ();
-                var lexer = new Services.Parsing.Lexer (grammer);
+                var grammar = new Services.Formula.FormulaGrammar ();
+                var lexer = new Services.Parsing.Lexer (grammar);
                 var parser = new Services.Formula.FormulaParser (lexer.tokenize (value));
                 var expression = parser.parse ();
 
