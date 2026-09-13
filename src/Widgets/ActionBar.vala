@@ -3,20 +3,18 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Services;
-
 public class Spreadsheet.Widgets.ActionBar : Adw.Bin {
     private Gtk.Adjustment zoom_scale_adj;
 
     construct {
-        unowned var zoom_manager = ZoomManager.get_default ();
+        unowned var zoom_manager = Services.ZoomManager.get_default ();
 
         zoom_scale_adj = new Gtk.Adjustment (
-            ZoomManager.ZOOM_LEVEL_DEFAULT,
-            ZoomManager.ZOOM_LEVEL_MIN,
-            ZoomManager.ZOOM_LEVEL_MAX,
-            ZoomManager.ZOOM_LEVEL_STEP,
-            ZoomManager.ZOOM_LEVEL_STEP,
+            Services.ZoomManager.ZOOM_LEVEL_DEFAULT,
+            Services.ZoomManager.ZOOM_LEVEL_MIN,
+            Services.ZoomManager.ZOOM_LEVEL_MAX,
+            Services.ZoomManager.ZOOM_LEVEL_STEP,
+            Services.ZoomManager.ZOOM_LEVEL_STEP,
             0.0
         );
 

@@ -3,9 +3,7 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Services.Parsing;
-
-public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
+public class Spreadsheet.Services.Formula.FormulaGrammar : Parsing.Grammar {
     private string func_name_regex = "";
 
     public FormulaGrammar () {
@@ -26,24 +24,24 @@ public class Spreadsheet.Services.Formula.FormulaGrammar : Grammar {
         return func_name_regex;
     }
 
-    private Gee.ArrayList<Evaluator> root_rules () {
-        return new Gee.ArrayList<Evaluator>.wrap ({
-            new Evaluator (/[ \t]/, token ("[[ignore]]")),
-            new Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
-            new Evaluator (/=/, token ("equal")),
-            new Evaluator (get_func_name_regex (), token ("identifier")),
-            new Evaluator (/\(/, token ("left-parenthese")), // vala-lint=space-before-paren
-            new Evaluator (/\)/, token ("right-parenthese")),
-            new Evaluator (/,/, token ("comma")),
-            new Evaluator (/:/, token ("colon")),
-            new Evaluator (/\d+(\.\d+)?/, token ("number")), // vala-lint=space-before-paren
-            new Evaluator (/\+/, token ("plus")),
-            new Evaluator (/\*/, token ("star")),
-            new Evaluator (/-/, token ("dash")),
-            new Evaluator (/\//, token ("slash")),
-            new Evaluator (/%/, token ("percent")),
-            new Evaluator (/\^/, token ("carat")),
-            new Evaluator (/\D+/, token ("text"))
+    private Gee.ArrayList<Parsing.Evaluator> root_rules () {
+        return new Gee.ArrayList<Parsing.Evaluator>.wrap ({
+            new Parsing.Evaluator (/[ \t]/, token ("[[ignore]]")),
+            new Parsing.Evaluator (/[A-Z]+[0-9]+/, token ("cell-name")),
+            new Parsing.Evaluator (/=/, token ("equal")),
+            new Parsing.Evaluator (get_func_name_regex (), token ("identifier")),
+            new Parsing.Evaluator (/\(/, token ("left-parenthese")), // vala-lint=space-before-paren
+            new Parsing.Evaluator (/\)/, token ("right-parenthese")),
+            new Parsing.Evaluator (/,/, token ("comma")),
+            new Parsing.Evaluator (/:/, token ("colon")),
+            new Parsing.Evaluator (/\d+(\.\d+)?/, token ("number")), // vala-lint=space-before-paren
+            new Parsing.Evaluator (/\+/, token ("plus")),
+            new Parsing.Evaluator (/\*/, token ("star")),
+            new Parsing.Evaluator (/-/, token ("dash")),
+            new Parsing.Evaluator (/\//, token ("slash")),
+            new Parsing.Evaluator (/%/, token ("percent")),
+            new Parsing.Evaluator (/\^/, token ("carat")),
+            new Parsing.Evaluator (/\D+/, token ("text"))
         });
     }
 }

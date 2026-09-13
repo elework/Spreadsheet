@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Widgets.FunctionListRow : Gtk.Box {
     public string name_text { get; set; }
     public string doc_text { get; set; }

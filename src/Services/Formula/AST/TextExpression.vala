@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Services.Formula.AST.TextExpression : Expression {
     public string text { get; construct; }
 
@@ -14,7 +12,7 @@ public class Spreadsheet.Services.Formula.AST.TextExpression : Expression {
         );
     }
 
-    public override Value eval (Page sheet) {
+    public override Value eval (Models.Page sheet) {
         return text;
     }
 }

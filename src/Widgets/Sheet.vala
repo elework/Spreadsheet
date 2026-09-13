@@ -3,17 +3,13 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-using Spreadsheet.Services;
-using Spreadsheet.UI;
-
 public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
-    public signal void selection_changed (Cell? new_selection);
+    public signal void selection_changed (Models.Cell? new_selection);
     public signal void clear_cell ();
     public signal void forward_input_text (string text);
 
-    public Page page { get; construct; }
-    public Cell? selected_cell { get; set; }
+    public Models.Page page { get; construct; }
+    public Models.Cell? selected_cell { get; set; }
 
     // Brand colors by elementary. See https://elementary.io/brand
     private const string BLUEBERRY_100 = "#8cd5ff";
@@ -50,15 +46,15 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
     private double padding;
     private double border;
 
-    private unowned ZoomManager zoom_manager;
+    private unowned Services.ZoomManager zoom_manager;
     private bool is_holding_ctrl = false;
 
-    public Sheet (Page page) {
+    public Sheet (Models.Page page) {
         Object (
             page: page
         );
 
-        zoom_manager = ZoomManager.get_default ();
+        zoom_manager = Services.ZoomManager.get_default ();
 
         focusable = true;
         focus_on_click = true;
@@ -502,7 +498,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 bg_color = selected_fill;
             }
 
-            if (bg_color != CellStyle.BG_COLOR_DEFAULT) {
+            if (bg_color != Models.CellStyle.BG_COLOR_DEFAULT) {
                 cr.save ();
                 Gdk.cairo_set_source_rgba (cr, bg_color);
                 cr.rectangle (cell_x, cell_y, width, height);
@@ -517,7 +513,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 stroke_width = SELECTED_STROKE_WIDTH;
             }
 
-            if (stroke_color == CellStyle.STROKE_COLOR_DEFAULT) {
+            if (stroke_color == Models.CellStyle.STROKE_COLOR_DEFAULT) {
                 stroke_color = default_cell_stroke;
             }
 
@@ -534,7 +530,7 @@ public class Spreadsheet.Widgets.Sheet : Gtk.DrawingArea {
                 color = selected_font_color;
             }
 
-            if (color == FontStyle.FONT_COLOR_DEFAULT) {
+            if (color == Models.FontStyle.FONT_COLOR_DEFAULT) {
                 color = default_font_color;
             }
 

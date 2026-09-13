@@ -3,8 +3,6 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Services.Formula.AST.CallExpression : Expression {
     public string function { get; construct; }
     public Gee.ArrayList<Expression> parameters { get; construct; }
@@ -16,7 +14,7 @@ public class Spreadsheet.Services.Formula.AST.CallExpression : Expression {
         );
     }
 
-    public override Value eval (Page sheet) {
+    public override Value eval (Models.Page sheet) {
         var params = new Value[] {};
         foreach (var param in parameters) {
             params += param.eval (sheet);

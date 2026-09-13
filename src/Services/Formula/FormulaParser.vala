@@ -3,23 +3,20 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Services.Formula.AST;
-using Spreadsheet.Services.Parsing;
-
 public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
-    public FormulaParser (Gee.ArrayList<Token> tokens) {
+    public FormulaParser (Gee.ArrayList<Parsing.Token> tokens) {
         base (tokens);
     }
 
-    public Expression parse () throws ParserError {
+    public AST.Expression parse () throws Parsing.ParserError {
         return parse_block ();
     }
 
-    private Expression parse_block () throws ParserError {
+    private AST.Expression parse_block () throws Parsing.ParserError {
         bool root = !accept ("left-square-brace");
         var delimiter = root ? "eof" : "right-square-brace";
 
-        Expression last;
+        AST.Expression last;
         while (true) {
             last = parse_expression ();
 
@@ -32,11 +29,11 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
         return last;
     }
 
-    private Expression parse_expression () throws ParserError {
+    private AST.Expression parse_expression () throws Parsing.ParserError {
         return parse_substraction ();
     }
 
-    private Expression parse_primary_expression () throws ParserError {
+    private AST.Expression parse_primary_expression () throws Parsing.ParserError {
         if (current.kind == "equal") {
             accept ("equal");
 
@@ -59,7 +56,7 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             }
 
             unexpected ();
-            return new NumberExpression (0.0);
+            return new AST.NumberExpression (0.0);
         }
 
         if (current.kind == "number") {
@@ -85,78 +82,78 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
         return parse_text ();
     }
 
-    private Expression parse_exponent () throws ParserError {
+    private AST.Expression parse_exponent () throws Parsing.ParserError {
         var left = parse_primary_expression ();
 
         while (accept ("carat")) {
             var right = parse_primary_expression ();
-            left = new CallExpression ("pow", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("pow", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private Expression parse_multiplication () throws ParserError {
+    private AST.Expression parse_multiplication () throws Parsing.ParserError {
         var left = parse_exponent ();
 
         while (accept ("star")) {
             var right = parse_exponent ();
-            left = new CallExpression ("mul", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("mul", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private Expression parse_division () throws ParserError {
+    private AST.Expression parse_division () throws Parsing.ParserError {
         var left = parse_multiplication ();
 
         while (accept ("slash")) {
             var right = parse_multiplication ();
-            left = new CallExpression ("div", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("div", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private Expression parse_modulo () throws ParserError {
-        Expression left = parse_division ();
+    private AST.Expression parse_modulo () throws Parsing.ParserError {
+        AST.Expression left = parse_division ();
 
         while (accept ("percent")) {
             var right = parse_division ();
-            left = new CallExpression ("mod", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("mod", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private Expression parse_substraction () throws ParserError {
+    private AST.Expression parse_substraction () throws Parsing.ParserError {
         var left = parse_addition ();
 
         while (accept ("dash")) {
             var right = parse_addition ();
-            left = new CallExpression ("sub", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("sub", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private Expression parse_addition () throws ParserError {
+    private AST.Expression parse_addition () throws Parsing.ParserError {
         var left = parse_modulo ();
 
         while (accept ("plus")) {
             var right = parse_modulo ();
-            left = new CallExpression ("sum", new Gee.ArrayList<Expression>.wrap ({ left, right }));
+            left = new AST.CallExpression ("sum", new Gee.ArrayList<AST.Expression>.wrap ({ left, right }));
         }
 
         return left;
     }
 
-    private CallExpression parse_call_expression () throws ParserError {
+    private AST.CallExpression parse_call_expression () throws Parsing.ParserError {
         var func = current.lexeme;
         expect ("identifier");
         expect ("left-parenthese");
 
-        var params = new Gee.ArrayList<Expression> ();
+        var params = new Gee.ArrayList<AST.Expression> ();
         while (true) {
             params.add (parse_expression ());
 
@@ -165,28 +162,28 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             }
 
             if (!accept ("comma")) {
-                throw new ParserError.UNEXPECTED ("Use a comma to separate parameters");
+                throw new Parsing.ParserError.UNEXPECTED ("Use a comma to separate parameters");
             }
         }
 
-        return new CallExpression (func, params);
+        return new AST.CallExpression (func, params);
     }
 
-    private NumberExpression parse_number () throws ParserError {
+    private AST.NumberExpression parse_number () throws Parsing.ParserError {
         want ("number");
 
-        NumberExpression res;
+        AST.NumberExpression res;
         if ("." in current.lexeme) {
-            res = new NumberExpression (double.parse (current.lexeme));
+            res = new AST.NumberExpression (double.parse (current.lexeme));
         } else {
-            res = new NumberExpression (double.parse (current.lexeme + ".0"));
+            res = new AST.NumberExpression (double.parse (current.lexeme + ".0"));
         }
 
         eat ();
         return res;
     }
 
-    private TextExpression parse_text () throws ParserError {
+    private AST.TextExpression parse_text () throws Parsing.ParserError {
         string val = "";
 
         while (current.kind != "eof") {
@@ -194,11 +191,11 @@ public class Spreadsheet.Services.Formula.FormulaParser : Parsing.Parser {
             eat ();
         }
 
-        return new TextExpression (val);
+        return new AST.TextExpression (val);
     }
 
-    private CellReference parse_cell_name () throws ParserError {
-        var cell = new CellReference () { cell_name = current.lexeme };
+    private AST.CellReference parse_cell_name () throws Parsing.ParserError {
+        var cell = new AST.CellReference () { cell_name = current.lexeme };
         expect ("cell-name");
         return cell;
     }

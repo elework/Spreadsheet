@@ -3,10 +3,8 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Models;
-
 public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
-    public StyleModal (FontStyle font_style, CellStyle cell_style) {
+    public StyleModal (Models.FontStyle font_style, Models.CellStyle cell_style) {
         margin_top = 10;
         margin_bottom = 10;
         margin_start = 10;
@@ -25,7 +23,7 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
         attach (style_stack, 0, 1, 1, 1);
     }
 
-    private Gtk.Grid create_fonts_grid (FontStyle font_style) {
+    private Gtk.Grid create_fonts_grid (Models.FontStyle font_style) {
         var style_header_label = new Granite.HeaderLabel (_("Style"));
 
         // TODO: Add a widget that can choose a font and its size
@@ -114,7 +112,7 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
                 color_reset_button, "sensitive",
                 BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
                 (binding, _font_color, ref _sensitive) => {
-                    _sensitive = !((Gdk.RGBA) _font_color).equal (FontStyle.FONT_COLOR_DEFAULT);
+                    _sensitive = !((Gdk.RGBA) _font_color).equal (Models.FontStyle.FONT_COLOR_DEFAULT);
                     return true;
                 });
 
@@ -125,7 +123,7 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
         return fonts_grid;
     }
 
-    private Gtk.Grid create_cells_grid (CellStyle cell_style) {
+    private Gtk.Grid create_cells_grid (Models.CellStyle cell_style) {
         var bg_header_label = new Granite.HeaderLabel (_("Fill"));
 
         var bg_color_dialog = new Gtk.ColorDialog ();
@@ -148,9 +146,9 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
         };
 
         var stroke_width_spin = new Gtk.SpinButton.with_range (
-            CellStyle.STROKE_WIDTH_MIN,
-            CellStyle.STROKE_WIDTH_MAX,
-            CellStyle.STROKE_WIDTH_STEP
+            Models.CellStyle.STROKE_WIDTH_MIN,
+            Models.CellStyle.STROKE_WIDTH_MAX,
+            Models.CellStyle.STROKE_WIDTH_STEP
         ) {
             halign = Gtk.Align.START,
             tooltip_text = _("Set the border width of a selected cell")
@@ -188,21 +186,21 @@ public class Spreadsheet.Widgets.StyleModal : Gtk.Grid {
                 bg_reset_button, "sensitive",
                 BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
                 (binding, _bg_color, ref _sensitive) => {
-                    _sensitive = !((Gdk.RGBA) _bg_color).equal (CellStyle.BG_COLOR_DEFAULT);
+                    _sensitive = !((Gdk.RGBA) _bg_color).equal (Models.CellStyle.BG_COLOR_DEFAULT);
                     return true;
                 });
         cell_style.bind_property ("stroke_color",
                 stroke_reset_button, "sensitive",
                 BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
                 (binding, _stroke_color, ref _sensitive) => {
-                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (CellStyle.STROKE_COLOR_DEFAULT);
+                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (Models.CellStyle.STROKE_COLOR_DEFAULT);
                     return true;
                 });
         cell_style.bind_property ("stroke_color",
                 stroke_width_spin, "sensitive",
                 BindingFlags.SYNC_CREATE | BindingFlags.DEFAULT,
                 (binding, _stroke_color, ref _sensitive) => {
-                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (CellStyle.STROKE_COLOR_DEFAULT);
+                    _sensitive = !((Gdk.RGBA) _stroke_color).equal (Models.CellStyle.STROKE_COLOR_DEFAULT);
                     return true;
                 });
 

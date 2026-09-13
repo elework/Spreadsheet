@@ -3,16 +3,10 @@
  * SPDX-FileCopyrightText: 2017-2026 Spreadsheet Developers
  */
 
-using Spreadsheet.Widgets;
-using Spreadsheet.Models;
-using Spreadsheet.Services;
-using Spreadsheet.Services.CSV;
-using Spreadsheet.Services.Parsing;
-
 public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     public App app { get; construct; }
-    public HistoryManager history_manager { get; private set; default = new HistoryManager (); }
-    private RecentsManager recents_manager;
+    public Services.HistoryManager history_manager { get; private set; default = new Services.HistoryManager (); }
+    private Services.RecentsManager recents_manager;
 
     private Gtk.HeaderBar header;
     private Adw.WindowTitle window_title;
@@ -34,16 +28,16 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
     private Adw.TabView tab_view;
 
-    public Sheet active_sheet {
+    public Widgets.Sheet active_sheet {
         get {
             Gtk.ScrolledWindow scroll = (Gtk.ScrolledWindow)tab_view.selected_page.child;
             Gtk.Viewport vp = (Gtk.Viewport)scroll.get_child ();
-            return (Sheet)vp.get_child ();
+            return (Widgets.Sheet)vp.get_child ();
         }
     }
 
-    private SpreadSheet _file;
-    public SpreadSheet file {
+    private Models.SpreadSheet _file;
+    public Models.SpreadSheet file {
         get {
             return _file;
         }
@@ -62,12 +56,12 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
                 tab_view.close_page (tab_view.get_nth_page (0));
             }
 
-            Sheet? last_sheet = null;
+            Widgets.Sheet? last_sheet = null;
             foreach (var page in value.pages) {
-                var sheet = new Sheet (page);
+                var sheet = new Widgets.Sheet (page);
                 foreach (var cell in page.cells) {
                     if (cell.selected) {
-                        style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
+                        style_popup.child = new Widgets.StyleModal (cell.font_style, cell.cell_style);
                         break;
                     }
                 }
@@ -90,7 +84,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
                         func_button.sensitive = true;
                         formula_entry.sensitive = true;
                         style_button.sensitive = true;
-                        style_popup.child = new StyleModal (cell.font_style, cell.cell_style);
+                        style_popup.child = new Widgets.StyleModal (cell.font_style, cell.cell_style);
                     } else {
                         formula_entry.text = "";
                         func_button.sensitive = false;
@@ -174,7 +168,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
                                                     cssprovider,
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-        recents_manager = RecentsManager.get_default ();
+        recents_manager = Services.RecentsManager.get_default ();
         welcome_view = new WelcomeView ();
 
         edit_view = sheet ();
@@ -219,7 +213,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             placeholder_text = _("Search functions")
         };
 
-        unowned var func_manager = FunctionManager.get_default ();
+        unowned var func_manager = Services.FunctionManager.get_default ();
 
         var func_selection_model = new Gtk.NoSelection (func_manager.filter_model);
 
@@ -273,7 +267,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         var font_name_label = new Gtk.Label ("Open Sans 14");
 
         Gdk.RGBA font_color = { 0.0f, 0.0f, 0.0f, 1.0f };
-        var font_color_square = new RoundedSquare (font_color, 18, 18, 2) {
+        var font_color_square = new Widgets.RoundedSquare (font_color, 18, 18, 2) {
             halign = Gtk.Align.END
         };
 
@@ -303,7 +297,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         });
 
         func_listview.activate.connect ((pos) => {
-            var func = func_manager.filter_model.get_item (pos) as Function;
+            var func = func_manager.filter_model.get_item (pos) as Models.Function;
 
             formula_entry.text += ")";
             formula_entry.buffer.insert_text (formula_entry.get_position (), (func.name + "(").data);
@@ -411,7 +405,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
         active_sheet.grab_focus ();
 
         // Reset undecided changes
-        Cell? selected_cell = active_sheet.selected_cell;
+        Models.Cell? selected_cell = active_sheet.selected_cell;
         if (selected_cell == null) {
             formula_entry.text = "";
             return;
@@ -437,11 +431,11 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             used_filename = FileUtils.test (path, FileTest.EXISTS);
         }
 
-        var page = new Page.empty () {
+        var page = new Models.Page.empty () {
             title = _("Sheet 1")
         };
 
-        var file = new SpreadSheet () {
+        var file = new Models.SpreadSheet () {
             title = filename,
             file_path = path
         };
@@ -481,11 +475,11 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     }
 
     public bool open_sheet (string path) {
-        SpreadSheet file;
+        Models.SpreadSheet file;
 
         try {
-            file = new CSVParser.from_file (path).parse ();
-        } catch (ParserError err) {
+            file = new Services.CSV.CSVParser.from_file (path).parse ();
+        } catch (Services.Parsing.ParserError err) {
             warning ("Failed to parse CSV file. path=%s: %s", path, err.message);
 
             var error_dialog = new Granite.MessageDialog.with_image_from_icon_name (
@@ -513,7 +507,7 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
     // Triggered when an opened sheet is modified
     public void save_sheet () {
-        new CSVWriter (active_sheet.page).write_to_file (file.file_path);
+        new Services.CSV.CSVWriter (active_sheet.page).write_to_file (file.file_path);
         recents_manager.prepend (file.file_path);
     }
 
@@ -545,13 +539,13 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
             path += Util.FILE_SUFFIX;
         }
 
-        new CSVWriter (active_sheet.page).write_to_file (path);
+        new Services.CSV.CSVWriter (active_sheet.page).write_to_file (path);
         recents_manager.prepend (path);
 
         // Open the saved file
         try {
-            this.file = new CSVParser.from_file (path).parse ();
-        } catch (ParserError err) {
+            this.file = new Services.CSV.CSVParser.from_file (path).parse ();
+        } catch (Services.Parsing.ParserError err) {
             debug ("Error: " + err.message);
             return;
         }
@@ -579,15 +573,15 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
     private static void func_item_setup (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var row = new FunctionListRow ();
+        var row = new Widgets.FunctionListRow ();
         list_item.child = row;
     }
 
     private static void func_item_bind (Object obj) {
         var list_item = obj as Gtk.ListItem;
 
-        var func = list_item.item as Function;
-        var row = list_item.child as FunctionListRow;
+        var func = list_item.item as Models.Function;
+        var row = list_item.child as Widgets.FunctionListRow;
 
         row.name_text = func.name;
         row.doc_text = func.doc;
@@ -595,22 +589,22 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
     private void update_formula () {
         if (active_sheet.selected_cell != null) {
-            history_manager.do_action (new HistoryAction<string?, Cell> (
+            history_manager.do_action (new Models.HistoryAction<string?, Models.Cell> (
                 @"Change the formula to $(formula_entry.text)",
                 active_sheet.selected_cell,
                 (_text, _target) => {
                     string text = _text == null ? formula_entry.text : (string)_text;
-                    Cell target = (Cell)_target;
+                    Models.Cell target = (Models.Cell)_target;
 
                     string last_text = target.formula;
                     target.formula = text;
 
                     var undo_data = last_text;
-                    return new StateChange<string> (undo_data, text);
+                    return new Models.StateChange<string> (undo_data, text);
                 },
                 (_text, _target) => {
                     string text = (string)_text;
-                    Cell target = (Cell)_target;
+                    Models.Cell target = (Models.Cell)_target;
 
                     target.formula = text;
                     formula_entry.text = text;
@@ -624,19 +618,19 @@ public class Spreadsheet.UI.MainWindow : Gtk.ApplicationWindow {
 
     private void clear_formula () {
         if (active_sheet.selected_cell != null) {
-            history_manager.do_action (new HistoryAction<string?, Cell> (
+            history_manager.do_action (new Models.HistoryAction<string?, Models.Cell> (
                 "Clear the formula",
                 active_sheet.selected_cell,
                 (_text, _target) => {
-                    Cell target = (Cell)_target;
+                    Models.Cell target = (Models.Cell)_target;
                     string undo_data = target.formula;
                     target.formula = "";
                     formula_entry.text = "";
-                    return new StateChange<string> (undo_data, "");
+                    return new Models.StateChange<string> (undo_data, "");
                 },
                 (_text, _target) => {
                     string text = (string)_text;
-                    Cell target = (Cell)_target;
+                    Models.Cell target = (Models.Cell)_target;
 
                     target.formula = text;
                     formula_entry.text = text;
