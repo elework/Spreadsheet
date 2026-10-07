@@ -23,10 +23,22 @@ i18n.merge_file(
   install_dir: get_option('datadir') / 'applications',
 )
 
-i18n.merge_file(
+metainfo_file = i18n.merge_file(
   input: file_name + '.metainfo.xml.in',
   output: meson.project_name() + '.metainfo.xml',
   po_dir: meson.project_source_root() / 'po' / 'extra',
   install: true,
   install_dir: get_option('datadir') / 'metainfo',
 )
+
+# Validate MetaInfo file
+ascli_exe = find_program('appstreamcli', required: false)
+if ascli_exe.found()
+  test('validate metainfo file',
+        ascli_exe,
+        args: ['validate',
+               '--no-net',
+               '--pedantic',
+               metainfo_file]
+  )
+endif
