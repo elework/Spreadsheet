@@ -52,7 +52,24 @@
   <translation type="gettext">io.github.elework.spreadsheet</translation>
   <screenshots>
     <screenshot type="default">
+      <caption>Main window</caption>
       <image>https://raw.githubusercontent.com/elework/Spreadsheet/main/screen.png</image>
     </screenshot>
   </screenshots>
+
+  <!--
+    We intentionally don't support translation for the descriptions in release notes
+    because only a few past release notes would be often shown in the app store
+    even if translators translated all of them, which is not worthy.
+  -->
+  <releases>
+    <!-- TODO: Review release date when we actually release -->
+    <release version="0.1.0" date="2026-10-08" urgency="medium">
+      <description translate="no">
+        <ul>
+          <li>Initial release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
