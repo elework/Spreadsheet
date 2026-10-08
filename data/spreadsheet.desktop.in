@@ -6,8 +6,8 @@ Name=Spreadsheet
 Comment=Create simple and beautiful spreadsheets
 Categories=Office;Spreadsheet;
 
-Icon=io.github.elework.spreadsheet
 Exec=io.github.elework.spreadsheet %U
+Icon=io.github.elework.spreadsheet
 Terminal=false
 
 MimeType=text/csv;

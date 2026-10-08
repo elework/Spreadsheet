@@ -12,7 +12,6 @@
   <supports>
     <control>pointing</control>
     <control>keyboard</control>
-    <control>touch</control>
   </supports>
 
   <description>
@@ -34,26 +33,11 @@
 
   <content_rating type="oars-1.1" />
 
-  <!--
-    We intentionally don't support translation for the descriptions in release notes
-    because only a few past release notes would be often shown in the app store
-    even if translators translated all of them, which is not worthy.
-  -->
-  <releases>
-    <release version="0.1.0" date="2025-08-17">
-      <description translate="no">
-        <ul>
-          <li>Initial release</li>
-        </ul>
-      </description>
-    </release>
-  </releases>
-
   <developer id="io.github.elework">
-    <name>Spreadsheet Developers</name>
+    <name>The elework Community</name>
   </developer>
 
-  <url type="homepage">https://github.com/elework/Spreadsheet</url>
+  <url type="homepage">https://github.com/elework</url>
   <url type="bugtracker">https://github.com/elework/Spreadsheet/issues</url>
   <url type="help">https://github.com/elework/Spreadsheet/discussions</url>
   <url type="vcs-browser">https://github.com/elework/Spreadsheet</url>
@@ -68,7 +52,24 @@
   <translation type="gettext">io.github.elework.spreadsheet</translation>
   <screenshots>
     <screenshot type="default">
+      <caption>Main window</caption>
       <image>https://raw.githubusercontent.com/elework/Spreadsheet/main/screen.png</image>
     </screenshot>
   </screenshots>
+
+  <!--
+    We intentionally don't support translation for the descriptions in release notes
+    because only a few past release notes would be often shown in the app store
+    even if translators translated all of them, which is not worthy.
+  -->
+  <releases>
+    <!-- TODO: Review release date when we actually release -->
+    <release version="0.1.0" date="2026-10-08" urgency="medium">
+      <description translate="no">
+        <ul>
+          <li>Initial release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
