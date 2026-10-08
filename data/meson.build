@@ -31,7 +31,6 @@ metainfo_file = i18n.merge_file(
   install_dir: get_option('datadir') / 'metainfo',
 )
 
-# Validate MetaInfo file
 ascli_exe = find_program('appstreamcli', required: false)
 if ascli_exe.found()
   test('validate metainfo file',
